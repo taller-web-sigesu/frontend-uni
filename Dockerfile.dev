@@ -1,0 +1,10 @@
+FROM node:24.22.2-bookworm-slim
+
+WORKDIR /workspace
+
+COPY package*.json ./
+RUN npm install --no-audit --no-fund
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npm install --no-audit --no-fund && exec npm run dev"]

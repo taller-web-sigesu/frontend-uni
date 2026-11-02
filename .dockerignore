@@ -1,0 +1,15 @@
+# Dependencias y artefactos generados en el host
+node_modules
+dist
+coverage
+.vite
+
+# Metadatos y configuración local
+.git
+.env
+.env.*
+
+# Logs locales
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
