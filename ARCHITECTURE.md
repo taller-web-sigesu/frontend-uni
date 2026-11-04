@@ -1,6 +1,6 @@
 # Arquitectura del frontend — frontend-uni
 
-> **Estado:** base React implementada en código; arquitectura funcional objetivo pendiente.
+> **Estado:** base React implementada; plan de implementación aprobado, arquitectura funcional pendiente.
 > **Última actualización:** 2026-11-02.
 > **Alcance:** interfaz web y consumo de la API.
 
@@ -60,8 +60,20 @@ tests/                        # Pruebas de UI y end-to-end previstas
 - El contrato objetivo pertenece a `backend-uni/docs/api/openapi.yaml`, todavía pendiente. Los endpoints del documento backend son propuestas salvo los identificados como existentes; no inventar rutas para implementar una pantalla.
 - Mantener estado local de UI y sesión; los datos persistentes y las decisiones de autorización pertenecen al backend.
 - Contemplar carga, error, estados vacíos, validaciones y accesibilidad. Ocultar botones según rol no sustituye la autorización del servidor.
-- La propuesta inicial mantiene JWT de acceso de corta duración en memoria, sin `localStorage`. JWT frente a sesión sigue pendiente de decisión; no hay autenticación implementada.
+- La estrategia propuesta mantiene un JWT de acceso de corta duración en memoria y un refresh token en cookie `HttpOnly`, sin `localStorage` (ver [ADR-0002](../infra-uni/docs/adr/ADR-0002-autenticacion-sesion.md), estado Propuesto). No hay autenticación implementada todavía.
 - Si se incorpora renovación con cookies, coordinar `HttpOnly`, `Secure`, SameSite, CSRF y CORS con backend.
+
+## Plan de implementación
+
+El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md`](../infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md). Orden de trabajo:
+
+1. **Base:** React Router, `app/`, `components/layout`, `services/`, tokens de `DESIGN.md`, modo claro/oscuro y responsive.
+2. **Sesión y API:** cliente HTTP centralizado, access token en memoria, refresh con cookie, manejo de 401 y errores.
+3. **Features:** `auth`, `requests`, `management`, `dashboard`, `administration` y `reservations`, con estados de carga, vacío y error.
+4. **Calidad:** Vitest + Testing Library, ESLint, Playwright y accesibilidad WCAG 2.2 AA.
+5. **Entrega:** build de Vite, preview/staging en Vercel y smoke/E2E en CI.
+
+**Decisiones relacionadas:** [ADR-0002](../infra-uni/docs/adr/ADR-0002-autenticacion-sesion.md) (sesión) y [ADR-0005](../infra-uni/docs/adr/ADR-0005-ci-cd-calidad.md) (CI/CD).
 
 ## Desarrollo y verificación
 
