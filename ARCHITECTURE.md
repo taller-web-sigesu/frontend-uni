@@ -23,7 +23,7 @@ La revisión de estos archivos no demuestra ejecución, conectividad ni build ex
 ## Responsabilidad y tecnologías objetivo
 
 - **Nombre:** Portal web universitario.
-- **Responsabilidad:** interfaz responsive para autenticarse, registrar/consultar solicitudes, trabajar asignaciones según rol, administrar catálogos y visualizar indicadores.
+- **Responsabilidad:** interfaz responsive para autenticarse, registrar/consultar solicitudes, trabajar asignaciones según rol, administrar catálogos, gestionar reservas de ambientes y visualizar indicadores.
 - **Tecnologías propuestas:** React + Vite + JavaScript, React Router, Fetch (o un cliente HTTP consensuado), CSS y biblioteca UI definida a partir de `DESIGN.md`.
 - **Diseño:** `frontend-uni/DESIGN.md` es la referencia visual: tokens, tipografía, colores, espaciado, accesibilidad y componentes. Puede partir de Refero Styles, pero debe adaptarse y validarse para el producto.
 - **Estado:** manejo local de UI y sesión; no duplicar reglas de negocio ni usar el estado del navegador como fuente de verdad de datos persistentes.
@@ -47,6 +47,7 @@ src/
 │   ├── requests/             # Registro, listado y detalle de solicitudes
 │   ├── management/           # Asignaciones, atención e historial
 │   ├── dashboard/            # Indicadores y filtros
+│   ├── reservations/         # Espacios, disponibilidad, reservas y aprobación
 │   └── administration/       # Usuarios y catálogos
 ├── services/                 # Cliente HTTP y adaptadores de API
 └── styles/                   # Estilos y tokens aplicados
