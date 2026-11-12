@@ -18,7 +18,7 @@
 | [04 · Indicadores y administración](04-indicadores-y-administracion.md) | Filtros y CSV coherentes, desactivación, catálogo y conflicto de vigencia SLA. |
 | [05 · Reservas](05-reservas-y-ambientes.md) | Alta, decisión, cancelación del propietario, conflicto entre consulta y guardado y horario administrado. |
 
-**Cierre.** Los cuatro roles completan sus recorridos con el backend real en Docker local, las comprobaciones de CI pasan y la evidencia permite comprobar las HU-01 a HU-25.
+**Cierre.** Los cinco roles completan sus recorridos con el backend real en Docker local, las comprobaciones de CI pasan y la evidencia permite comprobar las HU-01 a HU-25.
 
 ## Capturas de Figma
 

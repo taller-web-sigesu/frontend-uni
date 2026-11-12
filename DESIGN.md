@@ -88,7 +88,7 @@ components:
 
 ## Overview
 
-Un sistema visual limpio, profesional y compacto para estudiantes, técnicos, supervisores y administradores. Inspirado en la referencia de gestión de tickets: **sidebar delgada, tarjetas KPI, filtros horizontales y tablas legibles**. El diseño prioriza productividad, claridad y consistencia.
+Un sistema visual limpio, profesional y compacto para estudiantes, docentes, técnicos, supervisores y administradores. Inspirado en la referencia de gestión de tickets: **sidebar delgada, tarjetas KPI, filtros horizontales y tablas legibles**. El diseño prioriza productividad, claridad y consistencia.
 
 ## Colors
 
