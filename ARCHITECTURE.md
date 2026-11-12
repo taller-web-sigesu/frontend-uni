@@ -6,9 +6,9 @@
 
 ## Referencias y propiedad
 
-La [arquitectura global](../infra-uni/docs/ARCHITECTURE.md) define los límites entre repositorios y las decisiones compartidas. Este documento es la referencia de arquitectura interna del frontend; no duplica contratos ni reglas de negocio del backend.
+La [arquitectura global](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/ARCHITECTURE.md) define los límites entre repositorios y las decisiones compartidas. Este documento es la referencia de arquitectura interna del frontend; no duplica contratos ni reglas de negocio del backend.
 
-Leer [AGENTS.md](AGENTS.md), [DESIGN.md](DESIGN.md) y la historia correspondiente en [user-stories](../infra-uni/docs/requirements/user-stories/) antes de modificar la interfaz.
+Leer [AGENTS.md](AGENTS.md), [DESIGN.md](DESIGN.md) y la historia correspondiente en [user-stories](https://github.com/taller-web-sigesu/infra-uni/tree/main/docs/requirements/user-stories) antes de modificar la interfaz.
 
 ## Estado actual comprobado en archivos
 
@@ -60,12 +60,12 @@ tests/                        # Pruebas de UI y end-to-end previstas
 - El contrato objetivo pertenece a `backend-uni/docs/api/openapi.yaml`, todavía pendiente. Los endpoints del documento backend son propuestas salvo los identificados como existentes; no inventar rutas para implementar una pantalla.
 - Mantener estado local de UI y sesión; los datos persistentes y las decisiones de autorización pertenecen al backend.
 - Contemplar carga, error, estados vacíos, validaciones y accesibilidad. Ocultar botones según rol no sustituye la autorización del servidor.
-- La estrategia propuesta mantiene un JWT de acceso de corta duración en memoria y un refresh token en cookie `HttpOnly`, sin `localStorage` (ver [ADR-0002](../infra-uni/docs/adr/ADR-0002-autenticacion-sesion.md), estado Propuesto). No hay autenticación implementada todavía.
+- La estrategia propuesta mantiene un JWT de acceso de corta duración en memoria y un refresh token en cookie `HttpOnly`, sin `localStorage` (ver [ADR-0002](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0002-autenticacion-sesion.md), estado Propuesto). No hay autenticación implementada todavía.
 - Si se incorpora renovación con cookies, coordinar `HttpOnly`, `Secure`, SameSite, CSRF y CORS con backend.
 
 ## Plan de implementación
 
-El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md`](../infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md). Orden de trabajo:
+El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md`](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md). Orden de trabajo:
 
 1. **Base:** React Router, `app/`, `components/layout`, `services/`, tokens de `DESIGN.md`, modo claro/oscuro y responsive.
 2. **Sesión y API:** cliente HTTP centralizado, access token en memoria, refresh con cookie, manejo de 401 y errores.
@@ -73,11 +73,11 @@ El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenier
 4. **Calidad:** Vitest + Testing Library, ESLint, Playwright y accesibilidad WCAG 2.2 AA.
 5. **Entrega:** build de Vite, preview/staging en Vercel y smoke/E2E en CI.
 
-**Decisiones relacionadas:** [ADR-0002](../infra-uni/docs/adr/ADR-0002-autenticacion-sesion.md) (sesión) y [ADR-0005](../infra-uni/docs/adr/ADR-0005-ci-cd-calidad.md) (CI/CD).
+**Decisiones relacionadas:** [ADR-0002](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0002-autenticacion-sesion.md) (sesión) y [ADR-0005](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0005-ci-cd-calidad.md) (CI/CD).
 
 ## Desarrollo y verificación
 
-El procedimiento local está en [README de infraestructura](../infra-uni/README.md) y [DOCKER.md](../infra-uni/docs/DOCKER.md): Docker Desktop y los tres repositorios hermanos. Vite aplica HMR sobre el código montado.
+El procedimiento local está en [README de infraestructura](https://github.com/taller-web-sigesu/infra-uni/blob/main/README.md) y [DOCKER.md](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/DOCKER.md): Docker Desktop y los tres repositorios hermanos. Vite aplica HMR sobre el código montado.
 
 Para verificar cambios, ejecutar `npm run build` en el entorno disponible. Vitest + Testing Library para UI, ESLint para calidad y Playwright para recorridos completos son herramientas propuestas, todavía sin configurar. El CI objetivo ejecutará dependencias, lint/pruebas disponibles, build y preview/staging con smoke/E2E cuando aplique.
 

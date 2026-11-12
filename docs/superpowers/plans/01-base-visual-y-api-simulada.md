@@ -16,7 +16,7 @@
 Usar Figma para composición, DESIGN.md para tokens, las HU para comportamiento y permisos, y OpenAPI aprobado para métodos, campos y errores. Los documentos REST actuales son propuestas. Al integrar, reemplazar los datos simulados por las respuestas reales del mismo adaptador HTTP.
 
 - [Arquitectura frontend](../../../ARCHITECTURE.md) · [Sistema visual](../../../DESIGN.md) · [Revisión UI/UX](../../FIGMA/v2/mejora-ui-ux-01.md)
-- [Historias de usuario](../../../../infra-uni/docs/requirements/user-stories/) · [Diseño REST](../../../../backend-uni/docs/API-DISENIO.md) · [Contratos y plan backend](../../../../backend-uni/docs/plan/00-contratos-y-decisiones.md)
+- [Historias de usuario](https://github.com/taller-web-sigesu/infra-uni/tree/main/docs/requirements/user-stories) · [Diseño REST](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/API-DISENIO.md) · [Contratos y plan backend](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/plan/00-contratos-y-decisiones.md)
 - [Componentes](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-4) · [Estados](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-9) · [Handoff](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-10)
 
 | Flujo | Proyección que debe cerrar backend antes de integrar |

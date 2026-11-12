@@ -2,7 +2,7 @@
 
 **Alcance.** HU-03 a HU-11, HU-19 y HU-20. Depende de la [fase 02](02-acceso-sesion-y-perfil.md). Implementar en `src/features/requests/` y `src/features/management/` con un detalle compartido por rol.
 
-**Fuentes.** [Solicitudes](../../../../backend-uni/docs/api/solicitudes.md) · [Atención](../../../../backend-uni/docs/api/atencion.md) · [Calidad y auditoría](../../../../backend-uni/docs/api/calidad-servicio.md)
+**Fuentes.** [Solicitudes](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/solicitudes.md) · [Atención](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/atencion.md) · [Calidad y auditoría](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/calidad-servicio.md)
 
 ## Tareas
 
@@ -10,7 +10,7 @@
 - [ ] En detalle, cargar solicitud, historial y comentarios de `/requests/{id}` y sus subrutas. Mostrar autor y fecha, rechazar texto en blanco y actualizar comentarios tras publicar. Para el estudiante propietario, mostrar encuesta de 1 a 5 únicamente en `CERRADO` cuando la API indique que todavía no respondió. Enviar a `POST /requests/{id}/survey` y verificar que el resultado se conserva al recargar. [P05 Detalle estudiante](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=54-162)
 - [ ] Implementar `/bandeja` para técnico y `/gestion` para supervisor. Usar `GET /requests` respetando el alcance y el orden del servidor. En gestión, permitir filtros de estado, categoría y prioridad. Usar `GET /requests/{id}/eligible-technicians` y `POST /requests/{id}/assignments` para asignar o reasignar. Ajustar prioridad con `PATCH /requests/{id}` y consultar `/audit-events` solo como supervisor autorizado. [P06 Bandeja](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=65-2) · [P07 Gestión](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=65-122) · [Detalle y auditoría](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-7)
 - [ ] Aplicar transiciones mediante `PATCH /requests/{id}/status`. El técnico inicia desde `ASIGNADO` y resuelve desde `EN_PROCESO`. El supervisor cierra desde `RESUELTO` y rechaza con motivo desde `NUEVO`, `ASIGNADO` o `EN_PROCESO`. Ante `409`, recargar el recurso y volver a calcular las acciones visibles.
-- [ ] Construir `/inicio` de estudiante y técnico con vistas previas de solicitudes propias o asignadas. El rol Docente usa las mismas vistas y el mismo menú que el estudiante ([decisiones 02](../../../../infra-uni/docs/decisiones/decisiones-02.md)). Completar las vistas de reservas propias en la fase 05. [Inicio estudiante](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=142-367) · [Inicio técnico](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=230-2)
+- [ ] Construir `/inicio` de estudiante y técnico con vistas previas de solicitudes propias o asignadas. El rol Docente usa las mismas vistas y el mismo menú que el estudiante ([decisiones 02](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/decisiones/decisiones-02.md)). Completar las vistas de reservas propias en la fase 05. [Inicio estudiante](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=142-367) · [Inicio técnico](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=230-2)
 
 **Aceptación.** Verificar registro, asignación, resolución, cierre y encuesta. Probar comentarios vacíos, rechazo sin motivo, conflicto de transición, recurso fuera de alcance y encuesta ya respondida al recargar.
 
