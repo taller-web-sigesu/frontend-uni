@@ -2,7 +2,7 @@
 
 **Alcance.** HU-12 a HU-18. Depende de la [fase 02](02-acceso-sesion-y-perfil.md). Los recorridos con datos reales de solicitudes requieren la [fase 03](03-solicitudes-y-atencion.md).
 
-**Fuentes.** [Dashboard](../../../../backend-uni/docs/api/dashboard.md) · [Usuarios](../../../../backend-uni/docs/api/usuarios.md) · [Catálogos](../../../../backend-uni/docs/api/catalogos.md) · [SLA](../../../../backend-uni/docs/api/calidad-servicio.md) · [P08 Indicadores](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=66-134) · [Inicio administrador y P12–P14](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-8)
+**Fuentes.** [Dashboard](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/dashboard.md) · [Usuarios](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/usuarios.md) · [Catálogos](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/catalogos.md) · [SLA](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/calidad-servicio.md) · [P08 Indicadores](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=66-134) · [Inicio administrador y P12–P14](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=17-8)
 
 ## Tareas
 

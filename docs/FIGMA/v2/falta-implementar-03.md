@@ -1,6 +1,6 @@
 # Falta implementar · 03
 
-Tercera revisión de pendientes, 12 de noviembre de 2026: rol **Docente** ([decisiones 02](../../../../infra-uni/docs/decisiones/decisiones-02.md)).
+Tercera revisión de pendientes, 12 de noviembre de 2026: rol **Docente** ([decisiones 02](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/decisiones/decisiones-02.md)).
 
 > Estado: **pendiente en Figma**.
 

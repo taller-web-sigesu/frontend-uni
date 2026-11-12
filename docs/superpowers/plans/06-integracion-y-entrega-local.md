@@ -2,7 +2,7 @@
 
 **Entrada.** Las fases 01 a 05 están verificadas con API simulada. Para cerrar con API real, cada operación utilizada debe estar publicada en el contrato aprobado e implementada en el backend local.
 
-**Fuentes.** [Guía Docker](../../../../infra-uni/docs/DOCKER.md) · [ADR de calidad y CI](../../../../infra-uni/docs/adr/ADR-0005-ci-cd-calidad.md) · [Plan de integración backend](../../../../backend-uni/docs/plan/04-integracion-local-y-ci.md)
+**Fuentes.** [Guía Docker](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/DOCKER.md) · [ADR de calidad y CI](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0005-ci-cd-calidad.md) · [Plan de integración backend](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/plan/04-integracion-local-y-ci.md)
 
 ## Tareas
 

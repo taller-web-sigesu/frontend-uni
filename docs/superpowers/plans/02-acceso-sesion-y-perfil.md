@@ -2,7 +2,7 @@
 
 **Alcance.** HU-01 y HU-02. Depende de la [fase 01](01-base-visual-y-api-simulada.md). El flujo simulado permite avanzar mientras backend implementa sesión.
 
-**Fuentes.** [Contrato de autenticación](../../../../backend-uni/docs/api/autenticacion.md) · [Plan de sesión backend](../../../../backend-uni/docs/plan/01-fundaciones-y-sesion.md) · [P01 Ingreso](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=47-2) · [P02 Primer ingreso](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=47-80) · [P16 Perfil](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=74-549)
+**Fuentes.** [Contrato de autenticación](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/autenticacion.md) · [Plan de sesión backend](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/plan/01-fundaciones-y-sesion.md) · [P01 Ingreso](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=47-2) · [P02 Primer ingreso](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=47-80) · [P16 Perfil](https://www.figma.com/design/9qJJaiyMwZ1ZON36LkmbyR/GESTAL-V2?node-id=74-549)
 
 ## Tareas
 

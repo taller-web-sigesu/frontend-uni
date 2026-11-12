@@ -2,7 +2,7 @@
 
 **Alcance.** HU-21 a HU-25. Depende de la [fase 02](02-acceso-sesion-y-perfil.md) y completa las vistas previas de la [fase 03](03-solicitudes-y-atencion.md).
 
-**Fuentes.** [Contrato de reservas](../../../../backend-uni/docs/api/reservas.md) · [Plan backend de reservas](../../../../backend-uni/docs/plan/03-reservas-de-ambientes.md)
+**Fuentes.** [Contrato de reservas](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/api/reservas.md) · [Plan backend de reservas](https://github.com/taller-web-sigesu/backend-uni/blob/main/docs/plan/03-reservas-de-ambientes.md)
 
 ## Tareas
 
