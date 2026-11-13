@@ -1,0 +1,30 @@
+// Único lugar donde el frontend cubre lo que el contrato de la API todavía no
+// expone (ver «Huecos del contrato conocidos» en el plan de la fase 01).
+// En modo real no se inventan endpoints: se devuelve `null` o un texto de respaldo.
+import { db } from '../mocks/state.js';
+
+export function isMockMode() {
+  return import.meta.env.VITE_API_MODE === 'mock' || import.meta.env.MODE === 'test';
+}
+
+/** Opciones de prioridad para el supervisor. `null` = el contrato no las expone. */
+export async function listPriorityOptions() {
+  if (!isMockMode()) return null;
+  return db.priorities
+    .filter((priority) => priority.activo)
+    .sort((a, b) => a.nivel - b.nivel)
+    .map(({ id, nombre }) => ({ id, nombre }));
+}
+
+export function priorityName(id) {
+  if (isMockMode()) {
+    const priority = db.priorities.find((p) => p.id === id);
+    if (priority) return priority.nombre;
+  }
+  return `Prioridad ${id}`;
+}
+
+/** `true`/`false` si la solicitud trae la marca; `null` si el contrato no la incluye. */
+export function surveyAnswered(request) {
+  return typeof request?.encuestaRespondida === 'boolean' ? request.encuestaRespondida : null;
+}
