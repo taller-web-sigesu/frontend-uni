@@ -1,9 +1,9 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../mocks/server.js';
 import { renderWithRouter } from '../../test/render.jsx';
-import { ANA, captureRequests, SUPERVISORA_TI, userById } from '../../test/users.js';
+import { ANA, captureRequests, SUPERVISORA_TI, TECNICO_TI, userById } from '../../test/users.js';
 import { db } from '../../mocks/db.js';
 
 afterEach(() => server.events.removeAllListeners());
@@ -98,4 +98,40 @@ test('el supervisor vuelve a gestión desde una solicitud fuera de su área', as
   openDetail('6', SUPERVISORA_TI);
   expect(await screen.findByText('No encontramos esta solicitud o no tienes acceso a ella')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Volver a gestión de área' })).toHaveAttribute('href', '/gestion');
+});
+
+const NOT_FOUND = 'No encontramos esta solicitud o no tienes acceso a ella';
+
+test('si la acción responde 404 por pérdida de acceso, recarga y muestra no encontrada', async () => {
+  const user = userEvent.setup();
+  openDetail('2', TECNICO_TI);
+  const start = await screen.findByRole('button', { name: 'Iniciar atención' });
+  // La supervisora reasignó la solicitud a otra técnica mientras estaba abierta.
+  db.requests.find((r) => r.id === '2').responsableId = '6';
+  await user.click(start);
+  expect(await screen.findByText(NOT_FOUND)).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Iniciar atención' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'SOL-2026-000002' })).not.toBeInTheDocument();
+});
+
+test('un 409 seguido de un 404 al recargar muestra no encontrada', async () => {
+  const user = userEvent.setup();
+  server.use(http.patch('/api/v1/requests/:id/status', () => HttpResponse.json(
+    { status: 409, codigo: 'TRANSICION_INVALIDA', detail: 'Cambió.' },
+    { status: 409, headers: { 'Content-Type': 'application/problem+json' } },
+  ), { once: true }));
+  openDetail('3', TECNICO_TI);
+  const resolve = await screen.findByRole('button', { name: 'Marcar como resuelta' });
+  db.requests.find((r) => r.id === '3').responsableId = '6';
+  await user.click(resolve);
+  expect(await screen.findByText(NOT_FOUND)).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Marcar como resuelta' })).not.toBeInTheDocument();
+});
+
+test('al cambiar de solicitud no muestra la anterior y respeta el 404', async () => {
+  const { router } = openDetail('1');
+  await screen.findByRole('heading', { name: 'SOL-2026-000001' });
+  await act(() => router.navigate('/solicitudes/7'));
+  expect(await screen.findByText(NOT_FOUND)).toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'SOL-2026-000001' })).not.toBeInTheDocument();
 });

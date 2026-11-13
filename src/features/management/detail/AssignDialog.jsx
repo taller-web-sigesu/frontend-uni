@@ -4,7 +4,7 @@ import { listPriorityOptions } from '../../../services/pendingContract.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { assign, listEligibleTechnicians } from '../../requests/requestsApi.js';
-import { CONFLICT_MESSAGE, isConflict } from './conflict.js';
+import { CONFLICT_MESSAGE, isConflict, needsReload } from './conflict.js';
 
 async function loadOptions(requestId, signal) {
   const [technicians, priorities] = await Promise.all([
@@ -30,15 +30,15 @@ function AssignForm({ solicitud, onDone, onConflict, onCancel }) {
     setLocalError(null);
     const result = await submit({ tecnicoId, prioridadId: prioridadId || undefined });
     if (result.ok) onDone();
-    else if (isConflict(result.error)) {
-      onConflict?.(CONFLICT_MESSAGE);
+    else if (needsReload(result.error)) {
+      if (isConflict(result.error)) onConflict?.(CONFLICT_MESSAGE);
       onDone();
     }
   }
 
   if (loadError) return <p className="form-error" role="alert">{loadError.detail}</p>;
   if (!data) return <Skeleton lines={2} />;
-  const failure = error && !isConflict(error) && error.status !== 400 ? error.detail : null;
+  const failure = error && !needsReload(error) && error.status !== 400 ? error.detail : null;
   const current = solicitud.responsableActual?.id;
 
   return (

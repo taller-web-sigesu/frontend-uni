@@ -139,3 +139,10 @@ test('nunca envía ASIGNADO por PATCH /status', () => {
   expect(statusBodies.length).toBeGreaterThan(0);
   expect(statusBodies.filter((body) => body.estado === 'ASIGNADO')).toEqual([]);
 });
+
+test('la auditoría nombra al usuario en sesión en sus propios cambios', async () => {
+  await openDetail('2', SUPERVISORA_TI);
+  const panel = await screen.findByRole('region', { name: 'Auditoría' });
+  const row = (await within(panel).findByText('prioridad')).closest('tr');
+  expect(row).toHaveTextContent('Supervisora TI Demo');
+});

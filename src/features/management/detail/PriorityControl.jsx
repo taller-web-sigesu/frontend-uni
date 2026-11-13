@@ -4,7 +4,7 @@ import { listPriorityOptions } from '../../../services/pendingContract.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { changePriority } from '../../requests/requestsApi.js';
-import { CONFLICT_MESSAGE, isConflict } from './conflict.js';
+import { CONFLICT_MESSAGE, isConflict, needsReload } from './conflict.js';
 
 /**
  * Ajuste de prioridad del supervisor (PATCH /requests/{id}). El contrato no
@@ -21,14 +21,14 @@ export function PriorityControl({ solicitud, onChanged, onConflict }) {
     event.preventDefault();
     if (!prioridadId || prioridadId === solicitud.prioridadId) return;
     const result = await submit(prioridadId);
-    if (result.ok || isConflict(result.error)) {
-      if (!result.ok) onConflict?.(CONFLICT_MESSAGE);
+    if (result.ok || needsReload(result.error)) {
+      if (isConflict(result.error)) onConflict?.(CONFLICT_MESSAGE);
       setPrioridadId('');
       onChanged();
     }
   }
 
-  const failure = error && !isConflict(error) ? error.fieldErrors?.prioridadId || error.detail : null;
+  const failure = error && !needsReload(error) ? error.fieldErrors?.prioridadId || error.detail : null;
 
   return (
     <section className="card" aria-labelledby="detalle-prioridad">

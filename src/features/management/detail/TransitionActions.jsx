@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, ConfirmDialog, TextArea } from '../../../components/ui/index.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { changeStatus } from '../../requests/requestsApi.js';
-import { CONFLICT_MESSAGE, isConflict } from './conflict.js';
+import { CONFLICT_MESSAGE, isConflict, needsReload } from './conflict.js';
 
 const BUTTONS = [
   { action: 'INICIAR', estado: 'EN_PROCESO', label: 'Iniciar atención' },
@@ -22,8 +22,8 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
 
   async function run(body) {
     const result = await submit(body);
-    if (result.ok || isConflict(result.error)) {
-      if (!result.ok) onConflict?.(CONFLICT_MESSAGE);
+    if (result.ok || needsReload(result.error)) {
+      if (isConflict(result.error)) onConflict?.(CONFLICT_MESSAGE);
       setRejecting(false);
       onChanged();
     }
@@ -42,7 +42,7 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
   }
 
   const visible = BUTTONS.filter((button) => actions.has(button.action));
-  const failure = error && !isConflict(error) ? error.fieldErrors?.motivo || error.detail : null;
+  const failure = error && !needsReload(error) ? error.fieldErrors?.motivo || error.detail : null;
 
   return (
     <>

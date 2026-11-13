@@ -58,6 +58,11 @@ function CreatedNotice({ state }) {
  */
 export default function RequestDetailPage() {
   const { id } = useParams();
+  // Otra solicitud = otra instancia: nada de la anterior (datos, avisos) se muestra.
+  return <RequestDetail key={id} id={id} />;
+}
+
+function RequestDetail({ id }) {
   const location = useLocation();
   const user = useCurrentUser();
   const { categoryName, priorityName } = useCatalogLabels();
@@ -77,19 +82,20 @@ export default function RequestDetailPage() {
     [setData],
   );
 
+  // Un 404 (también al recargar tras perder el acceso) reemplaza el detalle anterior.
+  if (status === 'error' && error?.status === 404) {
+    return (
+      <section className="page">
+        <h1>Detalle y seguimiento de solicitud</h1>
+        <EmptyState
+          title="No encontramos esta solicitud o no tienes acceso a ella"
+          description="Revisa el enlace o vuelve a tu lista."
+          action={<Link className="btn btn--secondary" to={back.to}>{back.label}</Link>}
+        />
+      </section>
+    );
+  }
   if (status === 'error' && !data) {
-    if (error?.status === 404) {
-      return (
-        <section className="page">
-          <h1>Detalle y seguimiento de solicitud</h1>
-          <EmptyState
-            title="No encontramos esta solicitud o no tienes acceso a ella"
-            description="Revisa el enlace o vuelve a tu lista."
-            action={<Link className="btn btn--secondary" to={back.to}>{back.label}</Link>}
-          />
-        </section>
-      );
-    }
     return (
       <section className="page">
         <h1>Detalle y seguimiento de solicitud</h1>
@@ -108,7 +114,7 @@ export default function RequestDetailPage() {
 
   const { solicitud, history, comments } = data;
   const actions = availableActions(solicitud, user);
-  const personName = peopleIndex(solicitud, comments);
+  const personName = peopleIndex(solicitud, comments, user);
 
   return (
     <section className="page">
