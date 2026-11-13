@@ -94,6 +94,7 @@ function moveTo(solicitud, estado, actorId, motivo = null) {
   solicitud.history.push({ estadoAnterior: solicitud.estado, estado, actorId, fecha: now(), motivo });
   solicitud.estado = estado;
   if (TERMINAL.includes(estado)) {
+    solicitud.sla = { ...solicitud.sla, estado: 'CERRADA' };
     solicitud.ultimoResponsableId = solicitud.responsableId;
     solicitud.responsableId = null;
   }

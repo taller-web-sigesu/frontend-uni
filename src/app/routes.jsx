@@ -26,7 +26,7 @@ export const ROUTES = [
   { path: '/perfil', roles: ALL_ROLES, title: 'Perfil', lazy: auth('ProfilePage') },
   { path: '/solicitudes', roles: SOLICITANTES, title: 'Mis solicitudes', lazy: requests('MyRequestsPage') },
   { path: '/solicitudes/nueva', roles: SOLICITANTES, title: 'Registrar solicitud', lazy: requests('NewRequestPage') },
-  { path: '/solicitudes/:id', roles: [...SOLICITANTES, TECNICO, SUPERVISOR], title: 'Detalle y seguimiento de solicitud', lazy: placeholder },
+  { path: '/solicitudes/:id', roles: [...SOLICITANTES, TECNICO, SUPERVISOR], title: 'Detalle y seguimiento de solicitud', lazy: requests('RequestDetailPage') },
   { path: '/bandeja', roles: [TECNICO], title: 'Mis asignaciones', lazy: placeholder },
   { path: '/gestion', roles: [SUPERVISOR], title: 'Gestión de área', lazy: placeholder },
   { path: '/indicadores', roles: [SUPERVISOR, ADMINISTRADOR], title: 'Indicadores', lazy: placeholder },

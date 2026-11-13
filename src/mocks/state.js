@@ -47,7 +47,7 @@ function initialRequests() {
       codigo: `SOL-2026-${String(seed.id).padStart(6, '0')}`,
       creadoEn,
       sla: {
-        estado: index % 3 === 2 ? 'EN_RIESGO' : 'EN_PLAZO',
+        estado: TERMINAL.includes(seed.estado) ? 'CERRADA' : (index % 3 === 2 ? 'POR_VENCER' : 'EN_PLAZO'),
         fechaAviso: `2026-11-${String(index + 3).padStart(2, '0')}T10:00:00Z`,
         fechaLimite: `2026-11-${String(index + 3).padStart(2, '0')}T14:00:00Z`,
       },
