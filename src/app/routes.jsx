@@ -12,6 +12,8 @@ const placeholder = () => import('./PlaceholderPage.jsx');
 const auth = (name) => () => import('../features/auth/index.js').then((m) => ({ default: m[name] }));
 const requests = (name) => () => import('../features/requests/index.js').then((m) => ({ default: m[name] }));
 const management = (name) => () => import('../features/management/index.js').then((m) => ({ default: m[name] }));
+const dashboard = () => import('../features/dashboard/index.js').then((m) => ({ default: m.DashboardPage }));
+const administration = (name) => () => import('../features/administration/index.js').then((m) => ({ default: m[name] }));
 const home = () => import('../features/home/index.js').then((m) => ({ default: m.HomePage }));
 
 /**
@@ -30,13 +32,13 @@ export const ROUTES = [
   { path: '/solicitudes/:id', roles: [...SOLICITANTES, TECNICO, SUPERVISOR], title: 'Detalle y seguimiento de solicitud', lazy: requests('RequestDetailPage') },
   { path: '/bandeja', roles: [TECNICO], title: 'Mis asignaciones', lazy: management('TechnicianInboxPage') },
   { path: '/gestion', roles: [SUPERVISOR], title: 'Gestión de área', lazy: management('AreaManagementPage') },
-  { path: '/indicadores', roles: [SUPERVISOR, ADMINISTRADOR], title: 'Indicadores', lazy: placeholder },
+  { path: '/indicadores', roles: [SUPERVISOR, ADMINISTRADOR], title: 'Indicadores', lazy: dashboard },
   { path: '/reservas', roles: ALL_ROLES, title: 'Mis reservas', lazy: placeholder },
   { path: '/reservas/nueva', roles: ALL_ROLES, title: 'Registrar reserva', lazy: placeholder },
   { path: '/reservas/aprobacion', roles: [SUPERVISOR, ADMINISTRADOR], title: 'Aprobación de reservas', lazy: placeholder },
   { path: '/reservas/:id', roles: ALL_ROLES, title: 'Detalle de reserva', lazy: placeholder },
-  { path: '/admin/usuarios', roles: [ADMINISTRADOR], title: 'Administración de usuarios', lazy: placeholder },
-  { path: '/admin/catalogos', roles: [ADMINISTRADOR], title: 'Catálogos', lazy: placeholder },
-  { path: '/admin/sla', roles: [ADMINISTRADOR], title: 'Políticas SLA', lazy: placeholder },
+  { path: '/admin/usuarios', roles: [ADMINISTRADOR], title: 'Administración de usuarios', lazy: administration('UsersPage') },
+  { path: '/admin/catalogos', roles: [ADMINISTRADOR], title: 'Catálogos', lazy: administration('CatalogsPage') },
+  { path: '/admin/sla', roles: [ADMINISTRADOR], title: 'Políticas SLA', lazy: administration('SlaPoliciesPage') },
   { path: '/admin/ambientes', roles: [ADMINISTRADOR], title: 'Administración de ambientes', lazy: placeholder },
 ];

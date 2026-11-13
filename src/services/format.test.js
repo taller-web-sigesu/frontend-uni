@@ -1,4 +1,4 @@
-import {
+import { limaLocalToUtc, utcToLimaLocal,
   formatDateTime,
   formatDate,
   todayInLima,
@@ -51,4 +51,16 @@ test('etiquetas de códigos', () => {
   expect(statusTone('RECHAZADO')).toBe('danger');
   expect(statusTone('CERRADO')).toBe('success');
   expect(statusTone('DESCONOCIDO')).toBe('neutral');
+});
+
+test('limaLocalToUtc convierte datetime-local de Lima a UTC', () => {
+  expect(limaLocalToUtc('2026-12-01T08:00')).toBe('2026-12-01T13:00:00Z');
+  expect(limaLocalToUtc('2026-12-31T22:30')).toBe('2027-01-01T03:30:00Z');
+  expect(limaLocalToUtc('')).toBeNull();
+});
+
+test('utcToLimaLocal da el valor de datetime-local en Lima', () => {
+  expect(utcToLimaLocal('2026-11-01T05:00:00Z')).toBe('2026-11-01T00:00');
+  expect(utcToLimaLocal('2027-01-01T03:30:00Z')).toBe('2026-12-31T22:30');
+  expect(utcToLimaLocal(null)).toBe('');
 });

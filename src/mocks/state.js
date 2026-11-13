@@ -106,8 +106,10 @@ function initialData() {
       { id: '9', nombreCompleto: 'Pedro Demo', correo: 'pedro.demo@universidad.example', rol: 'DOCENTE', areaId: null },
       // Solo en la API simulada: primer ingreso y cuentas auto-registradas sin aprobar.
       { id: '10', nombreCompleto: 'Nuevo Demo', correo: 'nuevo.demo@universidad.example', rol: 'ESTUDIANTE', areaId: null, debeCambiarContrasena: true },
-      { id: '11', nombreCompleto: 'Lucía Pendiente', correo: 'lucia.pendiente@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'PENDIENTE', origenRegistro: 'AUTOREGISTRO' },
+      { id: '11', nombreCompleto: 'Lucía Pendiente', correo: 'lucia.pendiente@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'PENDIENTE', origenRegistro: 'AUTOREGISTRO', creadoEn: '2026-11-10T09:00:00Z' },
       { id: '12', nombreCompleto: 'Rosa Rechazada', correo: 'rosa.rechazada@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'RECHAZADA', origenRegistro: 'AUTOREGISTRO' },
+      { id: '13', nombreCompleto: 'Mario Pendiente', correo: 'mario.pendiente@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'PENDIENTE', origenRegistro: 'AUTOREGISTRO', creadoEn: '2026-11-12T15:30:00Z' },
+      { id: '14', nombreCompleto: 'Iris Inactiva', correo: 'iris.inactiva@universidad.example', rol: 'DOCENTE', areaId: null, activo: false },
     ].map((user) => ({
       telefono: null,
       activo: true,
@@ -119,6 +121,11 @@ function initialData() {
       ...user,
     })),
     requests: initialRequests(),
+    // Políticas SLA: una por categoría (Conectividad) y una por prioridad (Alta).
+    slaPolicies: [
+      { id: '1', categoriaId: '3', prioridadId: null, horasObjetivo: 24, horasAviso: 4, vigenteDesde: '2026-11-01T05:00:00Z', vigenteHasta: null, activo: true },
+      { id: '2', categoriaId: null, prioridadId: '5', horasObjetivo: 8, horasAviso: 2, vigenteDesde: '2026-11-01T05:00:00Z', vigenteHasta: null, activo: true },
+    ],
     // Sesiones simuladas: el navegador tiene una sola cookie `refresh_token`.
     sessions: [],
     refreshCookie: null,
