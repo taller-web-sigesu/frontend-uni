@@ -112,3 +112,10 @@
 .detail-header__error { flex-basis: 100%; margin: 0; }
 .inline-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-sm); }
 .inline-form .field { flex: 1 1 220px; margin-bottom: 0; }
+.filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.filters .field { flex: 1 1 200px; margin-bottom: 0; }
+.home-section { margin-bottom: var(--space-xl); }
+.home-section__header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
+.home-section__header h2 { margin: 0; }
+.home-section__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); }
+.home-section__actions > a:not(.btn) { color: var(--color-info); font-size: var(--font-size-label); }
