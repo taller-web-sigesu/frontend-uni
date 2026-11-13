@@ -61,7 +61,7 @@ src/mocks/handlers/requests.js
 
 ---
 
-### Tarea 1: Adaptador de solicitudes y mocks
+### Task 1: Adaptador de solicitudes y mocks
 
 **Archivos:**
 - Crear: `src/features/requests/requestsApi.js`, `src/mocks/handlers/requests.js`
@@ -116,7 +116,7 @@ git commit -m "feat(frontend): adaptador de solicitudes y mocks por rol"
 
 ---
 
-### Tarea 2: Regla de acciones y validación de archivos
+### Task 2: Regla de acciones y validación de archivos
 
 **Archivos:**
 - Crear: `src/features/requests/availableActions.js`, `src/features/requests/attachmentRules.js`
@@ -174,7 +174,7 @@ git commit -m "feat(frontend): regla de acciones por rol y validación local de 
 
 ---
 
-### Tarea 3: Mis solicitudes y registro con evidencias
+### Task 3: Mis solicitudes y registro con evidencias
 
 **Archivos:**
 - Crear: `src/features/requests/MyRequestsPage.jsx`, `src/features/requests/NewRequestPage.jsx`, `src/features/requests/index.js`
@@ -224,7 +224,7 @@ git commit -m "feat(frontend): mis solicitudes y registro de solicitud con evide
 
 ---
 
-### Tarea 4: Detalle, historial y comentarios
+### Task 4: Detalle, historial y comentarios
 
 **Archivos:**
 - Crear: `src/features/requests/RequestDetailPage.jsx`, `detail/RequestSummary.jsx`, `detail/HistoryTimeline.jsx`, `detail/CommentsSection.jsx`
@@ -272,7 +272,7 @@ git commit -m "feat(frontend): detalle de solicitud con historial y comentarios"
 
 ---
 
-### Tarea 5: Evidencias en el detalle
+### Task 5: Evidencias en el detalle
 
 **Archivos:**
 - Crear: `src/features/requests/detail/AttachmentsSection.jsx`
@@ -316,7 +316,7 @@ git commit -m "feat(frontend): evidencias en el detalle con carga, descarga y el
 
 ---
 
-### Tarea 6: Acciones de técnico y supervisor, y auditoría
+### Task 6: Acciones de técnico y supervisor, y auditoría
 
 **Archivos:**
 - Crear: `src/features/management/detail/TransitionActions.jsx`, `AssignDialog.jsx`, `PriorityControl.jsx`, `AuditPanel.jsx`
@@ -364,7 +364,7 @@ git commit -m "feat(frontend): transiciones, asignación, prioridad y auditoría
 
 ---
 
-### Tarea 7: Encuesta de satisfacción
+### Task 7: Encuesta de satisfacción
 
 **Archivos:**
 - Crear: `src/features/requests/detail/SurveySection.jsx`
@@ -404,7 +404,7 @@ git commit -m "feat(frontend): encuesta de satisfacción en solicitudes cerradas
 
 ---
 
-### Tarea 8: Bandeja del técnico, gestión de área e inicio
+### Task 8: Bandeja del técnico, gestión de área e inicio
 
 **Archivos:**
 - Crear: `src/features/management/TechnicianInboxPage.jsx`, `src/features/management/AreaManagementPage.jsx`, `src/features/management/index.js`

@@ -52,7 +52,7 @@ vite.config.js                  # VITE_PROXY_TARGET
 
 ---
 
-### Tarea 1: Playwright en modo simulado
+### Task 1: Playwright en modo simulado
 
 **Archivos:**
 - Crear: `playwright.config.js`, `e2e/*.spec.js`, `e2e/fixtures.js`
@@ -104,7 +104,7 @@ git commit -m "test(frontend): recorridos E2E por rol y accesibilidad en modo si
 
 ---
 
-### Tarea 2: CI y recorrido contra el backend real
+### Task 2: CI y recorrido contra el backend real
 
 **Archivos:**
 - Crear: `.github/workflows/ci.yml`
@@ -151,7 +151,7 @@ git commit -m "ci(frontend): lint, pruebas, build y E2E simulado; recorrido real
 
 ---
 
-### Tarea 3: Matriz por HU, revisión visual e instrucciones
+### Task 3: Matriz por HU, revisión visual e instrucciones
 
 **Archivos:**
 - Crear: `docs/verificacion/matriz-hu.md`, `docs/verificacion/revision-visual.md`

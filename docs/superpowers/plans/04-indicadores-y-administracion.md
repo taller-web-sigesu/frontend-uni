@@ -63,7 +63,7 @@ src/mocks/handlers/dashboard.js, admin.js
 
 ---
 
-### Tarea 1: Adaptadores y mocks de dashboard y administración
+### Task 1: Adaptadores y mocks de dashboard y administración
 
 **Archivos:**
 - Crear: `src/features/dashboard/dashboardApi.js`, `src/features/administration/usersApi.js`, `catalogsAdminApi.js`, `slaApi.js`, `src/mocks/handlers/dashboard.js`, `src/mocks/handlers/admin.js`
@@ -117,7 +117,7 @@ git commit -m "feat(frontend): adaptadores y mocks de indicadores y administraci
 
 ---
 
-### Tarea 2: Tablero de indicadores y exportación
+### Task 2: Tablero de indicadores y exportación
 
 **Archivos:**
 - Crear: `src/features/dashboard/DashboardPage.jsx`, `DateRangeFilter.jsx`, `KpiCard.jsx`, `BarList.jsx`, `src/features/dashboard/index.js`
@@ -167,7 +167,7 @@ git commit -m "feat(frontend): tablero de indicadores con rango aplicado y expor
 
 ---
 
-### Tarea 3: Administración de usuarios
+### Task 3: Administración de usuarios
 
 **Archivos:**
 - Crear: `src/features/administration/users/UsersPage.jsx`, `UserFormDialog.jsx`, `src/features/administration/index.js`
@@ -212,7 +212,7 @@ git commit -m "feat(frontend): administración de usuarios con alta, edición y 
 
 ---
 
-### Tarea 4: Cuentas pendientes y restablecimiento de contraseña
+### Task 4: Cuentas pendientes y restablecimiento de contraseña
 
 **Archivos:**
 - Crear: `src/features/administration/users/PendingAccountsPanel.jsx`, `ResetPasswordDialog.jsx`
@@ -259,7 +259,7 @@ git commit -m "feat(frontend): aprobación de cuentas y restablecimiento de cont
 
 ---
 
-### Tarea 5: Catálogos
+### Task 5: Catálogos
 
 **Archivos:**
 - Crear: `src/features/administration/catalogs/CatalogsPage.jsx`, `CatalogTable.jsx`, `RequestStatusesTable.jsx`
@@ -305,7 +305,7 @@ git commit -m "feat(frontend): administración de áreas, categorías, prioridad
 
 ---
 
-### Tarea 6: Políticas SLA e inicio del administrador
+### Task 6: Políticas SLA e inicio del administrador
 
 **Archivos:**
 - Crear: `src/features/administration/sla/SlaPoliciesPage.jsx`

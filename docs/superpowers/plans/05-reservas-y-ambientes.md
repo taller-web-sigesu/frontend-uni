@@ -57,7 +57,7 @@ src/mocks/handlers/reservations.js
 
 ---
 
-### Tarea 1: Adaptadores, reglas y mocks de reservas
+### Task 1: Adaptadores, reglas y mocks de reservas
 
 **Archivos:**
 - Crear: `src/features/reservations/reservationsApi.js`, `reservationRules.js`, `useSpaceNames.js`, `src/features/administration/spacesAdminApi.js`, `src/mocks/handlers/reservations.js`
@@ -111,7 +111,7 @@ git commit -m "feat(frontend): adaptadores, reglas y mocks de reservas"
 
 ---
 
-### Tarea 2: Nueva reserva
+### Task 2: Nueva reserva
 
 **Archivos:**
 - Crear: `src/features/reservations/NewReservationPage.jsx`, `src/features/reservations/index.js`
@@ -159,7 +159,7 @@ git commit -m "feat(frontend): registro de reserva con disponibilidad y conflict
 
 ---
 
-### Tarea 3: Mis reservas, detalle e inicio
+### Task 3: Mis reservas, detalle e inicio
 
 **Archivos:**
 - Crear: `src/features/reservations/MyReservationsPage.jsx`, `ReservationDetailPage.jsx`
@@ -205,7 +205,7 @@ git commit -m "feat(frontend): mis reservas, detalle con cancelación y vista pr
 
 ---
 
-### Tarea 4: Aprobación de reservas
+### Task 4: Aprobación de reservas
 
 **Archivos:**
 - Crear: `src/features/reservations/ApprovalPage.jsx`
@@ -247,7 +247,7 @@ git commit -m "feat(frontend): aprobación y rechazo de reservas sin autoaprobac
 
 ---
 
-### Tarea 5: Administración de ambientes, horarios y política
+### Task 5: Administración de ambientes, horarios y política
 
 **Archivos:**
 - Crear: `src/features/administration/spaces/SpacesAdminPage.jsx`, `ScheduleEditor.jsx`, `PolicyForm.jsx`

@@ -93,7 +93,7 @@ src/app/router.jsx               # createAppRouter()
 
 ---
 
-### Tarea 1: Herramientas de prueba y lint
+### Task 1: Herramientas de prueba y lint
 
 **Archivos:**
 - Modificar: `package.json`, `vite.config.js`
@@ -145,7 +145,7 @@ git commit -m "chore(frontend): configurar Vitest, Testing Library, MSW y ESLint
 
 ---
 
-### Tarea 2: Tokens y componentes comunes
+### Task 2: Tokens y componentes comunes
 
 **Archivos:**
 - Crear: `src/styles/tokens.css`, `src/styles/base.css`, `src/components/ui/*.jsx`, `src/components/ui/index.js`
@@ -202,7 +202,7 @@ git commit -m "feat(frontend): tokens de DESIGN.md y componentes comunes accesib
 
 ---
 
-### Tarea 3: Cliente HTTP y errores normalizados
+### Task 3: Cliente HTTP y errores normalizados
 
 **Archivos:**
 - Crear: `src/services/apiError.js`, `src/services/http.js`
@@ -259,7 +259,7 @@ git commit -m "feat(frontend): cliente HTTP central con problem+json y reintento
 
 ---
 
-### Tarea 4: Lecturas, escrituras y formato
+### Task 4: Lecturas, escrituras y formato
 
 **Archivos:**
 - Crear: `src/services/useResource.js`, `src/services/useSubmit.js`, `src/services/format.js`, `src/services/download.js`
@@ -315,7 +315,7 @@ git commit -m "feat(frontend): hooks de lectura y escritura y formato en hora de
 
 ---
 
-### Tarea 5: API simulada con MSW
+### Task 5: API simulada con MSW
 
 **Archivos:**
 - Crear: `src/mocks/db.js`, `src/mocks/handlers/index.js`, `src/mocks/handlers/status.js`, `src/mocks/handlers/catalogs.js`, `src/mocks/browser.js`, `src/mocks/server.js`, `src/services/pendingContract.js`, `src/services/catalogs.js`, `.env.mock`
@@ -368,7 +368,7 @@ git commit -m "feat(frontend): API simulada con MSW sobre el mismo cliente HTTP"
 
 ---
 
-### Tarea 6: Router, layouts y navegación por rol
+### Task 6: Router, layouts y navegación por rol
 
 **Archivos:**
 - Crear: `src/app/routes.jsx`, `src/app/navigation.js`, `src/app/router.jsx`, `src/components/layout/AppShell.jsx`, `Sidebar.jsx`, `Topbar.jsx`, `PublicLayout.jsx`, `src/app/NotFoundPage.jsx`, `src/app/PlaceholderPage.jsx`, `src/test/render.jsx`, `src/features/home/HomePage.jsx`, `RequestsPreview.jsx`, `AdminShortcuts.jsx`, `ReservationsPreview.jsx`, `src/features/home/index.js`

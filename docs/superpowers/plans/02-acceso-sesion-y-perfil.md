@@ -61,7 +61,7 @@ src/mocks/handlers/auth.js
 
 ---
 
-### Tarea 1: Adaptador de autenticación y mocks
+### Task 1: Adaptador de autenticación y mocks
 
 **Archivos:**
 - Crear: `src/features/auth/authApi.js`, `src/features/auth/passwordPolicy.js`, `src/mocks/handlers/auth.js`
@@ -126,7 +126,7 @@ git commit -m "feat(frontend): adaptador de autenticación, política de contras
 
 ---
 
-### Tarea 2: Coordinador de renovación
+### Task 2: Coordinador de renovación
 
 **Archivos:**
 - Crear: `src/features/auth/refreshCoordinator.js`
@@ -170,7 +170,7 @@ git commit -m "feat(frontend): renovación única por pestaña y serializada ent
 
 ---
 
-### Tarea 3: Proveedor de sesión
+### Task 3: Proveedor de sesión
 
 **Archivos:**
 - Crear: `src/features/auth/SessionProvider.jsx`
@@ -220,7 +220,7 @@ git commit -m "feat(frontend): sesión en memoria con restauración, renovación
 
 ---
 
-### Tarea 4: Guardas de ruta y destino por rol
+### Task 4: Guardas de ruta y destino por rol
 
 **Archivos:**
 - Crear: `src/features/auth/guards.jsx`, `src/app/ForbiddenPage.jsx`
@@ -268,7 +268,7 @@ git commit -m "feat(frontend): guardas de sesión y rol con destino por rol"
 
 ---
 
-### Tarea 5: Pantallas de ingreso, registro, cambio obligatorio y perfil
+### Task 5: Pantallas de ingreso, registro, cambio obligatorio y perfil
 
 **Archivos:**
 - Crear: `src/features/auth/LoginPage.jsx`, `RegisterPage.jsx`, `ChangePasswordPage.jsx`, `ProfilePage.jsx`, `PasswordForm.jsx`, `src/features/auth/index.js` (exportaciones para `lazy`)
