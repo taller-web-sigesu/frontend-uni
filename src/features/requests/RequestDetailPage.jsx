@@ -11,6 +11,7 @@ import { TransitionActions } from '../management/detail/TransitionActions.jsx';
 import { availableActions } from './availableActions.js';
 import { AttachmentsSection } from './detail/AttachmentsSection.jsx';
 import { CommentsSection } from './detail/CommentsSection.jsx';
+import { SurveySection } from './detail/SurveySection.jsx';
 import { HistoryTimeline } from './detail/HistoryTimeline.jsx';
 import { peopleIndex } from './detail/people.js';
 import { RequestSummary, SlaBadge } from './detail/RequestSummary.jsx';
@@ -134,6 +135,7 @@ export default function RequestDetailPage() {
         <div className="detail-grid__main">
           <RequestSummary solicitud={solicitud} categoryName={categoryName} />
           <AttachmentsSection requestId={solicitud.id} canAttach={actions.has('ADJUNTAR')} />
+          {actions.has('RESPONDER_ENCUESTA') && <SurveySection requestId={solicitud.id} />}
           {actions.has('CAMBIAR_PRIORIDAD') && (
             <PriorityControl solicitud={solicitud} onChanged={handleChanged} onConflict={setConflict} />
           )}
