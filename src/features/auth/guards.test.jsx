@@ -38,7 +38,7 @@ test('primer ingreso solo permite /cambiar-contrasena', async () => {
     session: { user: userById('10'), mustChangePassword: true },
   });
   await waitFor(() => expect(router.state.location.pathname).toBe('/cambiar-contrasena'));
-  expect(await screen.findByRole('heading', { name: 'Cambiar contraseña' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: 'Cambia tu contraseña' })).toBeInTheDocument();
 });
 
 test('bloquea un rol no autorizado', async () => {

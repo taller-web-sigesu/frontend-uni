@@ -9,6 +9,7 @@ const SOLICITANTES = [ESTUDIANTE, DOCENTE];
 
 // Cada fase reemplaza `placeholder` por el import de su feature.
 const placeholder = () => import('./PlaceholderPage.jsx');
+const auth = (name) => () => import('../features/auth/index.js').then((m) => ({ default: m[name] }));
 const home = () => import('../features/home/index.js').then((m) => ({ default: m.HomePage }));
 
 /**
@@ -16,12 +17,12 @@ const home = () => import('../features/home/index.js').then((m) => ({ default: m
  * El guarda de la fase 02 usa `roles` para bloquear enlaces directos.
  */
 export const ROUTES = [
-  { path: '/login', roles: null, title: 'Iniciar sesión', lazy: placeholder },
-  { path: '/registro', roles: null, title: 'Crear cuenta', lazy: placeholder },
+  { path: '/login', roles: null, title: 'Iniciar sesión', lazy: auth('LoginPage') },
+  { path: '/registro', roles: null, title: 'Crear cuenta', lazy: auth('RegisterPage') },
   // Sin rol pero con sesión (también la de primer ingreso).
-  { path: '/cambiar-contrasena', roles: null, requiresSession: true, title: 'Cambiar contraseña', lazy: placeholder },
+  { path: '/cambiar-contrasena', roles: null, requiresSession: true, title: 'Cambiar contraseña', lazy: auth('ChangePasswordPage') },
   { path: '/inicio', roles: [ESTUDIANTE, DOCENTE, TECNICO, ADMINISTRADOR], title: 'Inicio', lazy: home },
-  { path: '/perfil', roles: ALL_ROLES, title: 'Perfil', lazy: placeholder },
+  { path: '/perfil', roles: ALL_ROLES, title: 'Perfil', lazy: auth('ProfilePage') },
   { path: '/solicitudes', roles: SOLICITANTES, title: 'Mis solicitudes', lazy: placeholder },
   { path: '/solicitudes/nueva', roles: SOLICITANTES, title: 'Registrar solicitud', lazy: placeholder },
   { path: '/solicitudes/:id', roles: [...SOLICITANTES, TECNICO, SUPERVISOR], title: 'Detalle y seguimiento de solicitud', lazy: placeholder },

@@ -1,4 +1,5 @@
-import { Navigate, useLocation } from 'react-router';
+import { Navigate, matchPath, useLocation } from 'react-router';
+import { ROUTES } from '../../app/routes.jsx';
 import { Skeleton } from '../../components/ui/index.js';
 import ForbiddenPage from '../../app/ForbiddenPage.jsx';
 import { homePathFor } from './homePath.js';
@@ -35,12 +36,31 @@ export function RequireRole({ roles, children }) {
   return children;
 }
 
-/** /login y /registro: con sesión activa llevan al inicio del rol. */
+/** true si `pathname` corresponde a una ruta con rol que `rol` puede ver. */
+export function canAccess(pathname, rol) {
+  const route = ROUTES.find((r) => r.roles && matchPath({ path: r.path, end: true }, pathname));
+  return Boolean(route?.roles.includes(rol));
+}
+
+/** Destino tras ingresar: cambio obligatorio, la página pedida si el rol la permite, o su inicio. */
+export function destinationAfterLogin({ user, mustChangePassword }, from) {
+  if (mustChangePassword) return CHANGE_PASSWORD_PATH;
+  if (from?.pathname && canAccess(from.pathname, user.rol)) {
+    return `${from.pathname}${from.search || ''}${from.hash || ''}`;
+  }
+  return homePathFor(user.rol);
+}
+
+/**
+ * /login y /registro: con sesión activa redirigen. Al terminar el ingreso es
+ * este guarda (no la pantalla) quien navega, con el `from` que dejó RequireSession.
+ */
 export function PublicOnly({ children }) {
-  const { status, user, mustChangePassword } = useSession();
-  if (status === 'restoring') return <PageLoading />;
-  if (status === 'authenticated') {
-    return <Navigate to={mustChangePassword ? CHANGE_PASSWORD_PATH : homePathFor(user.rol)} replace />;
+  const session = useSession();
+  const location = useLocation();
+  if (session.status === 'restoring') return <PageLoading />;
+  if (session.status === 'authenticated') {
+    return <Navigate to={destinationAfterLogin(session, location.state?.from)} replace />;
   }
   return children;
 }

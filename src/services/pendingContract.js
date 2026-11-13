@@ -28,3 +28,15 @@ export function priorityName(id) {
 export function surveyAnswered(request) {
   return typeof request?.encuestaRespondida === 'boolean' ? request.encuestaRespondida : null;
 }
+
+/**
+ * Nombre del área. El catálogo de áreas solo lo expone /admin/catalogs/areas
+ * (administrador): en modo real se muestra «Área <id>».
+ */
+export function areaName(id) {
+  if (isMockMode()) {
+    const area = db.areas.find((a) => a.id === id);
+    if (area) return area.nombre;
+  }
+  return `Área ${id}`;
+}

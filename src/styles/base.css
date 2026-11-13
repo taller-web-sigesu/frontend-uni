@@ -94,3 +94,21 @@ a { color: inherit; }
 .pagination { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-md); padding: var(--space-md) 0; }
 .pagination__status { color: var(--color-ink-muted); }
 .data-table__row--link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: -2px; }
+
+/* Avisos y errores de formulario */
+.notice { margin: 0 0 var(--space-md); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); border: 1px solid currentColor; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+.notice p { margin: 0; }
+.notice--success { color: var(--color-success); background: var(--color-surface); }
+.notice--warning { color: var(--color-warning); background: var(--color-surface); }
+.form-error { margin: 0 0 var(--space-md); color: var(--color-error); }
+.form-actions { display: flex; justify-content: flex-end; }
+.link-button { font: inherit; font-size: var(--font-size-label); background: none; border: none; padding: 2px 0; color: var(--color-info); cursor: pointer; }
+.link-button:hover { text-decoration: underline; }
+
+/* Tarjetas y listas de datos */
+.card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); }
+.card__lead { margin: 0 0 var(--space-md); color: var(--color-ink-muted); font-size: var(--font-size-label); }
+.data-list { margin: 0; display: grid; gap: var(--space-md); }
+.data-list dt { font-size: var(--font-size-label); color: var(--color-ink-muted); text-transform: uppercase; letter-spacing: 0.02em; }
+.data-list dd { margin: 2px 0 0; }
+.password-rules { margin: 0 0 var(--space-sm); padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-lg); background: var(--color-surface-variant); border-radius: var(--radius-md); color: var(--color-ink-muted); font-size: var(--font-size-label); }
