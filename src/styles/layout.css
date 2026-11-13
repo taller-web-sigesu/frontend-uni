@@ -109,3 +109,6 @@
 @media (max-width: 480px) {
   .data-list--grid { grid-template-columns: minmax(0, 1fr); }
 }
+.detail-header__error { flex-basis: 100%; margin: 0; }
+.inline-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-sm); }
+.inline-form .field { flex: 1 1 220px; margin-bottom: 0; }

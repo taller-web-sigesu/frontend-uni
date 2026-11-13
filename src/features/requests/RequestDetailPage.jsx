@@ -1,9 +1,13 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router';
 import { useCurrentUser } from '../../app/userContext.js';
 import { EmptyState, ErrorState, Skeleton } from '../../components/ui/index.js';
 import { useCatalogLabels } from '../../services/catalogs.js';
 import { useResource } from '../../services/useResource.js';
+import { AssignDialog } from '../management/detail/AssignDialog.jsx';
+import { AuditPanel } from '../management/detail/AuditPanel.jsx';
+import { PriorityControl } from '../management/detail/PriorityControl.jsx';
+import { TransitionActions } from '../management/detail/TransitionActions.jsx';
 import { availableActions } from './availableActions.js';
 import { AttachmentsSection } from './detail/AttachmentsSection.jsx';
 import { CommentsSection } from './detail/CommentsSection.jsx';
@@ -58,6 +62,14 @@ export default function RequestDetailPage() {
   const { categoryName, priorityName } = useCatalogLabels();
   const { data, error, status, reload, setData } = useResource((signal) => loadDetail(id, signal), [id]);
   const back = backLinkFor(user?.rol);
+  const [conflict, setConflict] = useState(null);
+  const [changes, setChanges] = useState(0);
+
+  // Tras una acción (o un 409) se recarga todo: las acciones se recalculan con el estado nuevo.
+  const handleChanged = useCallback(() => {
+    setChanges((count) => count + 1);
+    reload();
+  }, [reload]);
 
   const addComment = useCallback(
     (comment) => setData((prev) => ({ ...prev, comments: [...prev.comments, comment] })),
@@ -103,6 +115,7 @@ export default function RequestDetailPage() {
       <h1 className="page__kicker">Detalle y seguimiento de solicitud</h1>
       <CreatedNotice state={location.state} />
       {status === 'error' && <ErrorState error={error} onRetry={reload} />}
+      {conflict && <p className="notice notice--warning" role="status">{conflict}</p>}
       <header className="detail-header">
         <div className="detail-header__title">
           <h2>{solicitud.codigo}</h2>
@@ -110,11 +123,23 @@ export default function RequestDetailPage() {
           <span className="badge badge--neutral">Prioridad: {priorityName(solicitud.prioridadId)}</span>
           <SlaBadge sla={solicitud.sla} />
         </div>
+        <div className="detail-header__actions">
+          <TransitionActions solicitud={solicitud} actions={actions} onChanged={handleChanged} onConflict={setConflict} />
+          {(actions.has('ASIGNAR') || actions.has('REASIGNAR')) && (
+            <AssignDialog solicitud={solicitud} onAssigned={handleChanged} onConflict={setConflict} />
+          )}
+        </div>
       </header>
       <div className="detail-grid">
         <div className="detail-grid__main">
           <RequestSummary solicitud={solicitud} categoryName={categoryName} />
           <AttachmentsSection requestId={solicitud.id} canAttach={actions.has('ADJUNTAR')} />
+          {actions.has('CAMBIAR_PRIORIDAD') && (
+            <PriorityControl solicitud={solicitud} onChanged={handleChanged} onConflict={setConflict} />
+          )}
+          {actions.has('VER_AUDITORIA') && (
+            <AuditPanel requestId={solicitud.id} personName={personName} reloadKey={changes} />
+          )}
         </div>
         <aside className="card detail-grid__side">
           <HistoryTimeline items={history} personName={personName} />
