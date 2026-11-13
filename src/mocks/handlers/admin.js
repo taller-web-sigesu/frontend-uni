@@ -219,7 +219,7 @@ function duplicateOf(kind, record, exceptId) {
     && db[kind].some((item) => item.id !== exceptId && same(item[field], record[field])));
 }
 
-const duplicate = (field) => problem(409, 'DUPLICADO', `Ya existe un registro con ese ${field}.`);
+const duplicate = () => problem(409, 'DUPLICADO', 'Ya existe un registro con ese código o nombre.');
 
 const catalogHandlers = Object.keys(CATALOGS).flatMap((kind) => [
   http.get(`/api/v1/admin/catalogs/${kind}`, ({ request }) => {

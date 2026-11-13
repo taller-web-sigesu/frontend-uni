@@ -158,3 +158,5 @@
 .section-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
 .row-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
 .mono-soft { color: var(--color-ink-muted); overflow-wrap: anywhere; }
+.color-chip { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.color-chip__swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--color-border); }

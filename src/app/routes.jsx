@@ -38,7 +38,7 @@ export const ROUTES = [
   { path: '/reservas/aprobacion', roles: [SUPERVISOR, ADMINISTRADOR], title: 'Aprobación de reservas', lazy: placeholder },
   { path: '/reservas/:id', roles: ALL_ROLES, title: 'Detalle de reserva', lazy: placeholder },
   { path: '/admin/usuarios', roles: [ADMINISTRADOR], title: 'Administración de usuarios', lazy: administration('UsersPage') },
-  { path: '/admin/catalogos', roles: [ADMINISTRADOR], title: 'Catálogos', lazy: placeholder },
+  { path: '/admin/catalogos', roles: [ADMINISTRADOR], title: 'Catálogos', lazy: administration('CatalogsPage') },
   { path: '/admin/sla', roles: [ADMINISTRADOR], title: 'Políticas SLA', lazy: placeholder },
   { path: '/admin/ambientes', roles: [ADMINISTRADOR], title: 'Administración de ambientes', lazy: placeholder },
 ];
