@@ -39,6 +39,7 @@
 .page__header { margin-bottom: var(--space-lg); }
 .page__header h1 { margin-bottom: var(--space-xs); }
 .page__lead { margin: 0; color: var(--color-ink-muted); }
+.page__header--actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--space-md); }
 .profile-grid { display: grid; gap: var(--space-lg); grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: start; }
 
 .public-layout { min-height: 100vh; display: grid; place-items: center; padding: var(--space-xl) var(--space-md); }

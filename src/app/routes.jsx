@@ -10,6 +10,7 @@ const SOLICITANTES = [ESTUDIANTE, DOCENTE];
 // Cada fase reemplaza `placeholder` por el import de su feature.
 const placeholder = () => import('./PlaceholderPage.jsx');
 const auth = (name) => () => import('../features/auth/index.js').then((m) => ({ default: m[name] }));
+const requests = (name) => () => import('../features/requests/index.js').then((m) => ({ default: m[name] }));
 const home = () => import('../features/home/index.js').then((m) => ({ default: m.HomePage }));
 
 /**
@@ -23,8 +24,8 @@ export const ROUTES = [
   { path: '/cambiar-contrasena', roles: null, requiresSession: true, title: 'Cambiar contraseña', lazy: auth('ChangePasswordPage') },
   { path: '/inicio', roles: [ESTUDIANTE, DOCENTE, TECNICO, ADMINISTRADOR], title: 'Inicio', lazy: home },
   { path: '/perfil', roles: ALL_ROLES, title: 'Perfil', lazy: auth('ProfilePage') },
-  { path: '/solicitudes', roles: SOLICITANTES, title: 'Mis solicitudes', lazy: placeholder },
-  { path: '/solicitudes/nueva', roles: SOLICITANTES, title: 'Registrar solicitud', lazy: placeholder },
+  { path: '/solicitudes', roles: SOLICITANTES, title: 'Mis solicitudes', lazy: requests('MyRequestsPage') },
+  { path: '/solicitudes/nueva', roles: SOLICITANTES, title: 'Registrar solicitud', lazy: requests('NewRequestPage') },
   { path: '/solicitudes/:id', roles: [...SOLICITANTES, TECNICO, SUPERVISOR], title: 'Detalle y seguimiento de solicitud', lazy: placeholder },
   { path: '/bandeja', roles: [TECNICO], title: 'Mis asignaciones', lazy: placeholder },
   { path: '/gestion', roles: [SUPERVISOR], title: 'Gestión de área', lazy: placeholder },
