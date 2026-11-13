@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { ROLE_LABELS } from '../../services/format.js';
 import { Button } from '../ui/index.js';
 
@@ -6,10 +7,10 @@ export function Topbar({ user, onLogout, menuButton }) {
     <header className="topbar">
       <div className="topbar__start">
         {menuButton}
-        <a className="brand" href="/" aria-label="Universidad Actúa, inicio">
+        <Link className="brand" to="/" aria-label="Universidad Actúa, inicio">
           <span className="brand__mark" aria-hidden="true">U</span>
           <span className="brand__name">Universidad <strong>Actúa</strong></span>
-        </a>
+        </Link>
       </div>
       <div className="topbar__user">
         <span className="topbar__identity">

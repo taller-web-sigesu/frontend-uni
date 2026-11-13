@@ -1,6 +1,7 @@
 import { http } from 'msw';
 import { renderHook, waitFor } from '@testing-library/react';
 import { server } from './server.js';
+import { takeUnhandledRequests } from '../test/msw.js';
 import { db, resetDb, problem, paginate } from './db.js';
 import { request } from '../services/http.js';
 import { ApiError } from '../services/apiError.js';
@@ -49,8 +50,9 @@ test('los usuarios de demostración replican la guía de integración', () => {
   db.users.forEach((u) => expect(typeof u.id).toBe('string'));
 });
 
-test('una petición sin handler falla la prueba', async () => {
+test('una petición sin handler queda registrada para hacer fallar la prueba', async () => {
   await expect(request('/no-existe')).rejects.toBeInstanceOf(ApiError);
+  expect(takeUnhandledRequests()).toEqual(['GET /api/v1/no-existe']);
 });
 
 test('listEnabledCategories devuelve solo categorías activas', async () => {

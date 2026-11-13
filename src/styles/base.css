@@ -93,3 +93,4 @@ a { color: inherit; }
 /* Paginación */
 .pagination { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-md); padding: var(--space-md) 0; }
 .pagination__status { color: var(--color-ink-muted); }
+.data-table__row--link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: -2px; }

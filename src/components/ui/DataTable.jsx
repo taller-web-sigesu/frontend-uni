@@ -14,6 +14,14 @@ export function DataTable({ columns, rows, getRowKey, onRowClick, caption }) {
               key={getRowKey(row)}
               className={onRowClick ? 'data-table__row--link' : undefined}
               onClick={onRowClick ? () => onRowClick(row) : undefined}
+              tabIndex={onRowClick ? 0 : undefined}
+              onKeyDown={onRowClick ? (event) => {
+                if (event.target !== event.currentTarget) return;
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onRowClick(row);
+                }
+              } : undefined}
             >
               {columns.map((column) => (
                 <td key={column.key} data-label={column.header}>

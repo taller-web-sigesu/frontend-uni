@@ -83,3 +83,24 @@ test('Pagination calcula páginas y deshabilita extremos', async () => {
   await user.click(screen.getByRole('button', { name: 'Siguiente' }));
   expect(onChange).toHaveBeenCalledWith(1);
 });
+
+test('DataTable con onRowClick abre la fila con el teclado', async () => {
+  const user = userEvent.setup();
+  const onRowClick = vi.fn();
+  render(
+    <DataTable
+      caption="Solicitudes"
+      columns={[{ key: 'codigo', header: 'Código' }]}
+      rows={[{ id: '1', codigo: 'SOL-1' }]}
+      getRowKey={(r) => r.id}
+      onRowClick={onRowClick}
+    />,
+  );
+  const row = screen.getByRole('row', { name: /SOL-1/ });
+  row.focus();
+  expect(row).toHaveFocus();
+  await user.keyboard('{Enter}');
+  await user.keyboard(' ');
+  expect(onRowClick).toHaveBeenCalledTimes(2);
+  expect(onRowClick).toHaveBeenCalledWith({ id: '1', codigo: 'SOL-1' });
+});

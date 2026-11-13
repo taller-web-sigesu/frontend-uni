@@ -4,6 +4,14 @@ import { AppShell } from '../components/layout/AppShell.jsx';
 import { PublicLayout } from '../components/layout/PublicLayout.jsx';
 import { useCurrentUser } from './userContext.js';
 import NotFoundPage from './NotFoundPage.jsx';
+import { navigationFor } from './navigation.js';
+
+/** La raíz lleva a la primera pantalla del menú del rol (el supervisor no tiene /inicio). */
+function RootRedirect() {
+  const user = useCurrentUser();
+  if (!user) return <Navigate to="/login" replace />;
+  return <Navigate to={navigationFor(user.rol)[0].to} replace />;
+}
 
 function AuthenticatedLayout({ onLogout }) {
   const user = useCurrentUser();
@@ -35,7 +43,7 @@ function toRouteObject(route, guard) {
 /** Árbol de rutas compartido por el router del navegador y el de las pruebas. */
 export function buildRouteObjects({ routes = ROUTES, guard, onLogout } = {}) {
   return [
-    { path: '/', element: <Navigate to="/inicio" replace /> },
+    { path: '/', element: <RootRedirect /> },
     {
       element: <PublicLayout />,
       children: routes.filter((r) => !r.roles).map((r) => toRouteObject(r, guard)),

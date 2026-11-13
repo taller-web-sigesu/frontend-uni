@@ -71,3 +71,19 @@ test('una ruta todavía no implementada muestra su título', async () => {
   renderWithRouter(null, { route: '/solicitudes', user: ana });
   expect(await screen.findByRole('heading', { name: 'Mis solicitudes' })).toBeInTheDocument();
 });
+
+test('la raíz lleva a la primera pantalla permitida del rol', async () => {
+  mockViewport(false);
+  const supervisora = { id: '2', nombreCompleto: 'Supervisora TI Demo', rol: 'SUPERVISOR', areaId: '1' };
+  const { router } = renderWithRouter(null, { route: '/', user: supervisora });
+  expect(await screen.findByRole('heading', { name: 'Indicadores' })).toBeInTheDocument();
+  expect(router.state.location.pathname).toBe('/indicadores');
+});
+
+test('el logo navega dentro de la aplicación sin recargar', () => {
+  mockViewport(false);
+  renderWithRouter(<AppShell user={ana}><p>Contenido</p></AppShell>, { route: '/solicitudes' });
+  const logo = screen.getByRole('link', { name: 'Universidad Actúa, inicio' });
+  expect(logo).toHaveAttribute('href', '/');
+  expect(logo).toHaveAttribute('data-discover', 'true');
+});
