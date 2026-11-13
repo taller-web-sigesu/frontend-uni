@@ -11,6 +11,9 @@ const limaClock = new Intl.DateTimeFormat('en-GB', {
   hourCycle: 'h23',
 });
 
+/** Texto de HU para un 409 FRANJA_OCUPADA (alta o aprobación). */
+export const SLOT_CONFLICT = 'La franja elegida ya no está disponible. Elige otra.';
+
 const DECIDERS = ['SUPERVISOR', 'ADMINISTRADOR'];
 const CANCELLABLE = ['PENDIENTE', 'CONFIRMADA'];
 

@@ -5,11 +5,11 @@ import { todayInLima } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { useSubmit } from '../../services/useSubmit.js';
 import { dayLabel, slotLabel } from './reservationColumns.jsx';
-import { slotFits } from './reservationRules.js';
+import { SlotList } from './SlotList.jsx';
+import { SLOT_CONFLICT, slotFits } from './reservationRules.js';
 import { createReservation, getAvailability, listSpaces } from './reservationsApi.js';
 import { useSpaceNames } from './useSpaceNames.js';
 
-export const SLOT_CONFLICT = 'La franja elegida ya no está disponible. Elige otra.';
 export const NO_AVAILABILITY = 'No hay disponibilidad para la fecha seleccionada';
 const EMPTY_FORM = { horaInicio: '', horaFin: '', motivo: '', numAsistentes: '' };
 
@@ -58,23 +58,6 @@ function SpaceList({ data, selectedId, onSelect }) {
           </li>
         );
       })}
-    </ul>
-  );
-}
-
-/** Franjas libres y ocupadas en orden, como texto (no solo color). */
-function SlotList({ availability }) {
-  const slots = [
-    ...availability.libres.map((s) => ({ ...s, libre: true })),
-    ...availability.ocupadas.map((s) => ({ ...s, libre: false })),
-  ].sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
-  return (
-    <ul className="slot-list" aria-label={`Franjas del ${dayLabel(availability.fecha)}`}>
-      {slots.map((slot) => (
-        <li key={`${slot.horaInicio}-${slot.libre}`} className={`slot-list__item slot-list__item--${slot.libre ? 'free' : 'busy'}`}>
-          {`${slotLabel(slot)} ${slot.libre ? 'libre' : 'ocupada'}`}
-        </li>
-      ))}
     </ul>
   );
 }
