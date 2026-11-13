@@ -4,6 +4,7 @@ import { Button, EmptyState, ErrorState, SelectField, Skeleton, TextArea, TextFi
 import { todayInLima } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { useSubmit } from '../../services/useSubmit.js';
+import { dayLabel, slotLabel } from './reservationColumns.jsx';
 import { slotFits } from './reservationRules.js';
 import { createReservation, getAvailability, listSpaces } from './reservationsApi.js';
 import { useSpaceNames } from './useSpaceNames.js';
@@ -12,8 +13,6 @@ export const SLOT_CONFLICT = 'La franja elegida ya no está disponible. Elige ot
 export const NO_AVAILABILITY = 'No hay disponibilidad para la fecha seleccionada';
 const EMPTY_FORM = { horaInicio: '', horaFin: '', motivo: '', numAsistentes: '' };
 
-export const dayLabel = (day) => (day ? day.split('-').reverse().join('/') : '');
-export const slotLabel = (slot) => `${slot.horaInicio}–${slot.horaFin}`;
 
 function validate(values, libres) {
   const errors = {};
