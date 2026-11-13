@@ -50,13 +50,16 @@ function createBody(values) {
   return body;
 }
 
-/** Solo los campos que cambiaron; pasar a un rol sin área envía `areaId: null`. */
+/**
+ * Solo los campos que cambiaron; pasar a un rol sin área envía `areaId: null`.
+ * Borrar el teléfono envía '' (en el backend, null conserva el valor).
+ */
 function patchBody(values, user) {
   const before = initialValues(user);
   return FIELDS.reduce((patch, field) => {
     const next = normalized(values, field);
     const previous = field === 'areaId' ? user.areaId || null : normalized(before, field);
-    if (next !== previous) patch[field] = next;
+    if (next !== previous) patch[field] = next === null && field === 'telefono' ? '' : next;
     return patch;
   }, {});
 }

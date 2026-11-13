@@ -122,3 +122,18 @@ test('desactivar pide confirmación y envía activo false', async () => {
   // La propia cuenta no se puede desactivar desde aquí.
   expect(within(await rowOf('Admin Demo')).queryByRole('button', { name: 'Desactivar' })).toBeNull();
 });
+
+test('borrar el teléfono envía cadena vacía', async () => {
+  // En el backend, null conserva el valor y '' lo borra (Patch.optionalText).
+  db.users.find((u) => u.id === '9').telefono = '999888777';
+  const calls = captureRequests('PATCH', '/api/v1/admin/users/9');
+  const user = userEvent.setup();
+  renderPage();
+  await user.click(within(await rowOf('Pedro Demo')).getByRole('button', { name: 'Editar' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Editar usuario' });
+  await user.clear(within(dialog).getByLabelText('Teléfono (opcional)'));
+  await user.click(within(dialog).getByRole('button', { name: 'Guardar cambios' }));
+  await waitFor(() => expect(calls).toHaveLength(1));
+  expect(calls[0].body).toEqual({ telefono: '' });
+  await waitFor(() => expect(db.users.find((u) => u.id === '9').telefono).toBeNull());
+});

@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { server } from '../../../mocks/server.js';
+import { db } from '../../../mocks/db.js';
 import { renderWithRouter } from '../../../test/render.jsx';
 import { captureRequests, userById } from '../../../test/users.js';
 
@@ -89,4 +90,19 @@ test('muestra el conflicto de vigencia junto al formulario', async () => {
   await user.click(within(dialog).getByRole('button', { name: 'Guardar' }));
   expect(await within(dialog).findByRole('alert')).toHaveTextContent('Ya hay una política activa para ese alcance en esas fechas.');
   expect(within(dialog).getByLabelText('Horas objetivo')).toHaveValue(12);
+});
+
+test('no permite quitar la fecha de fin de una política', async () => {
+  // El contrato no tiene forma de borrar vigenteHasta (null = conservar).
+  db.slaPolicies.find((p) => p.id === '1').vigenteHasta = '2027-01-01T05:00:00Z';
+  const calls = captureRequests('PATCH', '/api/v1/admin/sla-policies/1');
+  const user = userEvent.setup();
+  await renderPage();
+  const row = (await screen.findByRole('cell', { name: 'Categoría: Conectividad' })).closest('tr');
+  await user.click(within(row).getByRole('button', { name: 'Editar' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Editar política' });
+  await user.clear(within(dialog).getByLabelText('Vigente hasta (opcional)'));
+  await user.click(within(dialog).getByRole('button', { name: 'Guardar' }));
+  expect(await within(dialog).findByText('La fecha de fin no se puede quitar; indica otra fecha.')).toBeInTheDocument();
+  expect(calls).toHaveLength(0);
 });

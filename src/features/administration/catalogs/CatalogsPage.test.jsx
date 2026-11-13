@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { server } from '../../../mocks/server.js';
+import { db } from '../../../mocks/db.js';
 import { renderWithRouter } from '../../../test/render.jsx';
 import { captureRequests, userById } from '../../../test/users.js';
 
@@ -62,17 +63,42 @@ test('el código no es editable después del alta', async () => {
 });
 
 test('desactivar pide confirmación y envía activo false', async () => {
-  const calls = captureRequests('PATCH', '/api/v1/admin/catalogs/areas/4');
+  // Alta no es prioridad predeterminada de ninguna categoría activa: no tiene dependencias.
+  const calls = captureRequests('PATCH', '/api/v1/admin/catalogs/priorities/5');
   const user = userEvent.setup();
-  await renderTab(user);
-  await user.click(within(await rowOf('Biblioteca')).getByRole('button', { name: 'Desactivar' }));
-  const confirm = await screen.findByRole('dialog', { name: 'Desactivar área' });
+  await renderTab(user, 'Prioridades');
+  await user.click(within(await rowOf('Alta')).getByRole('button', { name: 'Desactivar' }));
+  const confirm = await screen.findByRole('dialog', { name: 'Desactivar prioridad' });
   expect(calls).toHaveLength(0);
   await user.click(within(confirm).getByRole('button', { name: 'Desactivar' }));
   await waitFor(() => expect(calls).toHaveLength(1));
   expect(calls[0].body).toEqual({ activo: false });
-  expect(await within(await rowOf('Biblioteca')).findByText('Inactivo')).toBeInTheDocument();
-  expect(within(await rowOf('Biblioteca')).getByRole('button', { name: 'Activar' })).toBeInTheDocument();
+  expect(await within(await rowOf('Alta')).findByText('Inactivo')).toBeInTheDocument();
+  expect(within(await rowOf('Alta')).getByRole('button', { name: 'Activar' })).toBeInTheDocument();
+});
+
+test('desactivar con dependencias activas muestra el 409 en la confirmación', async () => {
+  const user = userEvent.setup();
+  await renderTab(user);
+  await user.click(within(await rowOf('Biblioteca')).getByRole('button', { name: 'Desactivar' }));
+  const confirm = await screen.findByRole('dialog', { name: 'Desactivar área' });
+  await user.click(within(confirm).getByRole('button', { name: 'Desactivar' }));
+  expect(await within(confirm).findByRole('alert')).toHaveTextContent('El área tiene categorías o personal activos.');
+  expect(within(await rowOf('Biblioteca')).getByText('Activo')).toBeInTheDocument();
+});
+
+test('borrar el color de una prioridad envía cadena vacía', async () => {
+  const calls = captureRequests('PATCH', '/api/v1/admin/catalogs/priorities/4');
+  db.priorities.find((p) => p.id === '4').color = '#F59E0B';
+  const user = userEvent.setup();
+  await renderTab(user, 'Prioridades');
+  await user.click(within(await rowOf('Media')).getByRole('button', { name: 'Editar' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Editar prioridad' });
+  await user.clear(within(dialog).getByLabelText('Color (opcional)'));
+  await user.click(within(dialog).getByRole('button', { name: 'Guardar' }));
+  await waitFor(() => expect(calls).toHaveLength(1));
+  expect(calls[0].body).toEqual({ color: '' });
+  await waitFor(() => expect(db.priorities.find((p) => p.id === '4').color).toBeNull());
 });
 
 test('409 por duplicado se muestra en el formulario', async () => {

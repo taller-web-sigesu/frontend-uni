@@ -31,13 +31,14 @@ function filtersFrom(request) {
   return { filtros: { fechaDesde, fechaHasta, areaId }, rows, params };
 }
 
-function groupBy(rows, key) {
+/** Grupos `{id, nombre, total}` como DashboardGroupResponse del backend. */
+function groupBy(rows, key, nameOf) {
   const totals = new Map();
   rows.forEach((row) => {
     const id = key(row) ?? null;
     totals.set(id, (totals.get(id) || 0) + 1);
   });
-  return [...totals].map(([id, total]) => ({ id, total }));
+  return [...totals].map(([id, total]) => ({ id, nombre: id === null ? null : nameOf(id) || null, total }));
 }
 
 const responsibleOf = (r) => r.responsableId || r.ultimoResponsableId || null;
@@ -57,9 +58,9 @@ function summarize({ filtros, rows }) {
     registradas: rows.length,
     pendientes: rows.filter((r) => PENDING.includes(r.estado)).length,
     atendidas: attended.length,
-    porCategoria: groupBy(rows, (r) => r.categoriaId),
-    porPrioridad: groupBy(rows, (r) => r.prioridadId),
-    porResponsable: groupBy(rows, responsibleOf),
+    porCategoria: groupBy(rows, (r) => r.categoriaId, (id) => nameIn(db.categories, id)),
+    porPrioridad: groupBy(rows, (r) => r.prioridadId, (id) => nameIn(db.priorities, id)),
+    porResponsable: groupBy(rows, responsibleOf, (id) => db.users.find((u) => u.id === id)?.nombreCompleto),
     promedioHorasAtencion: hours.length ? round1(hours.reduce((a, b) => a + b, 0) / hours.length) : 0,
     porcentajeResueltas: rows.length ? round1((attended.length / rows.length) * 100) : 0,
     vencidas: {

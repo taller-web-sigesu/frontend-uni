@@ -47,7 +47,12 @@ function useNames(isAdmin) {
   };
 }
 
-const toItems = (groups, label) => groups.map((g) => ({ key: g.id ?? 'ninguno', label: label(g.id), value: g.total }));
+/** El backend trae `nombre` en cada grupo; los catálogos solo cubren su ausencia. */
+const toItems = (groups, label) => groups.map((g) => ({
+  key: g.id ?? 'ninguno',
+  label: g.id === null || g.id === undefined ? label(null) : g.nombre || label(g.id),
+  value: g.total,
+}));
 
 /**
  * P08: indicadores del rango aplicado (mes actual de Lima al entrar). El rango

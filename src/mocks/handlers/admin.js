@@ -17,6 +17,17 @@ const notFound = (detail = 'No encontramos el registro.') => problem(404, 'NO_EN
 const blank = (value) => value === undefined || value === null || String(value).trim() === '';
 const now = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
 
+/**
+ * Semántica de PATCH del backend (shared/web/Patch.java): un campo null o
+ * ausente conserva el valor; '' en un texto opcional lo borra. `keep` lista los
+ * campos donde null tiene significado propio (p. ej. areaId según el rol).
+ */
+function applyPatchSemantics(patch, optional, keep = []) {
+  return Object.fromEntries(Object.entries(patch)
+    .filter(([key, value]) => value !== null || keep.includes(key))
+    .map(([key, value]) => [key, optional.includes(key) && typeof value === 'string' && !value.trim() ? null : value]));
+}
+
 // ---------- Usuarios ----------
 
 function publicUser(u) {
@@ -160,11 +171,11 @@ const userHandlers = [
     if (user instanceof Response) return user;
     const target = db.users.find((u) => u.id === params.id);
     if (!target) return notFound('No encontramos la cuenta.');
-    const patch = await request.json().catch(() => ({}));
+    const raw = await request.json().catch(() => ({}));
     const allowed = ['nombreCompleto', 'correo', 'telefono', 'rol', 'areaId', 'activo'];
-    if (!Object.keys(patch).length || Object.keys(patch).some((k) => !allowed.includes(k))) {
-      return validation([], 'Envía al menos un campo editable.');
-    }
+    if (Object.keys(raw).some((k) => !allowed.includes(k))) return validation([], 'Envía al menos un campo editable.');
+    if (!Object.values(raw).some((v) => v !== null)) return validation([], 'Envíe al menos un campo para actualizar.');
+    const patch = applyPatchSemantics(raw, ['telefono'], ['areaId']);
     const rol = patch.rol ?? target.rol;
     const areaId = 'areaId' in patch ? patch.areaId : target.areaId;
     if (!ROLES.some((r) => r.codigo === rol)) return validation([{ campo: 'rol', mensaje: 'El rol no existe.' }]);
@@ -219,6 +230,21 @@ function duplicateOf(kind, record, exceptId) {
     && db[kind].some((item) => item.id !== exceptId && same(item[field], record[field])));
 }
 
+/** Motivo del 409 por dependencias activas al desactivar, o `null`. */
+function activeDependency(kind, record) {
+  if (kind === 'areas') {
+    const used = db.categories.some((c) => c.activo && c.areaId === record.id)
+      || db.users.some((u) => u.activo && u.areaId === record.id);
+    return used ? 'El área tiene categorías o personal activos.' : null;
+  }
+  if (kind === 'priorities') {
+    return db.categories.some((c) => c.activo && c.prioridadPredeterminadaId === record.id)
+      ? 'La prioridad es la predeterminada de categorías activas.'
+      : null;
+  }
+  return null;
+}
+
 const duplicate = () => problem(409, 'DUPLICADO', 'Ya existe un registro con ese código o nombre.');
 
 const catalogHandlers = Object.keys(CATALOGS).flatMap((kind) => [
@@ -253,10 +279,16 @@ const catalogHandlers = Object.keys(CATALOGS).flatMap((kind) => [
     if (user instanceof Response) return user;
     const target = db[kind].find((item) => item.id === params.id);
     if (!target) return notFound();
-    const patch = await request.json().catch(() => ({}));
-    const keys = Object.keys(patch);
-    if (!keys.length || keys.some((k) => !CATALOGS[kind].editable.includes(k))) {
+    const raw = await request.json().catch(() => ({}));
+    if (!Object.keys(raw).length || Object.keys(raw).some((k) => !CATALOGS[kind].editable.includes(k))) {
       return validation([], 'Envía al menos un campo editable; el código no se modifica.');
+    }
+    if (!Object.values(raw).some((v) => v !== null)) return validation([], 'Envíe al menos un campo para actualizar.');
+    const patch = applyPatchSemantics(raw, ['descripcion', 'color']);
+    const keys = Object.keys(patch);
+    if (patch.activo === false && target.activo) {
+      const dependency = activeDependency(kind, target);
+      if (dependency) return problem(409, 'DEPENDENCIAS_ACTIVAS', dependency);
     }
     if (keys.some((k) => k !== 'activo' && k !== 'descripcion' && k !== 'color' && blank(patch[k]))) {
       return validation(keys.filter((k) => blank(patch[k])).map((campo) => ({ campo, mensaje: 'Este campo es obligatorio.' })));
@@ -362,11 +394,13 @@ const slaHandlers = [
     if (user instanceof Response) return user;
     const target = db.slaPolicies.find((p) => p.id === params.id);
     if (!target) return notFound('No encontramos la política.');
-    const patch = await request.json().catch(() => ({}));
+    const raw = await request.json().catch(() => ({}));
     const editable = ['horasObjetivo', 'horasAviso', 'vigenteDesde', 'vigenteHasta', 'activo'];
-    if (!Object.keys(patch).length || Object.keys(patch).some((k) => !editable.includes(k))) {
+    if (!Object.keys(raw).length || Object.keys(raw).some((k) => !editable.includes(k))) {
       return validation([], 'El alcance de la política no se modifica.');
     }
+    const patch = applyPatchSemantics(raw, []);
+    if (!Object.keys(patch).length) return validation([], 'Envíe al menos un campo para actualizar.');
     const next = { ...target, ...patch };
     const errores = deadlineErrors(next);
     if (errores.length) return validation(errores);

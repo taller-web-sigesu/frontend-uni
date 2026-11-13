@@ -44,7 +44,8 @@ function initialValues(policy) {
 
 const positiveInt = (text) => /^\d+$/.test(text) && Number(text) > 0;
 
-function validate(values, creating) {
+function validate(values, policy) {
+  const creating = !policy;
   const errors = {};
   if (creating) {
     if (values.alcance === 'categoria' && !values.categoriaId) errors.categoriaId = 'Elige una categoría.';
@@ -58,6 +59,9 @@ function validate(values, creating) {
   if (values.vigenteDesde && values.vigenteHasta && values.vigenteHasta <= values.vigenteDesde) {
     errors.vigenteHasta = 'Debe ser posterior al inicio de la vigencia.';
   }
+  // El contrato no permite borrar fechas: null en el PATCH conserva el valor.
+  if (policy?.vigenteDesde && !values.vigenteDesde) errors.vigenteDesde = 'La fecha de inicio no se puede quitar; indica otra fecha.';
+  if (policy?.vigenteHasta && !values.vigenteHasta) errors.vigenteHasta = 'La fecha de fin no se puede quitar; indica otra fecha.';
   return errors;
 }
 
@@ -90,7 +94,7 @@ function PolicyForm({ policy, scopes, onSaved, onCancel }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const found = validate(values, creating);
+    const found = validate(values, policy);
     setErrors(found);
     if (Object.keys(found).length) return;
     const body = creating ? createBody(values) : patchBody(values, policy);

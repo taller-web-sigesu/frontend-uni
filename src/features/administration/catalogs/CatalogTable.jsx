@@ -35,7 +35,8 @@ function buildBody(fields, values, record) {
     if (!record) {
       if (next !== null) body[field.name] = next;
     } else if (next !== (record[field.name] ?? null)) {
-      body[field.name] = next;
+      // En el backend, null conserva el valor; '' borra un texto opcional.
+      body[field.name] = next === null ? '' : next;
     }
     return body;
   }, {});

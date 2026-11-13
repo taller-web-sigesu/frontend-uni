@@ -164,3 +164,17 @@ test('las barras exponen etiqueta y valor como texto', async () => {
   expect(screen.getByRole('img', { name: 'Responsable 5: 7' })).toBeInTheDocument();
   expect(screen.getByText('Conectividad')).toBeInTheDocument();
 });
+
+test('usa el nombre que trae cada grupo del resumen', async () => {
+  // El backend (DashboardGroupResponse) incluye `nombre`: el supervisor no depende de catálogos.
+  useSummary({
+    porCategoria: [{ id: '8', nombre: 'Mobiliario antiguo', total: 2 }],
+    porPrioridad: [{ id: '4', nombre: 'Normal', total: 10 }],
+    porResponsable: [{ id: '5', nombre: 'Luis Técnico', total: 7 }, { id: null, nombre: null, total: 3 }],
+  });
+  renderAs(SUPERVISORA_TI);
+  expect(await screen.findByRole('img', { name: 'Mobiliario antiguo: 2' })).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: 'Normal: 10' })).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: 'Luis Técnico: 7' })).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: 'Sin asignar: 3' })).toBeInTheDocument();
+});
