@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { createAppRouter } from './app/router.jsx';
 import { SessionProvider } from './features/auth/SessionProvider.jsx';
+import { appGuards } from './features/auth/guards.jsx';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/layout.css';
@@ -13,7 +14,7 @@ async function enableMocking() {
   await worker.start({ onUnhandledRequest: 'warn' });
 }
 
-const router = createAppRouter();
+const router = createAppRouter(appGuards);
 
 enableMocking().then(() => {
   createRoot(document.getElementById('root')).render(

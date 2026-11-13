@@ -3,6 +3,7 @@ import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router';
 import { buildRouteObjects } from '../app/router.jsx';
 import { UserContext } from '../app/userContext.js';
 import { SessionProvider } from '../features/auth/SessionProvider.jsx';
+import { appGuards } from '../features/auth/guards.jsx';
 import { db, signInMock } from '../mocks/db.js';
 
 /**
@@ -38,7 +39,9 @@ export function renderWithRouter(ui, { route = '/', routes, user = null, guard, 
       </Providers>,
     );
   }
-  const router = createMemoryRouter(buildRouteObjects({ routes, guard }), { initialEntries: [route] });
+  // Con sesión se usan las guardas reales de la app; sin ella, solo `guard` si se pasa.
+  const guards = session ? { ...appGuards, ...(guard && { guard }) } : { guard };
+  const router = createMemoryRouter(buildRouteObjects({ routes, ...guards }), { initialEntries: [route] });
   return {
     router,
     ...render(

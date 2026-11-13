@@ -18,7 +18,8 @@ const home = () => import('../features/home/index.js').then((m) => ({ default: m
 export const ROUTES = [
   { path: '/login', roles: null, title: 'Iniciar sesión', lazy: placeholder },
   { path: '/registro', roles: null, title: 'Crear cuenta', lazy: placeholder },
-  { path: '/cambiar-contrasena', roles: null, title: 'Cambiar contraseña', lazy: placeholder },
+  // Sin rol pero con sesión (también la de primer ingreso).
+  { path: '/cambiar-contrasena', roles: null, requiresSession: true, title: 'Cambiar contraseña', lazy: placeholder },
   { path: '/inicio', roles: [ESTUDIANTE, DOCENTE, TECNICO, ADMINISTRADOR], title: 'Inicio', lazy: home },
   { path: '/perfil', roles: ALL_ROLES, title: 'Perfil', lazy: placeholder },
   { path: '/solicitudes', roles: SOLICITANTES, title: 'Mis solicitudes', lazy: placeholder },
