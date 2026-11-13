@@ -22,7 +22,7 @@ const now = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
  * ausente conserva el valor; '' en un texto opcional lo borra. `keep` lista los
  * campos donde null tiene significado propio (p. ej. areaId según el rol).
  */
-function applyPatchSemantics(patch, optional, keep = []) {
+export function applyPatchSemantics(patch, optional, keep = []) {
   return Object.fromEntries(Object.entries(patch)
     .filter(([key, value]) => value !== null || keep.includes(key))
     .map(([key, value]) => [key, optional.includes(key) && typeof value === 'string' && !value.trim() ? null : value]));

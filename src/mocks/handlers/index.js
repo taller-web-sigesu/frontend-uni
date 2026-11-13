@@ -4,6 +4,7 @@ import { authHandlers } from './auth.js';
 import { requestHandlers } from './requests.js';
 import { dashboardHandlers } from './dashboard.js';
 import { adminHandlers } from './admin.js';
+import { reservationHandlers } from './reservations.js';
 
 // Cada fase registra aquí el arreglo de handlers de su feature.
 export const handlers = [
@@ -13,4 +14,5 @@ export const handlers = [
   ...requestHandlers,
   ...dashboardHandlers,
   ...adminHandlers,
+  ...reservationHandlers,
 ];

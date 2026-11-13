@@ -2,6 +2,8 @@
 // para que pendingContract pueda leerlos sin arrastrar MSW al bundle.
 // Usuarios, roles y áreas replican backend-uni/docs/INTEGRACION-FRONTEND.md.
 
+import { todayInLima } from '../services/format.js';
+
 export const DEMO_PASSWORD = 'Demo2026!';
 
 const TERMINAL = ['CERRADO', 'RECHAZADO'];
@@ -66,6 +68,76 @@ function initialRequests() {
   });
 }
 
+const addDays = (day, days) => {
+  const [y, m, d] = day.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+};
+
+/**
+ * Reservas con fechas relativas al día de Lima, para que sigan en el futuro.
+ * Ana (8) en los cuatro estados; Pedro (9) y la supervisora de TI (2) con
+ * pendientes. El Laboratorio 204 (área TI) concentra las pendientes del día +3.
+ */
+function initialReservationData() {
+  const today = todayInLima();
+  const creadoEn = `${addDays(today, -1)}T15:00:00Z`;
+  const decididoEn = `${addDays(today, -1)}T18:00:00Z`;
+  const allDays = (horaApertura, horaCierre, days = [1, 2, 3, 4, 5, 6, 7]) => days.map((diaSemana) => ({ diaSemana, horaApertura, horaCierre }));
+  const seeds = [
+    { id: '1', solicitanteId: '8', espacioId: '3', dia: 3, horaInicio: '10:00', horaFin: '11:00', estado: 'PENDIENTE', motivo: 'Sesión de laboratorio', numAsistentes: 18 },
+    { id: '2', solicitanteId: '8', espacioId: '2', dia: 4, horaInicio: '09:00', horaFin: '10:00', estado: 'CONFIRMADA', motivo: 'Repaso de cálculo', numAsistentes: 25, actorId: '1' },
+    { id: '3', solicitanteId: '8', espacioId: '2', dia: 2, horaInicio: '15:00', horaFin: '16:00', estado: 'RECHAZADA', motivo: 'Taller de oratoria', numAsistentes: null, actorId: '1', motivoRechazo: 'El aula está reservada para exámenes.' },
+    { id: '4', solicitanteId: '8', espacioId: '3', dia: 1, horaInicio: '08:00', horaFin: '09:00', estado: 'CANCELADA', motivo: 'Práctica de redes', numAsistentes: 5, actorId: '8' },
+    { id: '5', solicitanteId: '9', espacioId: '3', dia: 3, horaInicio: '14:00', horaFin: '16:00', estado: 'PENDIENTE', motivo: 'Clase práctica', numAsistentes: 20 },
+    { id: '6', solicitanteId: '2', espacioId: '3', dia: 5, horaInicio: '09:00', horaFin: '10:00', estado: 'PENDIENTE', motivo: 'Reunión de área', numAsistentes: 8 },
+    { id: '7', solicitanteId: '9', espacioId: '4', dia: 3, horaInicio: '10:00', horaFin: '11:00', estado: 'PENDIENTE', motivo: 'Mantenimiento preventivo', numAsistentes: null },
+  ];
+  return {
+    spaceTypes: [
+      { id: '1', codigo: 'AULA', nombre: 'Aula', descripcion: 'Aula de clases', activo: true },
+      { id: '2', codigo: 'LAB', nombre: 'Laboratorio', descripcion: null, activo: true },
+      { id: '3', codigo: 'AUD', nombre: 'Auditorio', descripcion: null, activo: false },
+    ],
+    spaces: [
+      { id: '1', codigo: 'A-101', nombre: 'Aula 101', tipoEspacioId: '1', areaId: null, pabellon: 'A', piso: '1', capacidad: 40 },
+      { id: '2', codigo: 'A-102', nombre: 'Aula 102', tipoEspacioId: '1', areaId: null, pabellon: 'A', piso: '1', capacidad: 30 },
+      { id: '3', codigo: 'LAB-204', nombre: 'Laboratorio 204', tipoEspacioId: '2', areaId: '1', pabellon: 'B', piso: '2', capacidad: 24 },
+      { id: '4', codigo: 'LAB-301', nombre: 'Laboratorio 301', tipoEspacioId: '2', areaId: '2', pabellon: 'C', piso: '3', capacidad: 20 },
+      { id: '5', codigo: 'A-001', nombre: 'Aula antigua', tipoEspacioId: '1', areaId: null, pabellon: 'A', piso: '0', capacidad: 15, activo: false },
+    ].map((space) => ({ descripcion: null, ubicacionDetallada: null, requiereAprobacion: true, activo: true, ...space })),
+    // Una franja por día (1 = lunes … 7 = domingo). El Aula 101 cierra el domingo.
+    spaceSchedules: {
+      1: allDays('08:00', '20:00', [1, 2, 3, 4, 5, 6]),
+      2: allDays('07:00', '22:00'),
+      3: allDays('08:00', '18:00'),
+      4: allDays('08:00', '20:00'),
+      5: [],
+    },
+    reservations: seeds.map(({ dia, actorId, ...seed }) => {
+      const history = [{ estadoAnterior: null, estado: 'PENDIENTE', actorId: seed.solicitanteId, fecha: creadoEn, motivo: null }];
+      if (seed.estado !== 'PENDIENTE') {
+        history.push({ estadoAnterior: 'PENDIENTE', estado: seed.estado, actorId, fecha: decididoEn, motivo: seed.motivoRechazo || null });
+      }
+      return {
+        motivoRechazo: null,
+        ...seed,
+        codigo: `RES-2026-${seed.id.padStart(6, '0')}`,
+        fecha: addDays(today, dia),
+        creadoEn,
+        history,
+      };
+    }),
+    // Valores semilla del backend (reservas.md).
+    reservationPolicy: {
+      duracionMinimaMinutos: 30,
+      duracionMaximaMinutos: 240,
+      horasAnticipacionMinima: 1,
+      diasAnticipacionMaxima: 30,
+      maxReservasActivasPorDia: 2,
+    },
+  };
+}
+
 function initialData() {
   return {
     areas: [
@@ -126,6 +198,7 @@ function initialData() {
       { id: '1', categoriaId: '3', prioridadId: null, horasObjetivo: 24, horasAviso: 4, vigenteDesde: '2026-11-01T05:00:00Z', vigenteHasta: null, activo: true },
       { id: '2', categoriaId: null, prioridadId: '5', horasObjetivo: 8, horasAviso: 2, vigenteDesde: '2026-11-01T05:00:00Z', vigenteHasta: null, activo: true },
     ],
+    ...initialReservationData(),
     // Sesiones simuladas: el navegador tiene una sola cookie `refresh_token`.
     sessions: [],
     refreshCookie: null,
