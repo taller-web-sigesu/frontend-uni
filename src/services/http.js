@@ -40,7 +40,7 @@ function filenameFrom(disposition) {
   return plain ? plain[1].trim() : null;
 }
 
-async function send(url, { method, body, formData, signal, auth }) {
+async function send(url, { method, body, formData, signal, auth, accessToken }) {
   const headers = new Headers();
   let payload;
   if (formData) {
@@ -49,10 +49,11 @@ async function send(url, { method, body, formData, signal, auth }) {
     headers.set('Content-Type', 'application/json');
     payload = JSON.stringify(body);
   }
-  const token = auth ? handlers.getAccessToken?.() : null;
+  const token = auth ? (accessToken ?? handlers.getAccessToken?.()) : null;
   if (token) headers.set('Authorization', `Bearer ${token}`);
   try {
-    return await fetch(url, { method, headers, body: payload, signal, credentials: 'same-origin' });
+    const response = await fetch(url, { method, headers, body: payload, signal, credentials: 'same-origin' });
+    return { response, token };
   } catch (error) {
     if (isAbort(error)) throw error;
     throw new ApiError({ kind: 'network', detail: NETWORK_ERROR });
@@ -77,14 +78,16 @@ export async function request(path, {
   responseType = 'json',
   auth = true,
   retryOnUnauthorized = true,
+  accessToken,
 } = {}) {
   const url = buildUrl(path, query);
-  const options = { method, body, formData, signal, auth };
-  let response = await send(url, options);
+  const options = { method, body, formData, signal, auth, accessToken };
+  let { response, token } = await send(url, options);
 
   if (response.status === 401 && auth && retryOnUnauthorized && handlers.renewSession) {
-    const renewed = await handlers.renewSession();
-    if (renewed) response = await send(url, options);
+    // Con el token que falló, la sesión sabe si otra petición ya renovó.
+    const renewed = await handlers.renewSession(token);
+    if (renewed) ({ response } = await send(url, options));
   }
 
   if (!response.ok) {

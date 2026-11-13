@@ -42,6 +42,10 @@ function initialData() {
       { id: '7', nombreCompleto: 'Técnico Mantenimiento Demo', correo: 'tecnico.mant.demo@universidad.example', rol: 'TECNICO', areaId: '2' },
       { id: '8', nombreCompleto: 'Ana Demo', correo: 'ana.demo@universidad.example', rol: 'ESTUDIANTE', areaId: null },
       { id: '9', nombreCompleto: 'Pedro Demo', correo: 'pedro.demo@universidad.example', rol: 'DOCENTE', areaId: null },
+      // Solo en la API simulada: primer ingreso y cuentas auto-registradas sin aprobar.
+      { id: '10', nombreCompleto: 'Nuevo Demo', correo: 'nuevo.demo@universidad.example', rol: 'ESTUDIANTE', areaId: null, debeCambiarContrasena: true },
+      { id: '11', nombreCompleto: 'Lucía Pendiente', correo: 'lucia.pendiente@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'PENDIENTE', origenRegistro: 'AUTOREGISTRO' },
+      { id: '12', nombreCompleto: 'Rosa Rechazada', correo: 'rosa.rechazada@unmsm.edu.pe', rol: 'ESTUDIANTE', areaId: null, estadoCuenta: 'RECHAZADA', origenRegistro: 'AUTOREGISTRO' },
     ].map((user) => ({
       telefono: null,
       activo: true,
@@ -52,6 +56,11 @@ function initialData() {
       debeCambiarContrasena: false,
       ...user,
     })),
+    // Sesiones simuladas: el navegador tiene una sola cookie `refresh_token`.
+    sessions: [],
+    refreshCookie: null,
+    loginFailures: {},
+    sequence: 100,
   };
 }
 

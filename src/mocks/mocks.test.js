@@ -6,6 +6,7 @@ import { db, resetDb, problem, paginate } from './db.js';
 import { request } from '../services/http.js';
 import { ApiError } from '../services/apiError.js';
 import { listEnabledCategories, useCatalogLabels } from '../services/catalogs.js';
+import { signInAs } from '../test/session.js';
 import { listPriorityOptions, priorityName, surveyAnswered, isMockMode } from '../services/pendingContract.js';
 
 test('GET /api/v1/status responde UP desde el mock', async () => {
@@ -56,6 +57,7 @@ test('una petición sin handler queda registrada para hacer fallar la prueba', a
 });
 
 test('listEnabledCategories devuelve solo categorías activas', async () => {
+  signInAs();
   const categories = await listEnabledCategories();
   expect(categories.map((c) => c.nombre)).toContain('Conectividad');
   expect(categories.every((c) => typeof c.id === 'string')).toBe(true);
@@ -64,6 +66,7 @@ test('listEnabledCategories devuelve solo categorías activas', async () => {
 });
 
 test('useCatalogLabels resuelve categoría y usa respaldo para desconocidas', async () => {
+  signInAs();
   const { result } = renderHook(() => useCatalogLabels());
   await waitFor(() => expect(result.current.ready).toBe(true));
   expect(result.current.categoryName('3')).toBe('Conectividad');

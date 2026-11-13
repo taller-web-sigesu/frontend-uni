@@ -189,3 +189,18 @@ test('notifica onProblem con el ApiError', async () => {
   expect(onProblem).toHaveBeenCalledTimes(1);
   expect(onProblem.mock.calls[0][0]).toMatchObject({ status: 403, codigo: 'CAMBIO_CONTRASENA_REQUERIDO' });
 });
+
+test('accessToken explícito reemplaza al de la sesión', async () => {
+  configureHttp({ getAccessToken: () => null });
+  fetchSpy.mockResolvedValueOnce(new Response(null, { status: 204 }));
+  await request('/auth/logout', { method: 'POST', accessToken: 'previo' });
+  expect(fetchSpy.mock.calls[0][1].headers.get('Authorization')).toBe('Bearer previo');
+});
+
+test('renewSession recibe el token que obtuvo el 401', async () => {
+  const renewSession = vi.fn(async () => false);
+  configureHttp({ getAccessToken: () => 'vencido', renewSession });
+  fetchSpy.mockResolvedValueOnce(problemResponse(401, { status: 401 }));
+  await expect(request('/x')).rejects.toBeInstanceOf(ApiError);
+  expect(renewSession).toHaveBeenCalledWith('vencido');
+});
