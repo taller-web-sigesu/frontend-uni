@@ -8,6 +8,8 @@ import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { listAll } from '../catalogsAdminApi.js';
 import { listRoles, listUsers, updateUser } from '../usersApi.js';
+import { PendingAccountsPanel } from './PendingAccountsPanel.jsx';
+import { ResetPasswordDialog } from './ResetPasswordDialog.jsx';
 import { UserFormDialog } from './UserFormDialog.jsx';
 
 const PAGE_SIZE = 20;
@@ -28,15 +30,18 @@ async function loadOptions(signal) {
   return { roles, areas };
 }
 
-/**
- * Lista de cuentas con alta, edición y desactivación. `rowActions(user)` añade
- * acciones por fila (restablecer contraseña, tarea 4).
- */
-function UsersList({ options, rowActions }) {
+/** Solo cuentas activas y aprobadas, y nunca la propia (el backend responde 403). */
+export function canResetPassword(user, currentUser) {
+  return user.activo && (user.estadoCuenta === undefined || user.estadoCuenta === 'ACTIVA') && user.id !== currentUser?.id;
+}
+
+/** Lista de cuentas con alta, edición, desactivación y restablecimiento de contraseña. */
+function UsersList({ options }) {
   const currentUser = useCurrentUser();
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(null); // null | 'nuevo' | usuario
   const [deactivating, setDeactivating] = useState(null);
+  const [resetting, setResetting] = useState(null);
   const { data, error, status, reload } = useResource((signal) => listUsers({ page, size: PAGE_SIZE }, signal), [page]);
   const toggle = useSubmit((user, activo) => updateUser(user.id, { activo }));
 
@@ -69,7 +74,9 @@ function UsersList({ options, rowActions }) {
           {!u.activo && (
             <Button variant="ghost" pending={toggle.pending} onClick={() => setActive(u, true)}>Activar</Button>
           )}
-          {rowActions?.(u)}
+          {canResetPassword(u, currentUser) && (
+            <Button variant="ghost" onClick={() => setResetting(u)}>Restablecer contraseña</Button>
+          )}
         </div>
       ),
     },
@@ -107,6 +114,7 @@ function UsersList({ options, rowActions }) {
           reload();
         }}
       />
+      {resetting && <ResetPasswordDialog key={resetting.id} user={resetting} onClose={() => setResetting(null)} />}
       <ConfirmDialog
         open={deactivating !== null}
         title="Desactivar usuario"
@@ -127,12 +135,12 @@ function UsersList({ options, rowActions }) {
 }
 
 /** P12: usuarios y bandeja de cuentas auto-registradas. */
-export default function UsersPage({ pendingPanel = null, rowActions }) {
+export default function UsersPage() {
   const { data: options, error, reload } = useResource((signal) => loadOptions(signal), []);
   let users;
   if (error) users = () => <ErrorState error={error} onRetry={reload} />;
   else if (!options) users = () => <Skeleton lines={5} />;
-  else users = () => <UsersList options={options} rowActions={rowActions} />;
+  else users = () => <UsersList options={options} />;
 
   return (
     <section className="page">
@@ -143,7 +151,7 @@ export default function UsersPage({ pendingPanel = null, rowActions }) {
         label="Secciones de usuarios"
         tabs={[
           { id: 'usuarios', label: 'Usuarios', render: users },
-          { id: 'pendientes', label: 'Pendientes de aprobación', render: () => pendingPanel },
+          { id: 'pendientes', label: 'Pendientes de aprobación', render: () => <PendingAccountsPanel /> },
         ]}
       />
     </section>
