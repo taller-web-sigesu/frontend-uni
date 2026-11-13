@@ -46,6 +46,21 @@ export function limaDaysToUtcRange(desde, hasta) {
   return { fechaDesde: limaMidnightUtc(desde), fechaHasta: limaMidnightUtc(hasta, 1) };
 }
 
+/** `YYYY-MM-DDTHH:mm` (datetime-local, hora de Lima) a instante UTC; vacío = `null`. */
+export function limaLocalToUtc(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value || '');
+  if (!match) return null;
+  const [, year, month, day, hour, minute] = match.map(Number);
+  return new Date(Date.UTC(year, month - 1, day, hour + LIMA_OFFSET_HOURS, minute)).toISOString().replace('.000Z', 'Z');
+}
+
+/** Instante UTC al valor de un datetime-local en hora de Lima; sin valor = ''. */
+export function utcToLimaLocal(isoUtc) {
+  if (!isoUtc) return '';
+  const p = limaParts(new Date(isoUtc));
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+}
+
 export function currentMonthInLima(now = new Date()) {
   const [year, month] = todayInLima(now).split('-').map(Number);
   const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();

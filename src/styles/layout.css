@@ -160,3 +160,12 @@
 .mono-soft { color: var(--color-ink-muted); overflow-wrap: anywhere; }
 .color-chip { display: inline-flex; align-items: center; gap: var(--space-xs); }
 .color-chip__swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--color-border); }
+.choice-group { border: none; margin: 0 0 var(--space-md); padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-md); }
+.choice-group legend { width: 100%; margin-bottom: var(--space-xs); }
+.choice-group__option { display: inline-flex; align-items: center; gap: var(--space-xs); cursor: pointer; }
+.shortcut-list { list-style: none; margin: 0; padding: 0; }
+.shortcut-list li { padding: var(--space-sm) 0; border-top: 1px solid var(--color-border); }
+.shortcut-list li:first-child { border-top: none; }
+.shortcut-list__link { color: var(--color-info); font-weight: 500; }
+.shortcut-list__description { margin: 2px 0 0; color: var(--color-ink-muted); font-size: var(--font-size-label); }
+.notice--info { color: var(--color-info); background: var(--color-surface); }
