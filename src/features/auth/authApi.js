@@ -11,8 +11,9 @@ export function refresh() {
   return request('/auth/refresh', { method: 'POST', ...PUBLIC });
 }
 
-export function logout() {
-  return request('/auth/logout', { method: 'POST', retryOnUnauthorized: false });
+/** Revoca la sesión con el JWT previo: la sesión local ya se limpió al llamar. */
+export function logout(accessToken) {
+  return request('/auth/logout', { method: 'POST', accessToken, retryOnUnauthorized: false });
 }
 
 export function changePassword({ contrasenaActual, contrasenaNueva }) {
