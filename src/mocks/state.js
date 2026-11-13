@@ -4,6 +4,68 @@
 
 export const DEMO_PASSWORD = 'Demo2026!';
 
+const TERMINAL = ['CERRADO', 'RECHAZADO'];
+const FLOW = ['NUEVO', 'ASIGNADO', 'EN_PROCESO', 'RESUELTO'];
+
+/**
+ * Solicitudes en todos los estados para Ana (8) y Pedro (9). Cada una lleva
+ * dentro su historial, comentarios, evidencias, auditoría y encuesta.
+ * `responsableId` es la asignación vigente; en terminales queda en `ultimoResponsableId`.
+ */
+function initialRequests() {
+  const seeds = [
+    { id: '1', solicitanteId: '8', categoriaId: '3', areaId: '1', prioridadId: '4', estado: 'NUEVO', ubicacion: 'Pabellón B, aula 204', descripcion: 'El aula no tiene conexión Wi-Fi.' },
+    { id: '2', solicitanteId: '8', categoriaId: '5', areaId: '1', prioridadId: '5', estado: 'ASIGNADO', responsableId: '5', ubicacion: 'Laboratorio 3', descripcion: 'La PC 12 no enciende.' },
+    { id: '3', solicitanteId: '8', categoriaId: '3', areaId: '1', prioridadId: '4', estado: 'EN_PROCESO', responsableId: '5', ubicacion: 'Biblioteca central, sala 2', descripcion: 'El Wi-Fi se desconecta cada pocos minutos.' },
+    { id: '4', solicitanteId: '8', categoriaId: '5', areaId: '1', prioridadId: '3', estado: 'RESUELTO', responsableId: '6', ubicacion: 'Aula 101', descripcion: 'El proyector no detecta la laptop.' },
+    { id: '5', solicitanteId: '8', categoriaId: '3', areaId: '1', prioridadId: '4', estado: 'CERRADO', ultimoResponsableId: '5', ubicacion: 'Pabellón A, aula 110', descripcion: 'No hay señal en el aula.' },
+    { id: '6', solicitanteId: '8', categoriaId: '6', areaId: '2', prioridadId: '3', estado: 'RECHAZADO', motivoRechazo: 'El servicio corresponde a otra sede.', ubicacion: 'Sede Norte', descripcion: 'La puerta del aula no cierra.' },
+    { id: '7', solicitanteId: '9', categoriaId: '6', areaId: '2', prioridadId: '3', estado: 'ASIGNADO', responsableId: '7', ubicacion: 'Pabellón C, aula 305', descripcion: 'Una ventana está rota.' },
+    { id: '8', solicitanteId: '9', categoriaId: '3', areaId: '1', prioridadId: '4', estado: 'CERRADO', ultimoResponsableId: '6', ubicacion: 'Sala de docentes', descripcion: 'La impresora de red no aparece.' },
+    { id: '9', solicitanteId: '9', categoriaId: '5', areaId: '1', prioridadId: '3', estado: 'NUEVO', ubicacion: 'Oficina 12', descripcion: 'El monitor parpadea.' },
+  ];
+  return seeds.map((seed, index) => {
+    const day = String(index + 2).padStart(2, '0');
+    const creadoEn = `2026-11-${day}T14:00:00Z`;
+    const reached = TERMINAL.includes(seed.estado)
+      ? [...FLOW.slice(0, seed.estado === 'CERRADO' ? 4 : 1), seed.estado]
+      : FLOW.slice(0, FLOW.indexOf(seed.estado) + 1);
+    const responsable = seed.responsableId || seed.ultimoResponsableId;
+    const history = reached.map((estado, step) => ({
+      estadoAnterior: step === 0 ? null : reached[step - 1],
+      estado,
+      actorId: step === 0 ? seed.solicitanteId : (estado === 'EN_PROCESO' || estado === 'RESUELTO' ? responsable : '2'),
+      fecha: `2026-11-${day}T${String(14 + step).padStart(2, '0')}:00:00Z`,
+      motivo: estado === 'RECHAZADO' ? seed.motivoRechazo : null,
+    }));
+    const { motivoRechazo, ...rest } = seed;
+    void motivoRechazo;
+    return {
+      responsableId: null,
+      ultimoResponsableId: null,
+      ...rest,
+      codigo: `SOL-2026-${String(seed.id).padStart(6, '0')}`,
+      creadoEn,
+      sla: {
+        estado: TERMINAL.includes(seed.estado) ? 'CERRADA' : (index % 3 === 2 ? 'POR_VENCER' : 'EN_PLAZO'),
+        fechaAviso: `2026-11-${String(index + 3).padStart(2, '0')}T10:00:00Z`,
+        fechaLimite: `2026-11-${String(index + 3).padStart(2, '0')}T14:00:00Z`,
+      },
+      history,
+      comments: seed.id === '3'
+        ? [{ id: '1', contenido: 'Ya revisé el punto de acceso.', autorId: '5', creadoEn: `2026-11-${day}T17:00:00Z` }]
+        : [],
+      attachments: seed.id === '2'
+        ? [{ id: '1', nombre: 'pc-12.jpg', tamanoBytes: 2097152, tipoMime: 'image/jpeg', autorId: '8', creadoEn: `2026-11-${day}T14:05:00Z`, eliminado: false }]
+        : [],
+      audit: seed.id === '2'
+        ? [{ id: '1', campo: 'prioridad', valorAnterior: 'Media', valorNuevo: 'Alta', actorId: '2', fecha: `2026-11-${day}T15:30:00Z` }]
+        : [],
+      survey: null,
+    };
+  });
+}
+
 function initialData() {
   return {
     areas: [
@@ -56,6 +118,7 @@ function initialData() {
       debeCambiarContrasena: false,
       ...user,
     })),
+    requests: initialRequests(),
     // Sesiones simuladas: el navegador tiene una sola cookie `refresh_token`.
     sessions: [],
     refreshCookie: null,
