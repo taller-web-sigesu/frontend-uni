@@ -122,5 +122,5 @@ a { color: inherit; }
 .file-list__name { font-weight: 500; overflow-wrap: anywhere; }
 .file-list__meta { color: var(--color-ink-muted); font-size: var(--font-size-label); }
 .file-list__error { color: var(--color-error); font-size: var(--font-size-label); flex-basis: 100%; }
-.file-list__item .link-button, .file-list__item .btn { margin-left: auto; }
+.file-list__item > .link-button, .file-list__actions { margin-left: auto; display: flex; flex-wrap: wrap; gap: var(--space-xs); }
 a.btn { text-decoration: none; }

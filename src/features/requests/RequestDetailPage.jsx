@@ -5,6 +5,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/ui/index.js';
 import { useCatalogLabels } from '../../services/catalogs.js';
 import { useResource } from '../../services/useResource.js';
 import { availableActions } from './availableActions.js';
+import { AttachmentsSection } from './detail/AttachmentsSection.jsx';
 import { CommentsSection } from './detail/CommentsSection.jsx';
 import { HistoryTimeline } from './detail/HistoryTimeline.jsx';
 import { peopleIndex } from './detail/people.js';
@@ -113,6 +114,7 @@ export default function RequestDetailPage() {
       <div className="detail-grid">
         <div className="detail-grid__main">
           <RequestSummary solicitud={solicitud} categoryName={categoryName} />
+          <AttachmentsSection requestId={solicitud.id} canAttach={actions.has('ADJUNTAR')} />
         </div>
         <aside className="card detail-grid__side">
           <HistoryTimeline items={history} personName={personName} />
