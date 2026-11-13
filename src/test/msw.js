@@ -1,5 +1,6 @@
 import { server } from '../mocks/server.js';
 import { resetDb } from '../mocks/db.js';
+import { configureHttp } from '../services/http.js';
 
 // MSW con 'error' solo escribe en stderr; aquí cada petición sin handler se
 // registra y hace fallar la prueba en afterEach.
@@ -21,6 +22,7 @@ beforeAll(() => server.listen({
 afterEach(() => {
   server.resetHandlers();
   resetDb();
+  configureHttp({});
   const pending = takeUnhandledRequests();
   if (pending.length) {
     throw new Error(`Peticiones sin handler de MSW: ${pending.join(', ')}`);
