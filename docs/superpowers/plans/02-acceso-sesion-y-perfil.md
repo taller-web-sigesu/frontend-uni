@@ -19,7 +19,7 @@
 Rigen las de la [fase 01](01-base-visual-y-api-simulada.md#restricciones-globales-aplican-a-las-seis-fases). Además:
 
 - Respuesta de sesión (`login`, `refresh`, `PATCH /auth/password`): `{ tokenAcceso, expiraEnSegundos, usuario: { id, nombreCompleto, rol, areaId }, debeCambiarContrasena }`.
-- Las operaciones `/auth/*` usan `retryOnUnauthorized: false`. `login`, `register` y `refresh` usan `auth: false`.
+- `login`, `register`, `refresh` y `logout` usan `retryOnUnauthorized: false`; `PATCH /auth/password` sí renueva ante 401 (solo significa JWT vencido). `login`, `register` y `refresh` usan `auth: false`.
 - No fijar `Origin` a mano; la cookie viaja sola en mismo origen.
 - Destino tras ingresar: `SUPERVISOR` → `/indicadores`; los demás → `/inicio`. Con `debeCambiarContrasena: true` → `/cambiar-contrasena`.
 - Política de contraseña: de 8 a 72 caracteres, con al menos una letra y un dígito.

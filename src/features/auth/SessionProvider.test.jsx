@@ -115,3 +115,40 @@ test('changePassword reemplaza el token', async () => {
   await request('/catalogs/categories');
   expect(authorization).toBe(`Bearer ${db.sessions.at(-1).accessToken}`);
 });
+
+test('changePassword renueva el JWT vencido y reintenta', async () => {
+  const { result } = renderSession();
+  await waitFor(() => expect(result.current.status).toBe('anonymous'));
+  await act(() => result.current.login({ correo: 'nuevo.demo@universidad.example', contrasena: DEMO_PASSWORD }));
+  db.sessions.at(-1).accessToken = 'vencido';
+  const refreshes = countRequests('POST', '/api/v1/auth/refresh');
+  await act(() => result.current.changePassword({ contrasenaActual: DEMO_PASSWORD, contrasenaNueva: 'nueva2026' }));
+  expect(refreshes.count).toBe(1);
+  expect(result.current.mustChangePassword).toBe(false);
+});
+
+test('un 401 que llega después del logout no restaura la sesión', async () => {
+  const { result } = renderSession();
+  await waitFor(() => expect(result.current.status).toBe('anonymous'));
+  await act(() => result.current.login(ANA));
+  db.sessions.at(-1).accessToken = 'vencido';
+  let release;
+  let entered;
+  const handlerEntered = new Promise((resolve) => { entered = resolve; });
+  // El servidor procesa la renovación antes que el logout: el logout no revoca a tiempo.
+  server.use(
+    http.get('/api/v1/catalogs/categories', async () => {
+      entered();
+      await new Promise((resolve) => { release = resolve; });
+    }, { once: true }),
+    http.post('/api/v1/auth/logout', () => new HttpResponse(null, { status: 204 }), { once: true }),
+  );
+  const refreshes = countRequests('POST', '/api/v1/auth/refresh');
+  const pending = request('/catalogs/categories').catch(() => null);
+  await handlerEntered;
+  await act(() => result.current.logout());
+  release();
+  await act(() => pending);
+  expect(refreshes.count).toBe(0);
+  expect(result.current.status).toBe('anonymous');
+});

@@ -67,8 +67,9 @@ export function SessionProvider({ children, api = authApi, locks, initialSession
 
   /** true si hay un token válido para reintentar la petición que recibió 401. */
   const renewSession = useCallback(async (failedToken) => {
-    // Otra petición ya renovó mientras esta esperaba su 401.
-    if (failedToken && tokenRef.current && failedToken !== tokenRef.current) return true;
+    // La petición salió con un token que ya no es el actual: otra petición ya
+    // renovó (reintentar) o se cerró la sesión (no renovar: no la restaura).
+    if (failedToken && failedToken !== tokenRef.current) return Boolean(tokenRef.current);
     const epoch = epochRef.current;
     let response;
     try {

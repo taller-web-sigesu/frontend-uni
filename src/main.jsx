@@ -10,7 +10,12 @@ import './styles/layout.css';
 
 async function enableMocking() {
   if (import.meta.env.VITE_API_MODE !== 'mock') return;
-  const { worker } = await import('./mocks/browser.js');
+  const [{ worker }, { db }, { registerMockData }] = await Promise.all([
+    import('./mocks/browser.js'),
+    import('./mocks/state.js'),
+    import('./services/pendingContract.js'),
+  ]);
+  registerMockData(db);
   await worker.start({ onUnhandledRequest: 'warn' });
 }
 
