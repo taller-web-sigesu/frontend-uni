@@ -7,8 +7,6 @@ const ADMINISTRADOR = 'ADMINISTRADOR';
 export const ALL_ROLES = [ESTUDIANTE, DOCENTE, TECNICO, SUPERVISOR, ADMINISTRADOR];
 const SOLICITANTES = [ESTUDIANTE, DOCENTE];
 
-// Cada fase reemplaza `placeholder` por el import de su feature.
-const placeholder = () => import('./PlaceholderPage.jsx');
 const auth = (name) => () => import('../features/auth/index.js').then((m) => ({ default: m[name] }));
 const requests = (name) => () => import('../features/requests/index.js').then((m) => ({ default: m[name] }));
 const management = (name) => () => import('../features/management/index.js').then((m) => ({ default: m[name] }));
@@ -41,5 +39,5 @@ export const ROUTES = [
   { path: '/admin/usuarios', roles: [ADMINISTRADOR], title: 'Administración de usuarios', lazy: administration('UsersPage') },
   { path: '/admin/catalogos', roles: [ADMINISTRADOR], title: 'Catálogos', lazy: administration('CatalogsPage') },
   { path: '/admin/sla', roles: [ADMINISTRADOR], title: 'Políticas SLA', lazy: administration('SlaPoliciesPage') },
-  { path: '/admin/ambientes', roles: [ADMINISTRADOR], title: 'Administración de ambientes', lazy: placeholder },
+  { path: '/admin/ambientes', roles: [ADMINISTRADOR], title: 'Administración de ambientes', lazy: administration('SpacesAdminPage') },
 ];
