@@ -41,7 +41,7 @@ function SpaceList({ data, selectedId, onSelect }) {
             <div>
               <p className="choice-list__title">{space.nombre}</p>
               <p className="choice-list__meta">
-                {space.tipo?.nombre} · Pabellón {space.pabellon} · Capacidad {space.capacidad}
+                {[space.tipo?.nombre, space.pabellon, `Capacidad ${space.capacidad}`].filter(Boolean).join(' · ')}
               </p>
               <p className="choice-list__meta">
                 {space.horario ? `Horario ${space.horario.horaApertura}–${space.horario.horaCierre}` : 'Cerrado este día'}
@@ -87,8 +87,12 @@ export default function NewReservationPage() {
   );
   const { submit, pending, error, fieldErrors, reset } = useSubmit(createReservation);
 
-  const libres = availability.data?.libres || [];
-  const closed = Boolean(availability.data) && libres.length === 0;
+  // Solo vale la disponibilidad del espacio y la fecha elegidos: mientras llega
+  // la nueva (o si falló) no se muestran ni se usan las franjas anteriores.
+  const current = availability.status !== 'error' && availability.data?.espacioId === selected?.id
+    && availability.data?.fecha === filters.fecha ? availability.data : null;
+  const libres = current?.libres || [];
+  const closed = Boolean(current) && libres.length === 0;
   const setFilter = (field) => (event) => setFilters((prev) => ({ ...prev, [field]: event.target.value }));
   const setValue = (field) => (event) => setValues((prev) => ({ ...prev, [field]: event.target.value }));
   const errorFor = (field) => localErrors[field] || fieldErrors[field];
@@ -103,7 +107,7 @@ export default function NewReservationPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!selected || closed) return;
+    if (!selected || closed || !current) return;
     const errors = validate(values, libres);
     setLocalErrors(errors);
     setConflict(null);
@@ -165,11 +169,11 @@ export default function NewReservationPage() {
 
   let availabilityContent = null;
   if (selected) {
-    if (availability.status === 'error' && !availability.data) {
+    if (availability.status === 'error') {
       availabilityContent = <ErrorState error={availability.error} onRetry={availability.reload} />;
-    } else if (!availability.data) availabilityContent = <Skeleton lines={2} />;
+    } else if (!current) availabilityContent = <Skeleton lines={2} />;
     else if (closed) availabilityContent = <EmptyState title={NO_AVAILABILITY} />;
-    else availabilityContent = <SlotList availability={availability.data} />;
+    else availabilityContent = <SlotList availability={current} />;
   }
 
   return (
@@ -250,7 +254,7 @@ export default function NewReservationPage() {
           {serverMessage && <p className="form-error" role="alert">{serverMessage}</p>}
           <div className="form-actions">
             <Link className="btn btn--secondary" to="/reservas">Cancelar</Link>
-            <Button type="submit" pending={pending} disabled={!selected || closed || !availability.data}>Registrar reserva</Button>
+            <Button type="submit" pending={pending} disabled={!selected || closed || !current}>Registrar reserva</Button>
           </div>
         </form>
       </div>

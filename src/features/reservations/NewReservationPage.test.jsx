@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { db } from '../../mocks/db.js';
 import { server } from '../../mocks/server.js';
 import { todayInLima } from '../../services/format.js';
@@ -50,7 +51,7 @@ test('filtra espacios y muestra su horario', async () => {
   await waitFor(() => expect(within(spaceList()).getAllByRole('listitem')).toHaveLength(1));
   const item = within(spaceList()).getByRole('listitem');
   expect(item).toHaveTextContent('Laboratorio 204');
-  expect(item).toHaveTextContent('Laboratorio · Pabellón B · Capacidad 24');
+  expect(item).toHaveTextContent('Laboratorio · B · Capacidad 24');
   expect(item).toHaveTextContent('Horario 08:00–18:00');
   const last = calls.at(-1).url.searchParams;
   expect(last.get('tipoEspacioId')).toBe('2');
@@ -147,4 +148,34 @@ test('asistentes debe ser positivo', async () => {
   await user.click(screen.getByRole('button', { name: 'Registrar reserva' }));
   expect(await screen.findByText('Usa un número entero mayor que cero.')).toBeInTheDocument();
   expect(posts).toHaveLength(0);
+});
+
+test('no usa la disponibilidad de otro espacio mientras carga', async () => {
+  let release;
+  const held = new Promise((resolve) => { release = resolve; });
+  server.use(http.get('/api/v1/spaces/4/availability', async () => {
+    await held;
+    return HttpResponse.json({ espacioId: '4', fecha: plusDays(3), horario: null, libres: [], ocupadas: [] });
+  }));
+  const user = await openPage();
+  await chooseSpace(user, 'Laboratorio 204');
+  expect(screen.getByText('10:00–11:00 ocupada')).toBeInTheDocument();
+  const item = within(spaceList()).getByText('Laboratorio 301').closest('li');
+  await user.click(within(item).getByRole('button', { name: 'Elegir Laboratorio 301' }));
+  // Mientras llega la del Laboratorio 301 no se muestran ni se usan las franjas del 204.
+  await waitFor(() => expect(screen.queryByText('10:00–11:00 ocupada')).toBeNull());
+  expect(screen.getByRole('button', { name: 'Registrar reserva' })).toBeDisabled();
+  release();
+  expect(await screen.findByText('No hay disponibilidad para la fecha seleccionada')).toBeInTheDocument();
+});
+
+test('muestra el pabellón tal como lo guarda el backend', async () => {
+  db.spaces.find((s) => s.id === '3').pabellon = 'Pabellón nuevo';
+  db.spaces.find((s) => s.id === '4').pabellon = '';
+  await openPage();
+  setValue('Tipo de espacio', '2');
+  const lab204 = (await within(spaceList()).findByText('Laboratorio 204')).closest('li');
+  expect(lab204).toHaveTextContent('Laboratorio · Pabellón nuevo · Capacidad 24');
+  const lab301 = within(spaceList()).getByText('Laboratorio 301').closest('li');
+  expect(lab301).toHaveTextContent('Laboratorio · Capacidad 20');
 });
