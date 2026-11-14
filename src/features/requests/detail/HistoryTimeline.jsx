@@ -14,7 +14,8 @@ export function HistoryTimeline({ items, personName, labels = REQUEST_STATUS_LAB
       ) : (
         <ol className="timeline">
           {items.map((item, index) => {
-            const actor = personName(item.actorId);
+            // La API ya envía el nombre del actor; `personName` cubre datos simulados antiguos.
+            const actor = item.actorNombre || personName(item.actorId);
             return (
               // El historial no trae id propio; su orden no cambia.
               <li key={`${item.fecha}-${index}`} className="timeline__item">
