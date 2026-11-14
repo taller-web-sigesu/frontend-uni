@@ -84,7 +84,7 @@ function ReviewPanel({ row, user, spaceName, onDecided }) {
         <Item label="Motivo">{reserva.motivo}</Item>
       </dl>
       <h3 className="card__subtitle">Disponibilidad del día</h3>
-      <SlotList availability={availability} />
+      <SlotList availability={availability} current={reserva} />
       {own && <p className="notice notice--info">No puedes decidir sobre tu propia reserva.</p>}
       {!own && !allowed && <p className="notice notice--info">Esta reserva ya no está pendiente.</p>}
       {rejecting && allowed && (

@@ -43,7 +43,7 @@ test('aprobar envía CONFIRMADA y retira la fila', async () => {
   const user = await openPage();
   const dialog = await review(user, 'RES-2026-000005');
   expect(within(dialog).getByText('Clase práctica')).toBeInTheDocument();
-  expect(within(dialog).getByText('14:00–16:00 ocupada')).toBeInTheDocument();
+  expect(within(dialog).getByText('14:00–16:00 ocupada por esta solicitud')).toBeInTheDocument();
   await user.click(within(dialog).getByRole('button', { name: 'Aprobar' }));
   await waitFor(() => expect(patches).toHaveLength(1));
   expect(patches[0].body).toEqual({ estado: 'CONFIRMADA' });
