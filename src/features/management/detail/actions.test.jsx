@@ -126,7 +126,8 @@ test('el supervisor cambia la prioridad', async () => {
 test('la auditoría lista los cambios', async () => {
   await openDetail('2', SUPERVISORA_TI);
   const panel = await screen.findByRole('region', { name: 'Auditoría' });
-  const row = (await within(panel).findByText('prioridad')).closest('tr');
+  const row = (await within(panel).findByText('Prioridad')).closest('tr');
+  expect(row).toHaveTextContent('Actualización');
   expect(row).toHaveTextContent('Media');
   expect(row).toHaveTextContent('Alta');
   expect(row).toHaveTextContent('03/11/2026 10:30');
@@ -147,6 +148,6 @@ test('nunca envía ASIGNADO por PATCH /status', () => {
 test('la auditoría nombra al usuario en sesión en sus propios cambios', async () => {
   await openDetail('2', SUPERVISORA_TI);
   const panel = await screen.findByRole('region', { name: 'Auditoría' });
-  const row = (await within(panel).findByText('prioridad')).closest('tr');
+  const row = (await within(panel).findByText('Prioridad')).closest('tr');
   expect(row).toHaveTextContent('Supervisora TI Demo');
 });
