@@ -4,7 +4,7 @@ import { server } from '../../mocks/server.js';
 import { db, DEMO_PASSWORD, signInMock } from '../../mocks/db.js';
 import { request } from '../../services/http.js';
 import * as authApi from './authApi.js';
-import { SessionProvider, useSession } from './SessionProvider.jsx';
+import { SessionProvider, SESSION_RESTORE_TIMEOUT_MS, useSession } from './SessionProvider.jsx';
 
 const ANA = { correo: 'ana.demo@universidad.example', contrasena: DEMO_PASSWORD };
 
@@ -36,6 +36,22 @@ test('sin cookie queda anonymous', async () => {
   const { result } = renderSession();
   await waitFor(() => expect(result.current.status).toBe('anonymous'));
   expect(result.current.user).toBeNull();
+});
+
+test('si la restauración tarda, no bloquea el ingreso', async () => {
+  vi.useFakeTimers();
+  try {
+    const api = { ...authApi, refresh: () => new Promise(() => {}) };
+    const { result } = renderSession({ api });
+    expect(result.current.status).toBe('restoring');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(SESSION_RESTORE_TIMEOUT_MS);
+    });
+    expect(result.current.status).toBe('anonymous');
+    expect(result.current.user).toBeNull();
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('dos peticiones protegidas que reciben 401 renuevan una sola vez', async () => {
