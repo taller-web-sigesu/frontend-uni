@@ -72,7 +72,8 @@
 @media (max-width: 767px) {
   .shell__content { padding: var(--space-md); }
   .topbar { padding: 0 var(--space-md); }
-  .brand__name { display: none; }
+  /* Oculto a la vista pero no al lector: el enlace conserva su nombre. */
+  .brand__name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .auth-split, .profile-grid { grid-template-columns: minmax(0, 1fr); }
   .auth-brand { font-size: 32px; margin-bottom: var(--space-md); }
   .auth-features { display: none; }

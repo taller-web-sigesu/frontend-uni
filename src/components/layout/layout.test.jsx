@@ -87,3 +87,11 @@ test('el logo navega dentro de la aplicación sin recargar', () => {
   expect(logo).toHaveAttribute('href', '/');
   expect(logo).toHaveAttribute('data-discover', 'true');
 });
+
+test('el nombre accesible del logo contiene su texto visible (WCAG 2.5.3)', () => {
+  mockViewport(false);
+  renderWithRouter(<AppShell user={ana}><p>Contenido</p></AppShell>, { route: '/inicio' });
+  const brand = screen.getByRole('link', { name: 'Universidad Actúa, inicio' });
+  // Sin aria-label: el nombre sale del texto, así coincide con lo que se ve.
+  expect(brand).not.toHaveAttribute('aria-label');
+});

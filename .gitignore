@@ -1,5 +1,8 @@
 node_modules/
 dist/
+dist-mock/
+playwright-report/
+test-results/
 .vite/
 .env
 .env.*

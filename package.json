@@ -10,7 +10,9 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "preview:mock": "vite build --mode mock --outDir dist-mock && vite preview --outDir dist-mock --port 4173 --strictPort",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "19.3.0",
@@ -18,7 +20,9 @@
     "react-router": "^7.18.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.65.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.10",

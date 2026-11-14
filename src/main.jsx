@@ -10,13 +10,18 @@ import './styles/layout.css';
 
 async function enableMocking() {
   if (import.meta.env.VITE_API_MODE !== 'mock') return;
-  const [{ worker }, { db }, { registerMockData }] = await Promise.all([
+  const [{ worker }, { db }, { registerMockData }, { restoreMockState, saveMockState }] = await Promise.all([
     import('./mocks/browser.js'),
     import('./mocks/state.js'),
     import('./services/pendingContract.js'),
+    import('./mocks/persistence.js'),
   ]);
+  restoreMockState(window.sessionStorage);
+  // Solo en modo simulado: los recorridos E2E simulan con esto a «otra persona».
+  window.__mockDb = db;
   registerMockData(db);
-  await worker.start({ onUnhandledRequest: 'warn' });
+  worker.events.on('response:mocked', () => saveMockState(window.sessionStorage));
+  await worker.start({ onUnhandledRequest: 'warn', quiet: true });
 }
 
 const router = createAppRouter(appGuards);

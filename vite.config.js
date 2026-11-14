@@ -27,5 +27,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['src/test/setup.js'],
     css: false,
+    // Los recorridos de Playwright (e2e/) no corren con Vitest.
+    include: ['src/**/*.test.{js,jsx}'],
   },
 });
