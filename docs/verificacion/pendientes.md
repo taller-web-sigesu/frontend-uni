@@ -1,18 +1,21 @@
 # Tareas pendientes del frontend
 
-Estado al **13/11/2026**, al cerrar la fase 06 (rama `feature/frontend-fase-06-integracion`).
+Estado al **14/11/2026**, con las fases 01 a 06 integradas y desplegadas.
 Las fases 01 a 06 están implementadas; esta lista recoge lo que falta para entregar y lo que se dejó fuera a propósito.
 
 **Fuera de alcance (decidido):** el modo oscuro. La aplicación es solo de tema claro; `DESIGN.md`, `AGENTS.md` y `ARCHITECTURE.md` ya lo reflejan.
 
-## 1. Integración (bloquea la entrega)
+## 1. Integración y despliegue
 
-| # | Tarea | Responsable | Detalle |
-| --- | --- | --- | --- |
-| 1.1 | Subir la rama de la fase 05 y abrir su PR | Frontend | `feature/frontend-fase-05-reservas`, título `[frontend] ...`, revisada por un compañero. |
-| 1.2 | Subir la rama de la fase 06 y abrir su PR | Frontend | Está apilada sobre la fase 05: abrir la PR contra esa rama o rebasarla sobre `main` cuando la 05 se fusione. |
-| 1.3 | Confirmar la primera ejecución de CI en GitHub | Frontend | `.github/workflows/ci.yml` solo se probó en local. Revisar que `playwright install --with-deps` y los E2E pasen en el runner. |
-| 1.4 | Revisión independiente del código | Equipo | La revisión de las fases 05 y 06 la hizo el mismo autor. La PR debe revisarla otra persona. |
+Estado al **14/11/2026**: las fases 05 y 06 están integradas en `main`, el CI está en verde y staging y producción están desplegados.
+
+| # | Tarea | Estado |
+| --- | --- | --- |
+| 1.1 | Subir la rama de la fase 05 y abrir su PR | Completado |
+| 1.2 | Subir la rama de la fase 06 y abrir su PR | Completado |
+| 1.3 | Confirmar la primera ejecución de CI en GitHub | Completado: `ci` ejecuta lint, Vitest, build y Playwright |
+| 1.4 | Revisión independiente del código | Pendiente: las PRs finales se integraron con bypass de administrador; falta la revisión por otro integrante |
+| 1.5 | Despliegue en staging y producción | Completado: https://frontend-uni-tdk7.vercel.app y https://frontend-uni-wx9m.vercel.app |
 
 ## 2. Huecos del contrato (dependen del backend)
 
