@@ -33,6 +33,12 @@ test('sin calificación no envía', async () => {
   expect(calls).toHaveLength(0);
 });
 
+test('si el detalle dice que ya se respondió, no muestra el formulario', () => {
+  renderWithRouter(<SurveySection requestId="5" answered />, { session: { user: userById(ANA) } });
+  expect(screen.getByText('Ya respondiste esta encuesta')).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Enviar encuesta' })).not.toBeInTheDocument();
+});
+
 test('409 marca la encuesta como respondida', async () => {
   db.requests.find((r) => r.id === '5').survey = { id: '1', calificacion: 5, comentario: null };
   const user = renderSurvey();
