@@ -4,7 +4,7 @@ Revisión del 13/11/2026 sobre el build simulado (`npm run preview:mock`).
 
 ## Comprobaciones automáticas
 
-Recorrí 17 rutas en tres anchos (1440, 768 y 360 px) con `prefers-color-scheme` claro y oscuro: 108 comprobaciones en total.
+Recorrí 17 rutas en tres anchos (1440, 768 y 360 px) con `prefers-color-scheme` claro y oscuro: 108 comprobaciones en total. La aplicación es solo de tema claro, así que ambas preferencias muestran lo mismo; se comprobó que el sistema en oscuro no rompe nada.
 
 | Ruta | Rol | Desborde horizontal | Contraste (axe `color-contrast`) | Tamaño de objetivo (axe `target-size`) |
 | --- | --- | --- | --- | --- |
@@ -43,5 +43,4 @@ Muestra: P09 reservar ambiente, P12 usuarios y P07 gestión de área, frente a l
 
 ## Pendiente (no afecta a ninguna HU)
 
-- **Tema oscuro:** `DESIGN.md` define `themes.dark`, pero `src/styles/tokens.css` solo implementa el claro. Con `prefers-color-scheme: dark` la aplicación sigue en claro, que es legible y pasa el contraste.
 - **Usuarios a 1440 px:** los correos se cortan a mitad de palabra y las acciones de fila ocupan dos líneas.

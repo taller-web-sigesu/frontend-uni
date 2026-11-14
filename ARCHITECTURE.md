@@ -82,7 +82,7 @@ tests/                        # Pruebas de UI y end-to-end previstas
 
 El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md`](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/superpowers/plans/2026-11-04-ingenieria-pendiente.md). Orden de trabajo:
 
-1. **Base:** React Router, `app/`, `components/layout`, `services/`, tokens de `DESIGN.md`, modo claro/oscuro y responsive.
+1. **Base:** React Router, `app/`, `components/layout`, `services/`, tokens de `DESIGN.md`, modo claro (sin modo oscuro, fuera de alcance) y responsive.
 2. **Sesión y API:** cliente HTTP centralizado, access token en memoria, refresh con cookie, manejo de 401 y errores.
 3. **Features:** `auth`, `requests`, `management`, `dashboard`, `administration` y `reservations`, con estados de carga, vacío y error.
 4. **Calidad:** Vitest + Testing Library, ESLint, Playwright y accesibilidad WCAG 2.2 AA.

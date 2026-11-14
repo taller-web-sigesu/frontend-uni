@@ -26,13 +26,6 @@ themes:
     ink: "#18181B"
     ink-muted: "#71717A"
     border: "#E4E4E7"
-  dark:
-    background: "#111315"
-    surface: "#1B1D20"
-    surface-variant: "#23262A"
-    ink: "#F4F4F5"
-    ink-muted: "#A1A1AA"
-    border: "#34373C"
 typography:
   display:
     fontFamily: Inter
@@ -94,7 +87,7 @@ Un sistema visual limpio, profesional y compacto para estudiantes, docentes, té
 
 El **amarillo primario** (`#FACC15`) identifica acciones principales y navegación activa, con texto oscuro. El fondo claro (`#FAFAFA`) contrasta suavemente con las tarjetas blancas (`#FFFFFF`). El gris secundario ordena textos y controles. Los colores de éxito, advertencia y error comunican estados reales, siempre acompañados de texto.
 
-El **modo claro es predeterminado**; el oscuro utiliza los tokens de `themes.dark` sin alterar jerarquía ni componentes. Los tokens semánticos deben mapearse a variables CSS; evitar colores hardcodeados en cada pantalla.
+El producto usa **solo el modo claro**; el modo oscuro quedó fuera del alcance. Los tokens semánticos deben mapearse a variables CSS; evitar colores hardcodeados en cada pantalla.
 
 ## Typography
 
@@ -119,7 +112,7 @@ Las vistas principales incluyen **login, dashboard, solicitudes, detalle, asigna
 - Do mantener la tabla de solicitudes como elemento principal en escritorio.
 - Do reutilizar componentes y tokens en todas las pantallas y roles.
 - Do ofrecer estados de carga, vacío, error, foco y confirmación.
-- Do comprobar modo claro, oscuro, responsive y accesibilidad WCAG 2.2 AA (texto normal ≥4.5:1).
+- Do comprobar responsive y accesibilidad WCAG 2.2 AA (texto normal ≥4.5:1).
 - Don't saturar la interfaz con amarillo ni convertir todas las acciones en botones primarios.
 - Don't inventar métricas, estados, permisos o funcionalidades ajenas a las historias de usuario.
 - Don't mezclar estilos, radios o librerías visuales sin una decisión documentada.

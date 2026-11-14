@@ -4,6 +4,7 @@ Portal web en React 19 + Vite + React Router, basado en [`DESIGN.md`](DESIGN.md)
 Cubre sesión y perfil, solicitudes, atención por rol, indicadores, administración
 y reservas de ambientes (HU-01 a HU-29). La verificación por HU está en
 [`docs/verificacion/matriz-hu.md`](docs/verificacion/matriz-hu.md).
+Lo que falta está en [`docs/verificacion/pendientes.md`](docs/verificacion/pendientes.md).
 
 ## Trabajo en equipo
 
