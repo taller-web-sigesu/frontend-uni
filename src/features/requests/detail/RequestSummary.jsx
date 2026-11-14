@@ -35,7 +35,7 @@ export function RequestSummary({ solicitud, categoryName }) {
     <section className="card" aria-labelledby="detalle-datos">
       <h2 id="detalle-datos">Datos de la solicitud</h2>
       <dl className="data-list data-list--grid">
-        <Item label="Categoría">{categoryName(solicitud.categoriaId)}</Item>
+        <Item label="Categoría">{solicitud.categoria || categoryName(solicitud.categoriaId)}</Item>
         <Item label="Área">{areaName(solicitud.areaId)}</Item>
         <Item label="Ubicación">{solicitud.ubicacion}</Item>
         <Item label="Solicitante">{solicitud.solicitante?.nombreCompleto}</Item>
