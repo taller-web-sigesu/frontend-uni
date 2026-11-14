@@ -34,6 +34,7 @@ test.describe('solicitudes', () => {
     await switchTo(page, 'SUPERVISOR');
     await page.goto(`/solicitudes/${id}`);
     await page.getByRole('button', { name: 'Cerrar solicitud' }).click();
+    await page.getByRole('dialog', { name: 'Cerrar solicitud' }).getByRole('button', { name: 'Cerrar solicitud' }).click();
     await expect(header(page)).toContainText('Cerrado');
 
     await switchTo(page, 'ESTUDIANTE');
