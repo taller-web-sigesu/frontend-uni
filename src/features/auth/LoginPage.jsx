@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { Button, TextField } from '../../components/ui/index.js';
 import { useSubmit } from '../../services/useSubmit.js';
+import {
+  AlertIcon, ArrowRightIcon, ArrowUpRightIcon, CalendarIcon, EyeIcon, EyeOffIcon,
+  LockIcon, LoginIllustration, MailIcon, ShieldIcon, TicketIcon, UserIcon,
+} from './LoginArt.jsx';
 import { useSession } from './SessionProvider.jsx';
+import './login.css';
 
 const LOGIN_MESSAGES = {
   401: 'Correo o contraseña incorrectos',
@@ -19,9 +24,9 @@ function loginMessage(error) {
 }
 
 const FEATURES = [
-  ['Solicitudes', 'Registra y sigue el estado de tus casos.'],
-  ['Reservas', 'Consulta disponibilidad y reserva ambientes.'],
-  ['Perfil', 'Datos de tu cuenta y cambio de contraseña.'],
+  { term: 'Solicitudes', description: 'Registra y sigue el estado de tus casos.', icon: <TicketIcon /> },
+  { term: 'Reservas', description: 'Consulta disponibilidad y reserva ambientes.', icon: <CalendarIcon /> },
+  { term: 'Perfil', description: 'Datos de tu cuenta y cambio de contraseña.', icon: <UserIcon /> },
 ];
 
 /** P01. Tras el ingreso, PublicOnly lleva al destino que corresponde. */
@@ -47,71 +52,116 @@ export default function LoginPage() {
   const message = loginMessage(error);
 
   return (
-    <div className="auth-split">
-      <section className="auth-intro" aria-label="Presentación">
-        <p className="auth-kicker">Universidad Actúa</p>
-        <p className="auth-brand">UniService</p>
-        <h2 className="auth-intro__title">Mesa de ayuda universitaria</h2>
-        <p className="auth-intro__lead">Registra solicitudes, sigue su estado y reserva ambientes desde un solo lugar.</p>
-        <dl className="auth-features">
-          {FEATURES.map(([term, description]) => (
-            <div key={term}>
-              <dt>{term}</dt>
-              <dd>{description}</dd>
-            </div>
+    <div className="login-page">
+      <section className="login-hero" aria-label="Presentación">
+        <span className="login-hero__glow" aria-hidden="true" />
+        <span className="login-hero__dots" aria-hidden="true" />
+
+        <header className="login-brand">
+          <span className="login-brand__mark" aria-hidden="true">U</span>
+          <span className="login-brand__copy">
+            <span className="login-brand__name">UniService</span>
+            <span className="login-brand__institution">Universidad Actúa</span>
+          </span>
+        </header>
+
+        <p className="login-hero__eyebrow">Portal de servicios académicos</p>
+        <h2 className="login-hero__title">
+          Mesa de ayuda <span className="login-hero__highlight">universitaria</span>
+        </h2>
+        <p className="login-hero__lead">
+          Registra solicitudes, sigue su estado y reserva ambientes desde un solo lugar.
+        </p>
+
+        <LoginIllustration />
+
+        <ul className="login-features" aria-label="Servicios disponibles">
+          {FEATURES.map(({ term, description, icon }) => (
+            <li key={term} className="login-feature">
+              {icon}
+              <p className="login-feature__term">{term}</p>
+              <p className="login-feature__desc">{description}</p>
+            </li>
           ))}
-        </dl>
+        </ul>
       </section>
 
-      <section className="auth-card">
-        <h1 className="auth-card__title">Iniciar sesión</h1>
-        <p className="auth-card__lead">Usa tu correo institucional.</p>
+      <section className="login-card">
+        <span className="login-card__accent" aria-hidden="true" />
+        <p className="login-card__badge">Acceso institucional</p>
+        <h1 className="login-card__title">Iniciar sesión</h1>
+        <p className="login-card__lead">Usa tu correo institucional para entrar a tu mesa de ayuda.</p>
 
         {logoutPending && (
-          <div className="notice notice--warning" role="alert">
+          <div className="notice notice--warning login-card__notice" role="alert">
             <p>{LOGOUT_PENDING}</p>
             <Button variant="secondary" onClick={retryLogout}>Reintentar</Button>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <TextField
-            label="Correo institucional"
-            name="correo"
-            type="email"
-            autoComplete="username"
-            value={values.correo}
-            onChange={change('correo')}
-            error={localErrors.correo || fieldErrors.correo}
-          />
-          <TextField
-            label="Contraseña"
-            name="contrasena"
-            type={showPassword ? 'text' : 'password'}
-            autoComplete="current-password"
-            value={values.contrasena}
-            onChange={change('contrasena')}
-            error={localErrors.contrasena || fieldErrors.contrasena}
-          />
-          <div className="auth-card__toggle">
+        <form className="login-form" onSubmit={handleSubmit} noValidate>
+          <div className="login-field">
+            <TextField
+              label="Correo institucional"
+              name="correo"
+              type="email"
+              autoComplete="username"
+              value={values.correo}
+              onChange={change('correo')}
+              error={localErrors.correo || fieldErrors.correo}
+            />
+            <span className="login-field__icon" aria-hidden="true"><MailIcon /></span>
+          </div>
+
+          <div className="login-field login-field--password">
+            <TextField
+              label="Contraseña"
+              name="contrasena"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={values.contrasena}
+              onChange={change('contrasena')}
+              error={localErrors.contrasena || fieldErrors.contrasena}
+            />
+            <span className="login-field__icon" aria-hidden="true"><LockIcon /></span>
             <button
               type="button"
-              className="link-button"
+              className="login-password-toggle"
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               aria-pressed={showPassword}
               onClick={() => setShowPassword((shown) => !shown)}
             >
-              Mostrar contraseña
+              {showPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+              <span>{showPassword ? 'Ocultar' : 'Mostrar'}</span>
             </button>
           </div>
-          {message && <p className="form-error" role="alert">{message}</p>}
-          <Button type="submit" pending={pending}>Ingresar</Button>
+
+          {message && (
+            <div className="login-alert" role="alert">
+              <AlertIcon size={17} />
+              <p>{message}</p>
+            </div>
+          )}
+
+          <Button type="submit" pending={pending} className="login-submit">
+            <span>{pending ? 'Ingresando…' : 'Ingresar'}</span>
+            {!pending && <ArrowRightIcon />}
+          </Button>
         </form>
 
-        <p className="auth-card__footnote">
-          Nunca revelamos si falló el correo o la contraseña. Si olvidaste tu clave, contacta a soporte.
-        </p>
-        <p className="auth-card__footnote">
-          ¿Eres estudiante y no tienes cuenta? <Link to="/registro">Crear cuenta</Link>
+        <div className="login-card__security">
+          <ShieldIcon size={17} />
+          <p>
+            Nunca revelamos si falló el correo o la contraseña. Si olvidaste tu clave, contacta a soporte.
+          </p>
+        </div>
+
+        <p className="login-divider"><span>¿Primera vez?</span></p>
+        <p className="login-register">
+          ¿Eres estudiante y no tienes cuenta?{' '}
+          <Link to="/registro">
+            Crear cuenta <ArrowUpRightIcon size={14} />
+          </Link>
         </p>
       </section>
     </div>
