@@ -141,7 +141,9 @@ function RequestDetail({ id }) {
         <div className="detail-grid__main">
           <RequestSummary solicitud={solicitud} categoryName={categoryName} />
           <AttachmentsSection requestId={solicitud.id} canAttach={actions.has('ADJUNTAR')} />
-          {actions.has('RESPONDER_ENCUESTA') && <SurveySection requestId={solicitud.id} />}
+          {actions.has('RESPONDER_ENCUESTA') && (
+            <SurveySection requestId={solicitud.id} answered={solicitud.encuestaRespondida} />
+          )}
           {actions.has('CAMBIAR_PRIORIDAD') && (
             <PriorityControl solicitud={solicitud} onChanged={handleChanged} onConflict={setConflict} />
           )}

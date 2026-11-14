@@ -61,6 +61,7 @@ function detail(r) {
     responsableActual: r.responsableId ? person(r.responsableId) : null,
     ultimoResponsable: TERMINAL.includes(r.estado) && r.ultimoResponsableId ? person(r.ultimoResponsableId) : null,
     sla: { ...r.sla },
+    encuestaRespondida: Boolean(r.survey),
   };
 }
 
