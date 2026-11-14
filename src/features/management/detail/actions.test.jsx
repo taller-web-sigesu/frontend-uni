@@ -44,10 +44,13 @@ test('el técnico inicia desde ASIGNADO y resuelve desde EN_PROCESO', async () =
   expect(screen.queryByRole('button', { name: 'Marcar como resuelta' })).not.toBeInTheDocument();
 });
 
-test('el supervisor cierra desde RESUELTO', async () => {
+test('el supervisor cierra desde RESUELTO tras confirmar', async () => {
   const calls = captureRequests('PATCH', '/api/v1/requests/4/status');
   const user = await openDetail('4', SUPERVISORA_TI);
   await user.click(screen.getByRole('button', { name: 'Cerrar solicitud' }));
+  const dialog = screen.getByRole('dialog', { name: 'Cerrar solicitud' });
+  expect(calls).toHaveLength(0);
+  await user.click(within(dialog).getByRole('button', { name: 'Cerrar solicitud' }));
   await waitFor(() => expect(statusOf('4')).toBe('CERRADO'));
   expect(calls.map((c) => c.body)).toEqual([{ estado: 'CERRADO' }]);
   await waitFor(() => expect(screen.queryByRole('button', { name: 'Cerrar solicitud' })).not.toBeInTheDocument());
@@ -79,6 +82,7 @@ test('recarga y recalcula tras 409', async () => {
   solicitud.ultimoResponsableId = solicitud.responsableId;
   solicitud.responsableId = null;
   await user.click(screen.getByRole('button', { name: 'Cerrar solicitud' }));
+  await user.click(within(screen.getByRole('dialog', { name: 'Cerrar solicitud' })).getByRole('button', { name: 'Cerrar solicitud' }));
   expect(await screen.findByText(CONFLICT)).toBeInTheDocument();
   await waitFor(() => expect(screen.queryByRole('button', { name: 'Cerrar solicitud' })).not.toBeInTheDocument());
   expect(screen.queryByRole('button', { name: 'Reasignar' })).not.toBeInTheDocument();
