@@ -40,9 +40,8 @@ Cuando el backend publique cada dato: quitar la entrada de `pendingContract.js`,
 | --- | --- | --- |
 | 4.1 | Recorrido E2E de HU-16 (categorías y áreas) | Hoy solo tiene pruebas unitarias. |
 | 4.2 | Recorrido E2E de HU-19 (auditoría) | Hoy solo tiene pruebas unitarias. |
-| 4.3 | Fallo intermitente en `e2e/sesion.spec.js` (modo simulado) | Ocurrió una vez y no se repitió en 90 ejecuciones. Vigilarlo en CI. |
-| 4.4 | Reintento de CI | CI reintenta una vez cada prueba fallida, lo que puede ocultar inestabilidad. Revisar los informes aunque el job salga en verde. |
-| 4.5 | Recorrido manual con teclado | No se recorrió cada pantalla con Tab y Shift+Tab. |
+| 4.3 | Reintento de CI | CI reintenta una vez cada prueba fallida, lo que puede ocultar inestabilidad. Revisar los informes aunque el job salga en verde. |
+| 4.4 | Recorrido manual con teclado | No se recorrió cada pantalla con Tab y Shift+Tab. |
 
 ## 5. Detalles visuales (no afectan a ninguna HU)
 

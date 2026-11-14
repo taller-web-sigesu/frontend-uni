@@ -61,4 +61,4 @@ Todos siguen en `src/services/pendingContract.js`. Ninguno inventa endpoints.
 
 - Los datos que crean los recorridos reales (cuentas `@unmsm.edu.pe` con sufijo único, solicitudes y reservas) quedan en la base local. Para limpiarla: `docker compose down -v` en `infra-uni`.
 - Los nombres visibles de la semilla real (`db/demo`, por ejemplo «Ana Estudiante») no coinciden con los de la API simulada («Ana Demo»). `e2e/fixtures.js` los separa por modo.
-- Una ejecución simulada de `sesion` tuvo un fallo intermitente que no se reprodujo en 90 repeticiones.
+- El fallo intermitente de `sesion › cerrar sesión…` era una carrera de la prueba: recargaba antes de que terminara `POST /auth/logout`. `logout()` en `e2e/fixtures.js` ahora espera la revocación.
