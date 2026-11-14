@@ -100,8 +100,8 @@ function moveTo(solicitud, estado, actorId, motivo = null) {
   }
 }
 
-function audit(solicitud, campo, valorAnterior, valorNuevo, actorId) {
-  solicitud.audit.push({ id: nextId(), campo, valorAnterior, valorNuevo, actorId, fecha: now() });
+function audit(solicitud, campo, valorAnterior, valorNuevo, actorId, accion = 'ACTUALIZAR') {
+  solicitud.audit.push({ id: nextId(), accion, campo, valorAnterior, valorNuevo, actorId, fecha: now() });
 }
 
 const priorityName = (id) => db.priorities.find((p) => p.id === id)?.nombre ?? id;
@@ -305,7 +305,7 @@ export const requestHandlers = [
     if (attachment.autorId !== user.id) return problem(403, 'SOLO_EL_AUTOR', 'Solo el autor puede eliminar la evidencia.');
     if (TERMINAL.includes(solicitud.estado)) return conflict('SOLICITUD_FINALIZADA', 'La solicitud ya está cerrada o rechazada.');
     attachment.eliminado = true;
-    audit(solicitud, 'ELIMINAR_ADJUNTO', attachment.nombre, null, user.id);
+    audit(solicitud, 'nombre_original', attachment.nombre, null, user.id, 'ELIMINAR_ADJUNTO');
     return new HttpResponse(null, { status: 204 });
   }),
 

@@ -61,7 +61,7 @@ function initialRequests() {
         ? [{ id: '1', nombre: 'pc-12.jpg', tamanoBytes: 2097152, tipoMime: 'image/jpeg', autorId: '8', creadoEn: `2026-11-${day}T14:05:00Z`, eliminado: false }]
         : [],
       audit: seed.id === '2'
-        ? [{ id: '1', campo: 'prioridad', valorAnterior: 'Media', valorNuevo: 'Alta', actorId: '2', fecha: `2026-11-${day}T15:30:00Z` }]
+        ? [{ id: '1', accion: 'ACTUALIZAR', campo: 'prioridad', valorAnterior: 'Media', valorNuevo: 'Alta', actorId: '2', fecha: `2026-11-${day}T15:30:00Z` }]
         : [],
       survey: null,
     };
