@@ -47,6 +47,7 @@ function summary(r) {
     categoriaId: r.categoriaId,
     categoria: db.categories.find((c) => c.id === r.categoriaId)?.nombre ?? null,
     areaId: r.areaId,
+    area: db.areas.find((a) => a.id === r.areaId)?.nombre ?? null,
     prioridadId: r.prioridadId,
     prioridad: priorityName(r.prioridadId),
     estado: r.estado,

@@ -30,7 +30,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <dt>Área</dt>
-              <dd>{user.areaId ? areaName(user.areaId) : 'Sin área asignada'}</dd>
+              <dd>{user.areaId ? (user.areaNombre || areaName(user.areaId)) : 'Sin área asignada'}</dd>
             </div>
           </dl>
         </section>
