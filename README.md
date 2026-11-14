@@ -6,6 +6,35 @@ y reservas de ambientes (HU-01 a HU-29). La verificación por HU está en
 [`docs/verificacion/matriz-hu.md`](docs/verificacion/matriz-hu.md).
 Lo que falta está en [`docs/verificacion/pendientes.md`](docs/verificacion/pendientes.md).
 
+## Despliegues
+
+Hay **dos despliegues separados**:
+
+| Entorno | URL | Rama | Backend |
+| --- | --- | --- | --- |
+| Staging | https://frontend-uni-tdk7.vercel.app | `main` | https://uniservice-backend-staging.onrender.com |
+| Producción | https://frontend-uni-wx9m.vercel.app | `production` | https://uniservice-backend-prod.onrender.com |
+
+Staging se actualiza al integrar en `main`. Producción se despliega al promover `main` → `production`; su `vercel.json` apunta al backend de producción y el backend de producción exige aprobación y smoke.
+
+### Usuarios de prueba (staging)
+
+Todas las cuentas usan la contraseña **`Demo2026!`**:
+
+| Correo | Rol |
+| --- | --- |
+| `admin.demo@universidad.example` | Administrador |
+| `supervisor.ti.demo@universidad.example` | Supervisor TI |
+| `supervisor.mant.demo@universidad.example` | Supervisor Mantenimiento |
+| `supervisor.bib.demo@universidad.example` | Supervisor Biblioteca |
+| `tecnico.ti.demo@universidad.example` | Técnico TI |
+| `tecnica.ti.demo@universidad.example` | Técnica TI |
+| `tecnico.mant.demo@universidad.example` | Técnico Mantenimiento |
+| `ana.demo@universidad.example` | Estudiante |
+| `pedro.demo@universidad.example` | Docente |
+
+Producción no carga cuentas demo. El informe completo de Fase III está en [infra-uni/docs/fase-3/INFORME-FASE-III.md](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/fase-3/INFORME-FASE-III.md).
+
 ## Trabajo en equipo
 
 **Obligatorio:** crea una rama por tarea (`feature/...`, `fix/...` o `docs/...`)
