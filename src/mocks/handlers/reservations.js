@@ -53,6 +53,8 @@ function freeSlots(horario, ocupadas) {
   return libres;
 }
 
+const personName = (id) => db.users.find((u) => u.id === id)?.nombreCompleto ?? null;
+
 function summary(r) {
   return {
     id: r.id,
@@ -64,6 +66,7 @@ function summary(r) {
     horaFin: r.horaFin,
     estado: r.estado,
     estadoOperativo: null,
+    solicitante: personName(r.solicitanteId),
   };
 }
 

@@ -78,6 +78,7 @@ function ReviewPanel({ row, user, spaceName, onDecided }) {
     <>
       <dl className="data-list data-list--grid">
         <Item label="Espacio">{spaceOf(reserva, spaceName)}</Item>
+        <Item label="Solicitante">{reserva.solicitante || '—'}</Item>
         <Item label="Fecha">{dayLabel(reserva.fecha)}</Item>
         <Item label="Horario">{slotLabel(reserva)}</Item>
         <Item label="Asistentes">{reserva.numAsistentes ?? 'No indicado'}</Item>
@@ -138,13 +139,16 @@ export default function ApprovalPage() {
     else reload();
   }
 
-  const columns = reservationColumns(spaceName, [{
-    key: 'acciones',
-    header: 'Acciones',
-    render: (row) => (
-      <Button variant="secondary" aria-label={`Revisar ${row.codigo}`} onClick={() => setReviewing(row)}>Revisar</Button>
-    ),
-  }]);
+  const columns = reservationColumns(spaceName, [
+    { key: 'solicitante', header: 'Solicitante', render: (row) => row.solicitante || '—' },
+    {
+      key: 'acciones',
+      header: 'Acciones',
+      render: (row) => (
+        <Button variant="secondary" aria-label={`Revisar ${row.codigo}`} onClick={() => setReviewing(row)}>Revisar</Button>
+      ),
+    },
+  ]);
 
   let content;
   if (status === 'error' && !data) content = <ErrorState error={error} onRetry={reload} />;
