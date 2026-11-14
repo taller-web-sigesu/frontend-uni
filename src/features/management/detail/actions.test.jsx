@@ -133,6 +133,18 @@ test('la auditoría lista los cambios', async () => {
   expect(row).toHaveTextContent('03/11/2026 10:30');
 });
 
+test('un evento antiguo de comentario se etiqueta como Comentario', async () => {
+  db.requests.find((r) => r.id === '2').audit.push({
+    id: 'legacy-comment', entidad: 'comentarios', accion: 'CREAR', campo: null,
+    valorAnterior: null, valorNuevo: null, actorId: '2', fecha: '2026-11-03T15:00:00Z',
+  });
+  await openDetail('2', SUPERVISORA_TI);
+  const panel = await screen.findByRole('region', { name: 'Auditoría' });
+  const row = (await within(panel).findAllByText('Comentario'))[0].closest('tr');
+  expect(row).toHaveTextContent('Comentario');
+  expect(row).toHaveTextContent('—');
+});
+
 test('el técnico no ve la auditoría', async () => {
   const audits = captureRequests('GET', /\/audit-events$/);
   await openDetail('2', TECNICO_TI);
