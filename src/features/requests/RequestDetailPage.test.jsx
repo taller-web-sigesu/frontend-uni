@@ -17,6 +17,7 @@ test('muestra resumen, historial y comentarios', async () => {
   openDetail('3');
   expect(await screen.findByRole('heading', { name: 'Detalle y seguimiento de solicitud' })).toBeInTheDocument();
   expect(await screen.findByRole('heading', { name: 'SOL-2026-000003' })).toBeInTheDocument();
+  expect(screen.getByText('Prioridad: Media')).toBeInTheDocument();
   const summary = screen.getByRole('region', { name: 'Datos de la solicitud' });
   expect(within(summary).getByText('Conectividad')).toBeInTheDocument();
   expect(within(summary).getByText('Tecnologías de la Información')).toBeInTheDocument();
