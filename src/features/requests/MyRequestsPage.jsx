@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DataTable, EmptyState, ErrorState, Pagination, Skeleton } from '../../components/ui/index.js';
 import { useCatalogLabels } from '../../services/catalogs.js';
+import { countLabel } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { listRequests } from './requestsApi.js';
 import { requestColumns } from './requestColumns.jsx';
@@ -47,7 +48,7 @@ export default function MyRequestsPage() {
       <header className="page__header page__header--actions">
         <div>
           <h1>Mis solicitudes</h1>
-          {data && <p className="page__lead">{data.totalElements} registradas</p>}
+          {data && <p className="page__lead">{countLabel(data.totalElements, 'registrada')}</p>}
         </div>
         <NewRequestLink />
       </header>

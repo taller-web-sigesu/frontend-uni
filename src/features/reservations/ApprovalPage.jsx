@@ -3,6 +3,7 @@ import { useCurrentUser } from '../../app/userContext.js';
 import {
   Button, DataTable, Dialog, EmptyState, ErrorState, Pagination, Skeleton, TextArea,
 } from '../../components/ui/index.js';
+import { countLabel } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { useSubmit } from '../../services/useSubmit.js';
 import { dayLabel, reservationColumns, slotLabel, spaceOf } from './reservationColumns.jsx';
@@ -163,7 +164,7 @@ export default function ApprovalPage() {
     <section className="page">
       <header className="page__header">
         <h1>Aprobación de reservas</h1>
-        {data && <p className="page__lead">{data.totalElements} pendientes</p>}
+        {data && <p className="page__lead">{countLabel(data.totalElements, 'pendiente')}</p>}
       </header>
       <p className="notice notice--info">No puedes aprobar tus propias reservas.</p>
       {notice && <p className="notice notice--success" role="status">{notice}</p>}
