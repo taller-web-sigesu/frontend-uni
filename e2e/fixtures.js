@@ -48,9 +48,27 @@ export async function login(page, rol) {
   await expect(page.getByText(NAMES[rol], { exact: true }).first()).toBeVisible();
 }
 
+/**
+ * Cierra sesión y espera a que el servidor la revoque. La app vuelve al ingreso
+ * antes de que termine `POST /auth/logout`; recargar en ese instante cancelaría
+ * la petición y la cookie de renovación seguiría viva.
+ */
 export async function logout(page) {
+  const revoked = IS_REAL
+    ? page.waitForResponse((r) => r.url().endsWith('/api/v1/auth/logout'))
+    : null;
   await page.getByRole('button', { name: 'Cerrar sesión' }).click();
   await page.waitForURL('**/login');
+  if (revoked) {
+    await revoked;
+  } else {
+    await expect
+      .poll(() => page.evaluate(
+        (key) => JSON.parse(window.sessionStorage.getItem(key) || '{}').refreshCookie ?? null,
+        'mock-api-state',
+      ))
+      .toBeNull();
+  }
 }
 
 /** Ingreso directo contra el backend real (solo `E2E_API=real`). */
