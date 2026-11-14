@@ -27,7 +27,7 @@ async function review(user, codigo) {
 test('lista pendientes de la vista de gestión', async () => {
   const calls = captureRequests('GET', '/api/v1/reservations');
   await openPage();
-  expect(await rowOf('RES-2026-000001')).toBeInTheDocument();
+  expect(await rowOf('RES-2026-000001')).toHaveTextContent('Ana Demo');
   expect(await rowOf('RES-2026-000005')).toBeInTheDocument();
   expect(await rowOf('RES-2026-000006')).toBeInTheDocument();
   // El Laboratorio 301 es de Mantenimiento: no le corresponde.
@@ -42,6 +42,7 @@ test('aprobar envía CONFIRMADA y retira la fila', async () => {
   const patches = captureRequests('PATCH', '/api/v1/reservations/5/status');
   const user = await openPage();
   const dialog = await review(user, 'RES-2026-000005');
+  expect(within(dialog).getByText('Pedro Demo')).toBeInTheDocument();
   expect(within(dialog).getByText('Clase práctica')).toBeInTheDocument();
   expect(within(dialog).getByText('14:00–16:00 ocupada')).toBeInTheDocument();
   await user.click(within(dialog).getByRole('button', { name: 'Aprobar' }));
