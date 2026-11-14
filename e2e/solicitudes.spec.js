@@ -59,6 +59,18 @@ test.describe('solicitudes', () => {
     await expect(page.getByText('Corresponde a otra sede.')).toBeVisible();
   });
 
+  test('el detalle no desborda a lo ancho aunque el selector de archivo sea ancho', async ({ page }) => {
+    // En Linux el texto nativo del selector («Choose Files No file chosen») es más ancho
+    // que en Windows; se simula agrandándolo.
+    await login(page, 'ESTUDIANTE');
+    await createRequest(page);
+    await page.addStyleTag({ content: 'input[type="file"] { font-size: 28px; }' });
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBe(0);
+  });
+
   test('una solicitud ajena se muestra como no encontrada', async ({ page }) => {
     await login(page, 'ESTUDIANTE');
     const { id } = await createRequest(page);
