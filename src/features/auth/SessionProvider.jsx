@@ -8,6 +8,8 @@ import { createRefreshCoordinator } from './refreshCoordinator.js';
 
 const SessionContext = createContext(null);
 
+export const SESSION_RESTORE_TIMEOUT_MS = 8000;
+
 function initialState(initialSession) {
   if (initialSession?.user) {
     return {
@@ -107,9 +109,20 @@ export function SessionProvider({ children, api = authApi, locks, initialSession
     if (restoredRef.current) return;
     restoredRef.current = true;
     const epoch = epochRef.current;
+    let settled = false;
+    // Si el backend está despertando, no bloquear la pantalla de ingreso:
+    // a los 8 s se muestra como anónimo y la renovación tardía se descarta.
+    const timer = setTimeout(() => {
+      if (settled || epochRef.current !== epoch || tokenRef.current) return;
+      epochRef.current += 1;
+      dispatch({ type: 'anonymous' });
+    }, SESSION_RESTORE_TIMEOUT_MS);
     renewSession(null).then((ok) => {
+      settled = true;
+      clearTimeout(timer);
       if (!ok && epochRef.current === epoch) dispatch({ type: 'anonymous' });
     });
+    return () => clearTimeout(timer);
   }, [renewSession]);
 
   const login = useCallback(async (credentials) => {
