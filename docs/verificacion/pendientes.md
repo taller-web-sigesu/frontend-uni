@@ -16,17 +16,13 @@ Las fases 01 a 06 están implementadas; esta lista recoge lo que falta para entr
 
 ## 2. Huecos del contrato (dependen del backend)
 
-Todos están marcados en `src/services/pendingContract.js` y en la [matriz por HU](matriz-hu.md). El frontend muestra un texto de respaldo hasta que el backend publique el dato.
+Actualizado el **14/11/2026** tras la ronda de QA: el detalle ya publica `prioridad`, `area` y `encuestaRespondida`; el listado publica `categoria` y `prioridad`; la bandeja de reservas publica `solicitante`; y la sesión publica `areaNombre`. Queda un solo hueco:
 
 | # | Flujo | Falta en el contrato | Efecto hoy |
 | --- | --- | --- | --- |
-| 2.1 | Solicitudes (HU-05) | Nombre de la prioridad para roles no administradores | Se muestra «Prioridad <id>». |
-| 2.2 | Encuesta (HU-20) | Marca `encuestaRespondida` | El formulario aparece siempre; un 409 lo da por respondido. |
-| 2.3 | Supervisión (HU-07, HU-08) | Lectura de prioridades para el supervisor | Se oculta el ajuste de prioridad. |
-| 2.4 | Indicadores (HU-12) | Nombres en `porPrioridad` y `porResponsable` | «Prioridad <id>», «Responsable <id>». |
-| 2.5 | Reservas (HU-23) | Propietario en la bandeja de gestión | El supervisor no ve quién solicitó. |
+| 2.1 | Supervisión (HU-07, HU-08) | Lectura de prioridades para el selector del supervisor | Se oculta el ajuste de prioridad al asignar y en el detalle. |
 
-Cuando el backend publique cada dato: quitar la entrada de `pendingContract.js`, ajustar la pantalla y su prueba, y actualizar la matriz.
+`priorityName`, `areaName` y `surveyAnswered` siguen en `pendingContract.js` como respaldo para datos simulados o respuestas antiguas. Cuando el backend publique las prioridades del supervisor, quitar la última entrada, ajustar la pantalla y su prueba, y actualizar la matriz.
 
 ## 3. Riesgos sin probar
 
