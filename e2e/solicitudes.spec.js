@@ -1,0 +1,81 @@
+import { expect, test } from '@playwright/test';
+import { NAMES, createRequest, login, switchTo } from './fixtures.js';
+
+const header = (page) => page.locator('.detail-header');
+
+test.describe('solicitudes', () => {
+  test('ciclo completo: registro con evidencia, asignación, atención, cierre y encuesta', async ({ page }) => {
+    test.setTimeout(120_000);
+    await login(page, 'ESTUDIANTE');
+    const { id, codigo } = await createRequest(page, { evidencia: true });
+    await expect(page.getByRole('heading', { name: codigo })).toBeVisible();
+    await expect(page.getByText('evidencia.png')).toBeVisible();
+    await page.getByLabel('Comentario', { exact: true }).fill('Es urgente: hay clase a las 8.');
+    await page.getByRole('button', { name: 'Publicar comentario' }).click();
+    await expect(page.getByText('Es urgente: hay clase a las 8.')).toBeVisible();
+
+    await switchTo(page, 'SUPERVISOR');
+    await page.goto(`/solicitudes/${id}`);
+    await page.getByRole('button', { name: 'Asignar responsable' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Asignar responsable' });
+    await dialog.getByLabel('Técnico').selectOption({ label: NAMES.TECNICO });
+    await dialog.getByRole('button', { name: 'Asignar' }).click();
+    await expect(header(page)).toContainText('Asignado');
+
+    await switchTo(page, 'TECNICO');
+    await page.goto('/bandeja');
+    await page.getByRole('row').filter({ hasText: codigo }).click();
+    await page.waitForURL(`**/solicitudes/${id}`);
+    await page.getByRole('button', { name: 'Iniciar atención' }).click();
+    await expect(header(page)).toContainText('En proceso');
+    await page.getByRole('button', { name: 'Marcar como resuelta' }).click();
+    await expect(header(page)).toContainText('Resuelto');
+
+    await switchTo(page, 'SUPERVISOR');
+    await page.goto(`/solicitudes/${id}`);
+    await page.getByRole('button', { name: 'Cerrar solicitud' }).click();
+    await expect(header(page)).toContainText('Cerrado');
+
+    await switchTo(page, 'ESTUDIANTE');
+    await page.goto(`/solicitudes/${id}`);
+    const survey = page.getByRole('region', { name: 'Encuesta de satisfacción' });
+    await survey.getByRole('radio', { name: '5' }).check();
+    await survey.getByRole('button', { name: 'Enviar encuesta' }).click();
+    await expect(survey.getByRole('status')).toHaveText('Gracias por tu respuesta');
+  });
+
+  test('el supervisor rechaza con motivo obligatorio', async ({ page }) => {
+    await login(page, 'DOCENTE');
+    const { id } = await createRequest(page);
+    await switchTo(page, 'SUPERVISOR');
+    await page.goto(`/solicitudes/${id}`);
+    await page.getByRole('button', { name: 'Rechazar solicitud' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Rechazar solicitud' });
+    await dialog.getByRole('button', { name: 'Rechazar solicitud' }).click();
+    await expect(dialog.getByText('Indica el motivo del rechazo.')).toBeVisible();
+    await dialog.getByLabel('Motivo').fill('Corresponde a otra sede.');
+    await dialog.getByRole('button', { name: 'Rechazar solicitud' }).click();
+    await expect(header(page)).toContainText('Rechazado');
+    await expect(page.getByText('Corresponde a otra sede.')).toBeVisible();
+  });
+
+  test('el detalle no desborda a lo ancho aunque el selector de archivo sea ancho', async ({ page }) => {
+    // En Linux el texto nativo del selector («Choose Files No file chosen») es más ancho
+    // que en Windows; se simula agrandándolo.
+    await login(page, 'ESTUDIANTE');
+    await createRequest(page);
+    await page.addStyleTag({ content: 'input[type="file"] { font-size: 28px; }' });
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBe(0);
+  });
+
+  test('una solicitud ajena se muestra como no encontrada', async ({ page }) => {
+    await login(page, 'ESTUDIANTE');
+    const { id } = await createRequest(page);
+    await switchTo(page, 'DOCENTE');
+    await page.goto(`/solicitudes/${id}`);
+    await expect(page.getByText('No encontramos esta solicitud o no tienes acceso a ella')).toBeVisible();
+  });
+});

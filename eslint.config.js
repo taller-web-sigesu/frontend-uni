@@ -3,7 +3,7 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 
 export default [
-  { ignores: ['dist/', 'public/mockServiceWorker.js', '.superpowers/'] },
+  { ignores: ['dist/', 'dist-mock/', 'playwright-report/', 'test-results/', 'public/mockServiceWorker.js', '.superpowers/'] },
   js.configs.recommended,
   reactHooks.configs.flat.recommended,
   {
@@ -19,7 +19,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.{js,jsx}', 'src/test/**', 'vite.config.js', 'eslint.config.js'],
+    files: ['**/*.test.{js,jsx}', 'src/test/**', 'vite.config.js', 'eslint.config.js', 'playwright.config.js', 'e2e/**'],
     languageOptions: { globals: { ...globals.node, ...globals.vitest } },
   },
 ];

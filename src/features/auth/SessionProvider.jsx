@@ -24,11 +24,14 @@ function initialState(initialSession) {
 function reducer(state, action) {
   switch (action.type) {
     case 'authenticated':
-      return { ...state, status: 'authenticated', user: action.user, mustChangePassword: action.mustChangePassword };
+      return {
+        ...state, status: 'authenticated', user: action.user, mustChangePassword: action.mustChangePassword, loggedOut: false,
+      };
     case 'anonymous':
       return { ...state, status: 'anonymous', user: null, mustChangePassword: false };
     case 'loggedOut':
-      return { ...state, status: 'anonymous', user: null, mustChangePassword: false, epoch: action.epoch };
+      // `loggedOut`: salida voluntaria; el siguiente ingreso no vuelve a la página anterior.
+      return { ...state, status: 'anonymous', user: null, mustChangePassword: false, epoch: action.epoch, loggedOut: true };
     case 'mustChangePassword':
       return state.status === 'authenticated' ? { ...state, mustChangePassword: true } : state;
     case 'logoutPending':

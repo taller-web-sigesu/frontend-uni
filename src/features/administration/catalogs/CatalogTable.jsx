@@ -24,6 +24,7 @@ function validate(fields, values) {
     const text = values[field.name].trim();
     if (field.required && !text) errors[field.name] = 'Este campo es obligatorio.';
     else if (field.type === 'number' && text && !/^-?\d+$/.test(text)) errors[field.name] = 'Usa un número entero.';
+    else if (field.positive && text && Number(text) <= 0) errors[field.name] = 'Usa un número entero mayor que cero.';
     return errors;
   }, {});
 }
@@ -45,7 +46,7 @@ function buildBody(fields, values, record) {
 function FieldControl({ field, value, onChange, error, readOnly }) {
   const common = { label: field.label, name: field.name, value, onChange, error };
   if (field.type === 'select') {
-    return <SelectField {...common} placeholder={`Elige ${field.article || 'una opción'}`} options={field.options} />;
+    return <SelectField {...common} placeholder={field.placeholder ?? `Elige ${field.article || 'una opción'}`} options={field.options} />;
   }
   if (field.type === 'textarea') return <TextArea {...common} rows={3} />;
   return (
@@ -59,10 +60,10 @@ function FieldControl({ field, value, onChange, error, readOnly }) {
   );
 }
 
-function RecordForm({ kind, fields, record, onSaved, onCancel }) {
+function RecordForm({ api, fields, record, onSaved, onCancel }) {
   const [values, setValues] = useState(() => Object.fromEntries(fields.map((f) => [f.name, toFormValue(record?.[f.name])])));
   const [errors, setErrors] = useState({});
-  const { submit, pending, error, fieldErrors } = useSubmit((body) => (record ? update(kind, record.id, body) : create(kind, body)));
+  const { submit, pending, error, fieldErrors } = useSubmit((body) => (record ? api.update(record.id, body) : api.create(body)));
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -101,16 +102,26 @@ function RecordForm({ kind, fields, record, onSaved, onCancel }) {
   );
 }
 
+/** Adaptador por defecto: un catálogo de /admin/catalogs/{kind}. */
+const catalogApi = (kind) => ({
+  list: (params, signal) => list(kind, params, signal),
+  create: (data) => create(kind, data),
+  update: (id, patch) => update(kind, id, patch),
+});
+
 /**
  * Lista paginada (activos e inactivos) con alta, edición y baja lógica de un
- * catálogo. `fields` describe el formulario; `createOnly` = solo en el alta.
+ * catálogo. `fields` describe el formulario; `createOnly` = solo en el alta;
+ * `positive` = entero mayor que cero. `api` ({ list, create, update }) sustituye
+ * al catálogo de `kind`; `rowActions(row)` añade botones a cada fila.
  */
-export function CatalogTable({ kind, singular, gender = 'f', columns, fields, caption }) {
+export function CatalogTable({ kind, api: customApi, singular, gender = 'f', columns, fields, caption, rowActions }) {
+  const api = customApi || catalogApi(kind);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(null); // null | 'nuevo' | registro
   const [deactivating, setDeactivating] = useState(null);
-  const { data, error, status, reload } = useResource((signal) => list(kind, { page, size: PAGE_SIZE }, signal), [page]);
-  const toggle = useSubmit((record, activo) => update(kind, record.id, { activo }));
+  const { data, error, status, reload } = useResource((signal) => api.list({ page, size: PAGE_SIZE }, signal), [page]);
+  const toggle = useSubmit((record, activo) => api.update(record.id, { activo }));
 
   async function setActive(record, activo) {
     const result = await toggle.submit(record, activo);
@@ -129,6 +140,7 @@ export function CatalogTable({ kind, singular, gender = 'f', columns, fields, ca
       render: (r) => (
         <div className="row-actions">
           <Button variant="ghost" onClick={() => setEditing(r)}>Editar</Button>
+          {rowActions?.(r)}
           {r.activo ? (
             <Button variant="ghost" onClick={() => setDeactivating(r)}>Desactivar</Button>
           ) : (
@@ -167,7 +179,7 @@ export function CatalogTable({ kind, singular, gender = 'f', columns, fields, ca
         {editing !== null && (
           <RecordForm
             key={editing === 'nuevo' ? 'nuevo' : editing.id}
-            kind={kind}
+            api={api}
             fields={fields}
             record={editing === 'nuevo' ? null : editing}
             onCancel={() => setEditing(null)}

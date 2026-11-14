@@ -19,10 +19,10 @@ function PageLoading() {
 
 /** Exige sesión; en primer ingreso solo deja ver el cambio de contraseña. */
 export function RequireSession({ children }) {
-  const { status, mustChangePassword } = useSession();
+  const { status, mustChangePassword, loggedOut } = useSession();
   const location = useLocation();
   if (status === 'restoring') return <PageLoading />;
-  if (status === 'anonymous') return <Navigate to="/login" replace state={{ from: location }} />;
+  if (status === 'anonymous') return <Navigate to="/login" replace state={loggedOut ? undefined : { from: location }} />;
   if (mustChangePassword && location.pathname !== CHANGE_PASSWORD_PATH) {
     return <Navigate to={CHANGE_PASSWORD_PATH} replace />;
   }

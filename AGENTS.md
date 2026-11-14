@@ -20,7 +20,7 @@
 - Run `npm run lint` if the script exists.
 - Run the configured tests if available.
 - Add or update tests when changing application behavior.
-- Check responsive layouts, accessibility, and light/dark themes.
+- Check responsive layouts and accessibility (the app is light-only; dark mode is out of scope).
 - Do not claim tests passed unless they were executed.
 
 ## PR instructions

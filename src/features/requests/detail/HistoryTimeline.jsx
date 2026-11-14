@@ -1,9 +1,11 @@
 import { formatDateTime, REQUEST_STATUS_LABELS } from '../../../services/format.js';
 
-const label = (estado) => REQUEST_STATUS_LABELS[estado] || estado;
-
-/** Transiciones en orden cronológico: estado anterior → nuevo, fecha, actor y motivo. */
-export function HistoryTimeline({ items, personName }) {
+/**
+ * Transiciones en orden cronológico: estado anterior → nuevo, fecha, actor y
+ * motivo. `labels` traduce los códigos (solicitudes por defecto; reservas en la fase 05).
+ */
+export function HistoryTimeline({ items, personName, labels = REQUEST_STATUS_LABELS }) {
+  const label = (estado) => labels[estado] || estado;
   return (
     <section aria-labelledby="detalle-historial">
       <h2 id="detalle-historial">Historial</h2>

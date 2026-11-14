@@ -40,6 +40,7 @@ a { color: inherit; }
 .field__control {
   font: inherit; color: var(--color-ink); background: var(--color-surface);
   border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px;
+  min-width: 0; max-width: 100%;
 }
 .field__control:disabled { background: var(--color-surface-variant); }
 .field--error .field__control { border-color: var(--color-error); }

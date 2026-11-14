@@ -7,9 +7,10 @@ export function Topbar({ user, onLogout, menuButton }) {
     <header className="topbar">
       <div className="topbar__start">
         {menuButton}
-        <Link className="brand" to="/" aria-label="Universidad Actúa, inicio">
+        <Link className="brand" to="/">
           <span className="brand__mark" aria-hidden="true">U</span>
           <span className="brand__name">Universidad <strong>Actúa</strong></span>
+          <span className="visually-hidden">, inicio</span>
         </Link>
       </div>
       <div className="topbar__user">

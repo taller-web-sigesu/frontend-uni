@@ -64,3 +64,11 @@ test('Cerrar sesión desde el topbar vuelve a /login', async () => {
   await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
   expect(db.sessions.at(-1).revoked).toBe(true);
 });
+
+test('tras cerrar sesión, el siguiente ingreso no vuelve a la página anterior', async () => {
+  const user = userEvent.setup();
+  const { router } = renderWithRouter(null, { route: '/solicitudes/1', session: { user: userById('8') } });
+  await user.click(await screen.findByRole('button', { name: 'Cerrar sesión' }));
+  await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
+  expect(router.state.location.state?.from).toBeUndefined();
+});
