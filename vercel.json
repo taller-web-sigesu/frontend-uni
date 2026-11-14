@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://uniservice-backend-staging.onrender.com/api/:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
