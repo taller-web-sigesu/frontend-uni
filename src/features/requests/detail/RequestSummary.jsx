@@ -7,7 +7,7 @@ export const SLA_LABELS = {
   EN_PLAZO: 'En plazo',
   POR_VENCER: 'Por vencer',
   VENCIDA: 'Vencida',
-  CERRADA: 'Cerrada',
+  CERRADA: 'Cerrado',
   SIN_SLA: 'Sin SLA',
 };
 const SLA_TONES = { EN_PLAZO: 'success', POR_VENCER: 'warning', VENCIDA: 'danger' };
