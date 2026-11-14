@@ -30,10 +30,14 @@ const FIELD_LABELS = {
   activo: 'Activo',
 };
 
-const actionLabel = (code) => ACTION_LABELS[code] || code || '—';
+const isComment = (row) => row.entidad === 'comentarios' || row.accion === 'COMENTAR';
+const actionLabel = (row) => {
+  if (row.accion === 'CREAR' && isComment(row)) return 'Comentario';
+  return ACTION_LABELS[row.accion] || row.accion || '—';
+};
 const fieldLabel = (row) => {
   if (row.campo) return FIELD_LABELS[row.campo] || row.campo;
-  return row.accion === 'COMENTAR' ? 'Comentario' : '—';
+  return isComment(row) ? 'Comentario' : '—';
 };
 const valueLabel = (value) => {
   if (value === null || value === undefined || value === '') return '—';
@@ -57,7 +61,7 @@ export function AuditPanel({ requestId, personName = () => null, reloadKey = 0 }
       <>
         <DataTable
           columns={[
-            { key: 'accion', header: 'Acción', render: (row) => actionLabel(row.accion) },
+            { key: 'accion', header: 'Acción', render: (row) => actionLabel(row) },
             { key: 'campo', header: 'Campo', render: (row) => fieldLabel(row) },
             { key: 'valorAnterior', header: 'Valor anterior', render: (row) => valueLabel(row.valorAnterior) },
             { key: 'valorNuevo', header: 'Valor nuevo', render: (row) => valueLabel(row.valorNuevo) },
