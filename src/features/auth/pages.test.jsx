@@ -57,6 +57,19 @@ test('login con campos vacíos no envía la petición', async () => {
   expect(logins).toHaveLength(0);
 });
 
+test('mostrar contraseña alterna el campo y conserva el estado accesible', async () => {
+  const user = userEvent.setup();
+  await openLogin();
+  const field = screen.getByLabelText('Contraseña');
+  await user.type(field, 'secreta2026');
+  expect(field).toHaveAttribute('type', 'password');
+  await user.click(screen.getByRole('button', { name: 'Mostrar contraseña' }));
+  expect(field).toHaveAttribute('type', 'text');
+  expect(screen.getByRole('button', { name: 'Ocultar contraseña' })).toHaveAttribute('aria-pressed', 'true');
+  await user.click(screen.getByRole('button', { name: 'Ocultar contraseña' }));
+  expect(field).toHaveAttribute('type', 'password');
+});
+
 test('login inválido muestra el mensaje genérico', async () => {
   const user = userEvent.setup();
   await openLogin();
