@@ -10,6 +10,9 @@ test.describe('solicitudes', () => {
     const { id, codigo } = await createRequest(page, { evidencia: true });
     await expect(page.getByRole('heading', { name: codigo })).toBeVisible();
     await expect(page.getByText('evidencia.png')).toBeVisible();
+    await page.getByLabel('Comentario', { exact: true }).fill('Es urgente: hay clase a las 8.');
+    await page.getByRole('button', { name: 'Publicar comentario' }).click();
+    await expect(page.getByText('Es urgente: hay clase a las 8.')).toBeVisible();
 
     await switchTo(page, 'SUPERVISOR');
     await page.goto(`/solicitudes/${id}`);
@@ -20,7 +23,9 @@ test.describe('solicitudes', () => {
     await expect(header(page)).toContainText('Asignado');
 
     await switchTo(page, 'TECNICO');
-    await page.goto(`/solicitudes/${id}`);
+    await page.goto('/bandeja');
+    await page.getByRole('row').filter({ hasText: codigo }).click();
+    await page.waitForURL(`**/solicitudes/${id}`);
     await page.getByRole('button', { name: 'Iniciar atención' }).click();
     await expect(header(page)).toContainText('En proceso');
     await page.getByRole('button', { name: 'Marcar como resuelta' }).click();

@@ -1,7 +1,7 @@
 # Arquitectura del frontend — frontend-uni
 
-> **Estado:** base React implementada; plan de implementación aprobado, arquitectura funcional pendiente.
-> **Última actualización:** 2026-11-02.
+> **Estado:** fases 01 a 06 implementadas; HU-01 a HU-29 verificadas (ver `docs/verificacion/matriz-hu.md`).
+> **Última actualización:** 2026-11-13.
 > **Alcance:** interfaz web y consumo de la API.
 
 ## Referencias y propiedad
@@ -12,13 +12,28 @@ Leer [AGENTS.md](AGENTS.md), [DESIGN.md](DESIGN.md) y la historia correspondient
 
 ## Estado actual comprobado en archivos
 
-- `package.json`: React y React DOM 19.3.0, Vite 8.3.5 y plugin React 6.1.2; scripts `dev`, `build` y `preview`.
-- `src/main.jsx`: entrada de la aplicación; `src/App.jsx`: pantalla inicial y consulta `GET /api/v1/status`; `src/styles.css`: estilos actuales.
-- `vite.config.js`: puerto 3000, HMR con polling y proxy `/api` hacia `http://backend:8080` en Docker.
+- `package.json`: React y React DOM 19.3.0, React Router 7, Vite 8.3.5; Vitest, Testing Library, MSW 2, ESLint, Playwright y `@axe-core/playwright` en desarrollo.
+  - Scripts: `dev`, `dev:mock`, `build`, `preview`, `preview:mock`, `test`, `lint` y `test:e2e`.
+- `src/app/`: tabla única de rutas con los roles de cada una (`routes.jsx`), el router y las páginas 403 y 404.
+- `src/features/`: módulos por flujo: `auth`, `home`, `requests`, `management`, `dashboard`, `administration` y `reservations`.
+- `src/services/`: cliente HTTP con `ApiError` y renovación del JWT, `useResource`, `useSubmit` y formato de fechas en hora de Lima.
+  - `pendingContract.js` es el único lugar para los huecos del contrato.
+- `src/mocks/`: API simulada con MSW para las pruebas y para `dev:mock` y `preview:mock`. El estado se guarda en `sessionStorage` sin el JWT. No entra en el build de producción.
+- `vite.config.js`:
+  - Puerto 3000 con HMR con polling.
+  - Proxy `/api` hacia `VITE_PROXY_TARGET`, por defecto `http://backend:8080` en Docker.
+  - Vitest solo incluye `src/**/*.test.{js,jsx}`.
+- `playwright.config.js` y `e2e/`:
+  - Recorridos por rol y prueba de accesibilidad con axe.
+  - Por defecto contra el build simulado en el puerto 4173; con `E2E_API=real`, contra el Compose en el puerto 3000.
+- `.github/workflows/ci.yml`: `npm ci`, lint, pruebas, build, instalación de Chromium y E2E simulado; sube el informe de Playwright si falla.
 - `Dockerfile.dev`: entorno de desarrollo conectado al Compose de infraestructura.
-- Aún no existen router, módulos funcionales, autenticación, cliente HTTP centralizado ni herramientas de pruebas/lint configuradas.
 
-La revisión de estos archivos no demuestra ejecución, conectividad ni build exitoso.
+Ejecución comprobada el 2026-11-13 (detalle en `docs/verificacion/`):
+- Lint sin errores y build correcto.
+- 274 pruebas unitarias.
+- E2E simulado: 46 en verde y 2 omitidas.
+- E2E contra el backend real: 24 de 24.
 
 ## Responsabilidad y tecnologías objetivo
 
