@@ -44,10 +44,13 @@ test('el técnico inicia desde ASIGNADO y resuelve desde EN_PROCESO', async () =
   expect(screen.queryByRole('button', { name: 'Marcar como resuelta' })).not.toBeInTheDocument();
 });
 
-test('el supervisor cierra desde RESUELTO', async () => {
+test('el supervisor cierra desde RESUELTO tras confirmar', async () => {
   const calls = captureRequests('PATCH', '/api/v1/requests/4/status');
   const user = await openDetail('4', SUPERVISORA_TI);
   await user.click(screen.getByRole('button', { name: 'Cerrar solicitud' }));
+  const dialog = screen.getByRole('dialog', { name: 'Cerrar solicitud' });
+  expect(calls).toHaveLength(0);
+  await user.click(within(dialog).getByRole('button', { name: 'Cerrar solicitud' }));
   await waitFor(() => expect(statusOf('4')).toBe('CERRADO'));
   expect(calls.map((c) => c.body)).toEqual([{ estado: 'CERRADO' }]);
   await waitFor(() => expect(screen.queryByRole('button', { name: 'Cerrar solicitud' })).not.toBeInTheDocument());
@@ -79,6 +82,7 @@ test('recarga y recalcula tras 409', async () => {
   solicitud.ultimoResponsableId = solicitud.responsableId;
   solicitud.responsableId = null;
   await user.click(screen.getByRole('button', { name: 'Cerrar solicitud' }));
+  await user.click(within(screen.getByRole('dialog', { name: 'Cerrar solicitud' })).getByRole('button', { name: 'Cerrar solicitud' }));
   expect(await screen.findByText(CONFLICT)).toBeInTheDocument();
   await waitFor(() => expect(screen.queryByRole('button', { name: 'Cerrar solicitud' })).not.toBeInTheDocument());
   expect(screen.queryByRole('button', { name: 'Reasignar' })).not.toBeInTheDocument();
@@ -122,10 +126,23 @@ test('el supervisor cambia la prioridad', async () => {
 test('la auditoría lista los cambios', async () => {
   await openDetail('2', SUPERVISORA_TI);
   const panel = await screen.findByRole('region', { name: 'Auditoría' });
-  const row = (await within(panel).findByText('prioridad')).closest('tr');
+  const row = (await within(panel).findByText('Prioridad')).closest('tr');
+  expect(row).toHaveTextContent('Actualización');
   expect(row).toHaveTextContent('Media');
   expect(row).toHaveTextContent('Alta');
   expect(row).toHaveTextContent('03/11/2026 10:30');
+});
+
+test('un evento antiguo de comentario se etiqueta como Comentario', async () => {
+  db.requests.find((r) => r.id === '2').audit.push({
+    id: 'legacy-comment', entidad: 'comentarios', accion: 'CREAR', campo: null,
+    valorAnterior: null, valorNuevo: null, actorId: '2', fecha: '2026-11-03T15:00:00Z',
+  });
+  await openDetail('2', SUPERVISORA_TI);
+  const panel = await screen.findByRole('region', { name: 'Auditoría' });
+  const row = (await within(panel).findAllByText('Comentario'))[0].closest('tr');
+  expect(row).toHaveTextContent('Comentario');
+  expect(row).toHaveTextContent('—');
 });
 
 test('el técnico no ve la auditoría', async () => {
@@ -143,6 +160,6 @@ test('nunca envía ASIGNADO por PATCH /status', () => {
 test('la auditoría nombra al usuario en sesión en sus propios cambios', async () => {
   await openDetail('2', SUPERVISORA_TI);
   const panel = await screen.findByRole('region', { name: 'Auditoría' });
-  const row = (await within(panel).findByText('prioridad')).closest('tr');
+  const row = (await within(panel).findByText('Prioridad')).closest('tr');
   expect(row).toHaveTextContent('Supervisora TI Demo');
 });

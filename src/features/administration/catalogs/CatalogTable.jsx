@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Badge, Button, ConfirmDialog, DataTable, Dialog, EmptyState, ErrorState, Pagination, SelectField, Skeleton, TextArea, TextField,
 } from '../../../components/ui/index.js';
+import { countLabel } from '../../../services/format.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { create, list, update } from '../catalogsAdminApi.js';
@@ -170,7 +171,7 @@ export function CatalogTable({ kind, api: customApi, singular, gender = 'f', col
   return (
     <>
       <div className="section-toolbar">
-        {data && <p className="page__lead">{data.totalElements} registros</p>}
+        {data && <p className="page__lead">{countLabel(data.totalElements, 'registro')}</p>}
         <Button onClick={() => setEditing('nuevo')}>Crear {singular}</Button>
       </div>
       {toggle.error && !deactivating && <p className="form-error" role="alert">{toggle.error.detail}</p>}

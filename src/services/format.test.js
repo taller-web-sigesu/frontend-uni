@@ -8,10 +8,18 @@ import { limaLocalToUtc, utcToLimaLocal,
   REQUEST_STATUS_LABELS,
   RESERVATION_STATUS_LABELS,
   ROLE_LABELS,
+  countLabel,
   statusTone,
 } from './format.js';
 
 afterEach(() => vi.useRealTimers());
+
+test('countLabel usa singular solo para uno', () => {
+  expect(countLabel(0, 'solicitud')).toBe('0 solicitudes');
+  expect(countLabel(1, 'solicitud')).toBe('1 solicitud');
+  expect(countLabel(2, 'solicitud')).toBe('2 solicitudes');
+  expect(countLabel(1, 'registrada', 'registradas')).toBe('1 registrada');
+});
 
 test('limaDaysToUtcRange convierte días de Lima a UTC con fin exclusivo', () => {
   expect(limaDaysToUtcRange('2026-11-01', '2026-11-30'))

@@ -7,7 +7,7 @@ export const SLA_LABELS = {
   EN_PLAZO: 'En plazo',
   POR_VENCER: 'Por vencer',
   VENCIDA: 'Vencida',
-  CERRADA: 'Cerrada',
+  CERRADA: 'Cerrado',
   SIN_SLA: 'Sin SLA',
 };
 const SLA_TONES = { EN_PLAZO: 'success', POR_VENCER: 'warning', VENCIDA: 'danger' };
@@ -35,8 +35,8 @@ export function RequestSummary({ solicitud, categoryName }) {
     <section className="card" aria-labelledby="detalle-datos">
       <h2 id="detalle-datos">Datos de la solicitud</h2>
       <dl className="data-list data-list--grid">
-        <Item label="Categoría">{categoryName(solicitud.categoriaId)}</Item>
-        <Item label="Área">{areaName(solicitud.areaId)}</Item>
+        <Item label="Categoría">{solicitud.categoria || categoryName(solicitud.categoriaId)}</Item>
+        <Item label="Área">{solicitud.area || areaName(solicitud.areaId)}</Item>
         <Item label="Ubicación">{solicitud.ubicacion}</Item>
         <Item label="Solicitante">{solicitud.solicitante?.nombreCompleto}</Item>
         <Item label={terminal ? 'Último responsable' : 'Responsable'}>{responsable?.nombreCompleto || 'Sin asignar'}</Item>

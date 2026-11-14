@@ -1,10 +1,48 @@
 import { useState } from 'react';
 import { DataTable, ErrorState, Pagination, Skeleton } from '../../../components/ui/index.js';
-import { formatDateTime } from '../../../services/format.js';
+import { formatDateTime, REQUEST_STATUS_LABELS } from '../../../services/format.js';
 import { useResource } from '../../../services/useResource.js';
 import { listAuditEvents } from '../../requests/requestsApi.js';
 
 const PAGE_SIZE = 10;
+
+const ACTION_LABELS = {
+  CREAR: 'Creación',
+  ACTUALIZAR: 'Actualización',
+  ASIGNAR: 'Asignación',
+  REASIGNAR: 'Reasignación',
+  CAMBIAR_ESTADO: 'Cambio de estado',
+  ADJUNTAR: 'Adjuntar',
+  ELIMINAR_ADJUNTO: 'Eliminar adjunto',
+  COMENTAR: 'Comentario',
+};
+
+const FIELD_LABELS = {
+  estado: 'Estado',
+  prioridad: 'Prioridad',
+  responsable: 'Responsable',
+  nombre_original: 'Nombre del archivo',
+  calificacion: 'Calificación',
+  comentario: 'Comentario',
+  rol: 'Rol',
+  correo: 'Correo',
+  areaId: 'Área',
+  activo: 'Activo',
+};
+
+const isComment = (row) => row.entidad === 'comentarios' || row.accion === 'COMENTAR';
+const actionLabel = (row) => {
+  if (row.accion === 'CREAR' && isComment(row)) return 'Comentario';
+  return ACTION_LABELS[row.accion] || row.accion || '—';
+};
+const fieldLabel = (row) => {
+  if (row.campo) return FIELD_LABELS[row.campo] || row.campo;
+  return isComment(row) ? 'Comentario' : '—';
+};
+const valueLabel = (value) => {
+  if (value === null || value === undefined || value === '') return '—';
+  return REQUEST_STATUS_LABELS[value] || value;
+};
 
 /** Modificaciones auditadas (solo supervisor del área). `reloadKey` la refresca tras un cambio. */
 export function AuditPanel({ requestId, personName = () => null, reloadKey = 0 }) {
@@ -23,10 +61,11 @@ export function AuditPanel({ requestId, personName = () => null, reloadKey = 0 }
       <>
         <DataTable
           columns={[
-            { key: 'campo', header: 'Campo' },
-            { key: 'valorAnterior', header: 'Valor anterior', render: (row) => row.valorAnterior ?? '—' },
-            { key: 'valorNuevo', header: 'Valor nuevo', render: (row) => row.valorNuevo ?? '—' },
-            { key: 'actor', header: 'Actor', render: (row) => personName(row.actorId) || `Usuario ${row.actorId}` },
+            { key: 'accion', header: 'Acción', render: (row) => actionLabel(row) },
+            { key: 'campo', header: 'Campo', render: (row) => fieldLabel(row) },
+            { key: 'valorAnterior', header: 'Valor anterior', render: (row) => valueLabel(row.valorAnterior) },
+            { key: 'valorNuevo', header: 'Valor nuevo', render: (row) => valueLabel(row.valorNuevo) },
+            { key: 'actor', header: 'Actor', render: (row) => row.actorNombre || personName(row.actorId) || `Usuario ${row.actorId}` },
             { key: 'fecha', header: 'Fecha', render: (row) => formatDateTime(row.fecha) },
           ]}
           rows={data.items}

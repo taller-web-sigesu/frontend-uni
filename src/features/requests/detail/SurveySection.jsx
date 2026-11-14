@@ -6,10 +6,10 @@ import { submitSurvey } from '../requestsApi.js';
 const SCORES = [1, 2, 3, 4, 5];
 
 /**
- * Encuesta de satisfacción de una solicitud cerrada. El contrato no dice si ya
- * se respondió: el formulario se muestra y un 409 lo da por respondido.
+ * Encuesta de satisfacción de una solicitud cerrada. `answered` lo publica el
+ * detalle; el 409 sigue cubriendo respuestas hechas en otra pestaña.
  */
-export function SurveySection({ requestId }) {
+export function SurveySection({ requestId, answered = null }) {
   const groupId = useId();
   const [score, setScore] = useState(null);
   const [comentario, setComentario] = useState('');
@@ -31,11 +31,15 @@ export function SurveySection({ requestId }) {
 
   const failure = error && error.status !== 409 ? error.fieldErrors?.calificacion || error.detail : null;
 
+  const alreadyAnswered = answered === true || Boolean(outcome);
+
   return (
     <section className="card" aria-labelledby={`${groupId}-titulo`}>
       <h2 id={`${groupId}-titulo`}>Encuesta de satisfacción</h2>
-      {outcome ? (
-        <p className="notice notice--success" role="status">{outcome}</p>
+      {alreadyAnswered ? (
+        <p className="notice notice--success" role="status">
+          {outcome || 'Ya respondiste esta encuesta'}
+        </p>
       ) : (
         <form onSubmit={handleSubmit} noValidate>
           <p className="card__lead">La solicitud está cerrada. Tu respuesta se envía una sola vez y ayuda a mejorar el servicio.</p>

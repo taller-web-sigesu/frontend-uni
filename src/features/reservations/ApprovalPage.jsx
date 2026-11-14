@@ -3,6 +3,7 @@ import { useCurrentUser } from '../../app/userContext.js';
 import {
   Button, DataTable, Dialog, EmptyState, ErrorState, Pagination, Skeleton, TextArea,
 } from '../../components/ui/index.js';
+import { countLabel } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { useSubmit } from '../../services/useSubmit.js';
 import { dayLabel, reservationColumns, slotLabel, spaceOf } from './reservationColumns.jsx';
@@ -77,13 +78,14 @@ function ReviewPanel({ row, user, spaceName, onDecided }) {
     <>
       <dl className="data-list data-list--grid">
         <Item label="Espacio">{spaceOf(reserva, spaceName)}</Item>
+        <Item label="Solicitante">{reserva.solicitante || '—'}</Item>
         <Item label="Fecha">{dayLabel(reserva.fecha)}</Item>
         <Item label="Horario">{slotLabel(reserva)}</Item>
         <Item label="Asistentes">{reserva.numAsistentes ?? 'No indicado'}</Item>
         <Item label="Motivo">{reserva.motivo}</Item>
       </dl>
       <h3 className="card__subtitle">Disponibilidad del día</h3>
-      <SlotList availability={availability} />
+      <SlotList availability={availability} current={reserva} />
       {own && <p className="notice notice--info">No puedes decidir sobre tu propia reserva.</p>}
       {!own && !allowed && <p className="notice notice--info">Esta reserva ya no está pendiente.</p>}
       {rejecting && allowed && (
@@ -137,13 +139,16 @@ export default function ApprovalPage() {
     else reload();
   }
 
-  const columns = reservationColumns(spaceName, [{
-    key: 'acciones',
-    header: 'Acciones',
-    render: (row) => (
-      <Button variant="secondary" aria-label={`Revisar ${row.codigo}`} onClick={() => setReviewing(row)}>Revisar</Button>
-    ),
-  }]);
+  const columns = reservationColumns(spaceName, [
+    { key: 'solicitante', header: 'Solicitante', render: (row) => row.solicitante || '—' },
+    {
+      key: 'acciones',
+      header: 'Acciones',
+      render: (row) => (
+        <Button variant="secondary" aria-label={`Revisar ${row.codigo}`} onClick={() => setReviewing(row)}>Revisar</Button>
+      ),
+    },
+  ]);
 
   let content;
   if (status === 'error' && !data) content = <ErrorState error={error} onRetry={reload} />;
@@ -163,7 +168,7 @@ export default function ApprovalPage() {
     <section className="page">
       <header className="page__header">
         <h1>Aprobación de reservas</h1>
-        {data && <p className="page__lead">{data.totalElements} pendientes</p>}
+        {data && <p className="page__lead">{countLabel(data.totalElements, 'pendiente')}</p>}
       </header>
       <p className="notice notice--info">No puedes aprobar tus propias reservas.</p>
       {notice && <p className="notice notice--success" role="status">{notice}</p>}

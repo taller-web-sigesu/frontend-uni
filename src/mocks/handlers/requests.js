@@ -45,8 +45,11 @@ function summary(r) {
     id: r.id,
     codigo: r.codigo,
     categoriaId: r.categoriaId,
+    categoria: db.categories.find((c) => c.id === r.categoriaId)?.nombre ?? null,
     areaId: r.areaId,
+    area: db.areas.find((a) => a.id === r.areaId)?.nombre ?? null,
     prioridadId: r.prioridadId,
+    prioridad: priorityName(r.prioridadId),
     estado: r.estado,
     creadoEn: r.creadoEn,
   };
@@ -61,6 +64,7 @@ function detail(r) {
     responsableActual: r.responsableId ? person(r.responsableId) : null,
     ultimoResponsable: TERMINAL.includes(r.estado) && r.ultimoResponsableId ? person(r.ultimoResponsableId) : null,
     sla: { ...r.sla },
+    encuestaRespondida: Boolean(r.survey),
   };
 }
 
@@ -100,8 +104,8 @@ function moveTo(solicitud, estado, actorId, motivo = null) {
   }
 }
 
-function audit(solicitud, campo, valorAnterior, valorNuevo, actorId) {
-  solicitud.audit.push({ id: nextId(), campo, valorAnterior, valorNuevo, actorId, fecha: now() });
+function audit(solicitud, campo, valorAnterior, valorNuevo, actorId, accion = 'ACTUALIZAR') {
+  solicitud.audit.push({ id: nextId(), accion, campo, valorAnterior, valorNuevo, actorId, fecha: now() });
 }
 
 const priorityName = (id) => db.priorities.find((p) => p.id === id)?.nombre ?? id;
@@ -305,7 +309,7 @@ export const requestHandlers = [
     if (attachment.autorId !== user.id) return problem(403, 'SOLO_EL_AUTOR', 'Solo el autor puede eliminar la evidencia.');
     if (TERMINAL.includes(solicitud.estado)) return conflict('SOLICITUD_FINALIZADA', 'La solicitud ya está cerrada o rechazada.');
     attachment.eliminado = true;
-    audit(solicitud, 'ELIMINAR_ADJUNTO', attachment.nombre, null, user.id);
+    audit(solicitud, 'nombre_original', attachment.nombre, null, user.id, 'ELIMINAR_ADJUNTO');
     return new HttpResponse(null, { status: 204 });
   }),
 

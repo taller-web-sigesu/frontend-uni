@@ -4,7 +4,7 @@ import {
   Button, DataTable, EmptyState, ErrorState, Pagination, SelectField, Skeleton,
 } from '../../components/ui/index.js';
 import { useCatalogLabels } from '../../services/catalogs.js';
-import { REQUEST_STATUS_LABELS } from '../../services/format.js';
+import { countLabel, REQUEST_STATUS_LABELS } from '../../services/format.js';
 import { listPriorityOptions } from '../../services/pendingContract.js';
 import { useResource } from '../../services/useResource.js';
 import { requestColumns } from '../requests/requestColumns.jsx';
@@ -59,7 +59,11 @@ export default function AreaManagementPage() {
     <section className="page">
       <header className="page__header">
         <h1>Gestión de área</h1>
-        {data && <p className="page__lead">{data.totalElements} solicitudes{filtered ? ' con estos filtros' : ''}</p>}
+        {data && (
+          <p className="page__lead">
+            {countLabel(data.totalElements, 'solicitud')}{filtered ? ' con estos filtros' : ''}
+          </p>
+        )}
       </header>
       <div className="filters" role="search" aria-label="Filtros de solicitudes">
         <SelectField label="Estado" name="estado" placeholder="Todos" options={STATUS_OPTIONS} value={filters.estado} onChange={setFilter('estado')} />

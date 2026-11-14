@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DataTable, EmptyState, ErrorState, Pagination, SelectField, Skeleton, TextField } from '../../components/ui/index.js';
-import { RESERVATION_STATUS_LABELS } from '../../services/format.js';
+import { countLabel, RESERVATION_STATUS_LABELS } from '../../services/format.js';
 import { useResource } from '../../services/useResource.js';
 import { reservationColumns } from './reservationColumns.jsx';
 import { listReservations } from './reservationsApi.js';
@@ -61,7 +61,7 @@ export default function MyReservationsPage() {
       <header className="page__header page__header--actions">
         <div>
           <h1>Mis reservas</h1>
-          {data && <p className="page__lead">{data.totalElements} reservas</p>}
+          {data && <p className="page__lead">{countLabel(data.totalElements, 'reserva')}</p>}
         </div>
         <NewReservationLink />
       </header>

@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
   const scope = isAdmin
     ? (areaId ? `Área: ${names.area(areaId)}` : 'Todas las áreas')
-    : `Área: ${names.area(user?.areaId)}`;
+    : `Área: ${user?.areaNombre || names.area(user?.areaId)}`;
 
   let content;
   if (status === 'error' && !data) content = <ErrorState error={error} onRetry={reload} />;

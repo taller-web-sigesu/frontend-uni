@@ -3,7 +3,7 @@ import { useCurrentUser } from '../../../app/userContext.js';
 import {
   Badge, Button, ConfirmDialog, DataTable, EmptyState, ErrorState, Pagination, Skeleton, Tabs,
 } from '../../../components/ui/index.js';
-import { ROLE_LABELS } from '../../../services/format.js';
+import { countLabel, ROLE_LABELS } from '../../../services/format.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { listAll } from '../catalogsAdminApi.js';
@@ -98,7 +98,7 @@ function UsersList({ options }) {
   return (
     <>
       <div className="section-toolbar">
-        {data && <p className="page__lead">{data.totalElements} usuarios</p>}
+        {data && <p className="page__lead">{countLabel(data.totalElements, 'usuario')}</p>}
         <Button onClick={() => setEditing('nuevo')}>Crear usuario</Button>
       </div>
       {toggle.error && !deactivating && <p className="form-error" role="alert">{toggle.error.detail}</p>}

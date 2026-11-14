@@ -23,6 +23,7 @@ export async function listPriorityOptions() {
     .map(({ id, nombre }) => ({ id, nombre }));
 }
 
+/** Respaldo para datos simulados o listados antiguos sin nombre de prioridad. */
 export function priorityName(id) {
   if (isMockMode() && db) {
     const priority = db.priorities.find((p) => p.id === id);
@@ -31,15 +32,12 @@ export function priorityName(id) {
   return `Prioridad ${id}`;
 }
 
-/** `true`/`false` si la solicitud trae la marca; `null` si el contrato no la incluye. */
+/** `true`/`false` si la solicitud trae la marca; `null` si la respuesta no la incluye. */
 export function surveyAnswered(request) {
   return typeof request?.encuestaRespondida === 'boolean' ? request.encuestaRespondida : null;
 }
 
-/**
- * Nombre del área. El catálogo de áreas solo lo expone /admin/catalogs/areas
- * (administrador): en modo real se muestra «Área <id>».
- */
+/** Respaldo cuando la sesión o el detalle no traen el nombre del área. */
 export function areaName(id) {
   if (isMockMode() && db) {
     const area = db.areas.find((a) => a.id === id);

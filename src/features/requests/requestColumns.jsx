@@ -9,8 +9,8 @@ export function StatusBadge({ estado }) {
 export function requestColumns({ categoryName, priorityName }, extra = []) {
   return [
     { key: 'codigo', header: 'Código', render: (row) => <strong className="mono">{row.codigo}</strong> },
-    { key: 'categoria', header: 'Categoría', render: (row) => categoryName(row.categoriaId) },
-    { key: 'prioridad', header: 'Prioridad', render: (row) => priorityName(row.prioridadId) },
+    { key: 'categoria', header: 'Categoría', render: (row) => row.categoria || categoryName(row.categoriaId) },
+    { key: 'prioridad', header: 'Prioridad', render: (row) => row.prioridad || priorityName(row.prioridadId) },
     { key: 'estado', header: 'Estado', render: (row) => <StatusBadge estado={row.estado} /> },
     ...extra,
     { key: 'fecha', header: 'Fecha', render: (row) => formatDateTime(row.creadoEn) },

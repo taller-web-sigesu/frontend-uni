@@ -127,7 +127,7 @@ function RequestDetail({ id }) {
         <div className="detail-header__title">
           <h2>{solicitud.codigo}</h2>
           <StatusBadge estado={solicitud.estado} />
-          <span className="badge badge--neutral">Prioridad: {priorityName(solicitud.prioridadId)}</span>
+          <span className="badge badge--neutral">Prioridad: {solicitud.prioridad || priorityName(solicitud.prioridadId)}</span>
           <SlaBadge sla={solicitud.sla} />
         </div>
         <div className="detail-header__actions">
@@ -141,7 +141,9 @@ function RequestDetail({ id }) {
         <div className="detail-grid__main">
           <RequestSummary solicitud={solicitud} categoryName={categoryName} />
           <AttachmentsSection requestId={solicitud.id} canAttach={actions.has('ADJUNTAR')} />
-          {actions.has('RESPONDER_ENCUESTA') && <SurveySection requestId={solicitud.id} />}
+          {actions.has('RESPONDER_ENCUESTA') && (
+            <SurveySection requestId={solicitud.id} answered={solicitud.encuestaRespondida} />
+          )}
           {actions.has('CAMBIAR_PRIORIDAD') && (
             <PriorityControl solicitud={solicitud} onChanged={handleChanged} onConflict={setConflict} />
           )}

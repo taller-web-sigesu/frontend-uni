@@ -121,3 +121,8 @@ const TONES = {
 export function statusTone(code) {
   return TONES[code] || 'neutral';
 }
+
+/** «1 solicitud» / «3 solicitudes», sin duplicar la lógica en cada pantalla. */
+export function countLabel(count, singular, plural = `${singular}${/[aeiou]$/.test(singular) ? 's' : 'es'}`) {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
