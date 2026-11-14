@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createRequest, login, switchTo } from './fixtures.js';
+import { NAMES, createRequest, login, switchTo } from './fixtures.js';
 
 const header = (page) => page.locator('.detail-header');
 
@@ -15,7 +15,7 @@ test.describe('solicitudes', () => {
     await page.goto(`/solicitudes/${id}`);
     await page.getByRole('button', { name: 'Asignar responsable' }).click();
     const dialog = page.getByRole('dialog', { name: 'Asignar responsable' });
-    await dialog.getByLabel('Técnico').selectOption({ label: 'Técnico TI Demo' });
+    await dialog.getByLabel('Técnico').selectOption({ label: NAMES.TECNICO });
     await dialog.getByRole('button', { name: 'Asignar' }).click();
     await expect(header(page)).toContainText('Asignado');
 

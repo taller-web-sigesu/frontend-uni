@@ -14,7 +14,14 @@ export const ACCOUNTS = {
   ADMINISTRADOR: 'admin.demo@universidad.example',
 };
 
-export const NAMES = {
+/** Nombres visibles: la semilla real (db/demo) y la simulada no coinciden. */
+export const NAMES = IS_REAL ? {
+  ESTUDIANTE: 'Ana Estudiante',
+  DOCENTE: 'Pedro Docente',
+  TECNICO: 'Luis Técnico TI',
+  SUPERVISOR: 'Sofía Supervisora TI',
+  ADMINISTRADOR: 'Admin Demo',
+} : {
   ESTUDIANTE: 'Ana Demo',
   DOCENTE: 'Pedro Demo',
   TECNICO: 'Técnico TI Demo',

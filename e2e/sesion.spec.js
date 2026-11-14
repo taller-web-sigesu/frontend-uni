@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
-  ACCOUNTS, IS_REAL, NAMES, fillLogin, firstLoginAccount, homePathFor, login, logout,
+  ACCOUNTS, IS_REAL, NAMES, fillLogin, firstLoginAccount, homePathFor, login, logout, unique,
 } from './fixtures.js';
 
 test.describe('sesion', () => {
@@ -13,7 +13,8 @@ test.describe('sesion', () => {
   }
 
   test('credenciales inválidas no revelan el campo', async ({ page }) => {
-    await fillLogin(page, 'nadie.e2e@universidad.example', 'Incorrecta1');
+    // Correo único: el backend limita los intentos fallidos por correo.
+    await fillLogin(page, `nadie.${unique()}@universidad.example`, 'Incorrecta1');
     await expect(page.getByRole('alert')).toHaveText('Correo o contraseña incorrectos');
     await expect(page).toHaveURL(/\/login$/);
   });
@@ -38,7 +39,9 @@ test.describe('sesion', () => {
       }
     });
     await login(page, 'ESTUDIANTE');
+    const refresh = page.waitForRequest((r) => r.url().includes('/api/v1/auth/refresh'));
     await page.reload();
+    const origin = (await (await refresh).allHeaders()).origin;
     await expect(page.getByText(NAMES.ESTUDIANTE, { exact: true }).first()).toBeVisible();
     await expect(page).toHaveURL(/\/inicio$/);
     expect(token).toBeTruthy();
@@ -47,6 +50,7 @@ test.describe('sesion', () => {
     if (IS_REAL) {
       const cookie = (await page.context().cookies()).find((c) => c.name === 'refresh_token');
       expect(cookie).toMatchObject({ httpOnly: true, path: '/api/v1/auth' });
+      expect(origin).toBe('http://localhost:3000');
     }
   });
 
