@@ -16,6 +16,7 @@ const BUTTONS = [
  */
 export function TransitionActions({ solicitud, actions, onChanged, onConflict }) {
   const [rejecting, setRejecting] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [motivo, setMotivo] = useState('');
   const [motivoError, setMotivoError] = useState(null);
   const { submit, pending, error } = useSubmit((body) => changeStatus(solicitud.id, body));
@@ -25,9 +26,14 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
     if (result.ok || needsReload(result.error)) {
       if (isConflict(result.error)) onConflict?.(CONFLICT_MESSAGE);
       setRejecting(false);
+      setClosing(false);
       onChanged();
     }
     return result;
+  }
+
+  async function confirmClose() {
+    await run({ estado: 'CERRADO' });
   }
 
   async function confirmReject() {
@@ -41,7 +47,7 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
     if (result.ok) setMotivo('');
   }
 
-  const visible = BUTTONS.filter((button) => actions.has(button.action));
+  const visible = BUTTONS.filter((button) => actions.has(button.action) && button.action !== 'CERRAR');
   const failure = error && !needsReload(error) ? error.fieldErrors?.motivo || error.detail : null;
 
   return (
@@ -51,10 +57,13 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
           {button.label}
         </Button>
       ))}
+      {actions.has('CERRAR') && (
+        <Button pending={pending} onClick={() => setClosing(true)}>Cerrar solicitud</Button>
+      )}
       {actions.has('RECHAZAR') && (
         <Button variant="danger" disabled={pending} onClick={() => setRejecting(true)}>Rechazar solicitud</Button>
       )}
-      {failure && !rejecting && <p className="form-error detail-header__error" role="alert">{failure}</p>}
+      {failure && !rejecting && !closing && <p className="form-error detail-header__error" role="alert">{failure}</p>}
       <ConfirmDialog
         open={rejecting}
         title="Rechazar solicitud"
@@ -76,6 +85,17 @@ export function TransitionActions({ solicitud, actions, onChanged, onConflict })
           onChange={(event) => setMotivo(event.target.value)}
           error={motivoError || (rejecting ? failure : null)}
         />
+      </ConfirmDialog>
+      <ConfirmDialog
+        open={closing}
+        title="Cerrar solicitud"
+        message={`La solicitud ${solicitud.codigo} quedará cerrada. Esta acción no se puede deshacer.`}
+        confirmLabel="Cerrar solicitud"
+        pending={pending}
+        onConfirm={confirmClose}
+        onCancel={() => setClosing(false)}
+      >
+        {failure && <p className="form-error" role="alert">{failure}</p>}
       </ConfirmDialog>
     </>
   );
