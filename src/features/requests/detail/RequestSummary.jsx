@@ -36,7 +36,7 @@ export function RequestSummary({ solicitud, categoryName }) {
       <h2 id="detalle-datos">Datos de la solicitud</h2>
       <dl className="data-list data-list--grid">
         <Item label="Categoría">{categoryName(solicitud.categoriaId)}</Item>
-        <Item label="Área">{areaName(solicitud.areaId)}</Item>
+        <Item label="Área">{solicitud.area || areaName(solicitud.areaId)}</Item>
         <Item label="Ubicación">{solicitud.ubicacion}</Item>
         <Item label="Solicitante">{solicitud.solicitante?.nombreCompleto}</Item>
         <Item label={terminal ? 'Último responsable' : 'Responsable'}>{responsable?.nombreCompleto || 'Sin asignar'}</Item>
