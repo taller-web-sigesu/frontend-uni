@@ -117,6 +117,9 @@ test.describe('administracion', () => {
     await categoryDialog.getByRole('button', { name: 'Guardar' }).click();
     await expect(categoryDialog).toBeHidden();
 
+    // Espera a que la tabla recargue; en real la respuesta puede llegar después del cierre.
+    await expect(page.getByRole('table', { name: 'Categorías' })).toContainText(categoryName, { timeout: 15_000 });
+
     // La categoría queda asociada al área nueva.
     const createdCategory = await rowWith(page, categoryName);
     await expect(createdCategory).toContainText(areaName);
