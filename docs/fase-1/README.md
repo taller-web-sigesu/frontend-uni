@@ -13,16 +13,16 @@ Muestra de desarrollo con **HTML, CSS y JavaScript puro** para la Fase I del cur
 
 ## Cómo ejecutarlo
 
-Abre `index.html` directamente o, para probar `fetch` sin restricciones del navegador, levanta un servidor local:
+Abre `index.html` directamente o, para probar `fetch` sin restricciones del navegador, levanta un servidor local desde la raíz de `frontend-uni`:
 
 ```bash
-npx serve fase-1
+npx serve docs/fase-1
 ```
 
 o
 
 ```bash
-python -m http.server 5173 --directory fase-1
+python -m http.server 5173 --directory docs/fase-1
 ```
 
 Luego abre `http://localhost:5173` (o la URL que indique `serve`).
