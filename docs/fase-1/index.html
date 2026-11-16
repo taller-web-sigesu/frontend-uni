@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestal · Prototipo Fase I</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- ============ LOGIN ============ -->
+  <section id="login-view" class="login-shell">
+    <div class="login-card">
+      <p class="eyebrow">Universidad Nacional Mayor de San Marcos</p>
+      <h1>Gestal</h1>
+      <p class="muted">Prototipo HTML, CSS y JavaScript · Fase I</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Correo institucional</label>
+          <input id="email" name="email" type="email" autocomplete="username"
+                 placeholder="ana@universidad.example" required>
+          <p class="error" data-error-for="email"></p>
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input id="password" name="password" type="password" autocomplete="current-password"
+                 placeholder="Demo2026!" required>
+          <p class="error" data-error-for="password"></p>
+        </div>
+
+        <p id="login-error" class="alert alert-error" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit">Ingresar</button>
+      </form>
+
+      <p class="hint">Demo: <code>ana@universidad.example</code> / <code>Demo2026!</code></p>
+      <p class="hint">Otros roles: <code>docente@</code>, <code>tecnico@</code>, <code>supervisor@</code> y <code>admin@universidad.example</code>.</p>
+    </div>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <div id="app-view" class="app-shell" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">G</span>
+        <div>
+          <strong>Gestal</strong>
+          <small>Fase I · Prototipo</small>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <button class="nav-item is-active" type="button" data-view="list">Mis solicitudes</button>
+        <button class="nav-item" type="button" data-view="new">Nueva solicitud</button>
+        <button class="nav-item" type="button" data-view="management">Gestión de área</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="reset-demo" class="btn btn-ghost btn-small" type="button">Restablecer demo</button>
+        <button id="logout" class="btn btn-ghost btn-small btn-danger-text" type="button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Panel de servicios universitarios</p>
+          <h2 id="view-title">Mis solicitudes</h2>
+        </div>
+
+        <div class="topbar-actions">
+          <label class="role-picker">
+            <span>Vista de rol</span>
+            <select id="role-select">
+              <option value="Estudiante">Estudiante</option>
+              <option value="Docente">Docente</option>
+              <option value="Técnico">Técnico</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </label>
+          <div class="user-chip">
+            <span id="user-avatar" class="avatar">A</span>
+            <div>
+              <strong id="user-name">Ana Estudiante</strong>
+              <small id="user-role">Estudiante</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main id="main" class="content">
+        <!-- LIST -->
+        <section id="view-list" class="view">
+          <div class="view-head">
+            <div>
+              <h3>Solicitudes registradas</h3>
+              <p class="muted">Datos simulados cargados con <code>fetch</code> desde <code>data.json</code>.</p>
+            </div>
+            <button class="btn btn-primary" type="button" data-go="new">Registrar solicitud</button>
+          </div>
+
+          <div id="kpis" class="kpi-grid"></div>
+
+          <div class="toolbar">
+            <div class="field field-inline">
+              <label for="filter-status">Estado</label>
+              <select id="filter-status">
+                <option>Todos</option>
+                <option>Nuevo</option>
+                <option>Asignado</option>
+                <option>En proceso</option>
+                <option>Resuelto</option>
+                <option>Cerrado</option>
+                <option>Rechazado</option>
+              </select>
+            </div>
+            <div class="field field-inline field-grow">
+              <label for="filter-search">Buscar</label>
+              <input id="filter-search" type="search" placeholder="Código, categoría o ubicación">
+            </div>
+          </div>
+
+          <div id="list-table" class="table-wrap"></div>
+          <div id="list-empty" class="empty-state" hidden>
+            <strong>No hay solicitudes con esos filtros.</strong>
+            <span>Prueba con otro estado o registra una nueva solicitud.</span>
+          </div>
+        </section>
+
+        <!-- NEW -->
+        <section id="view-new" class="view" hidden>
+          <div class="view-head">
+            <div>
+              <h3>Registrar solicitud</h3>
+              <p class="muted">Flujo de un solo paso. Los campos marcados con * son obligatorios.</p>
+            </div>
+          </div>
+
+          <form id="new-form" class="card form-card" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="new-category">Categoría *</label>
+                <select id="new-category" name="categoria" required>
+                  <option value="">Selecciona una categoría</option>
+                </select>
+                <p class="error" data-error-for="categoria"></p>
+              </div>
+
+              <div class="field">
+                <label for="new-priority">Prioridad</label>
+                <select id="new-priority" name="prioridad">
+                  <option value="">Según la categoría</option>
+                </select>
+                <p class="hint">Si no eliges una, se asigna la prioridad por defecto de la categoría.</p>
+              </div>
+
+              <div class="field field-full">
+                <label for="new-location">Ubicación *</label>
+                <input id="new-location" name="ubicacion" type="text"
+                       placeholder="Ej. Laboratorio 204 - Pabellón nuevo" required>
+                <p class="error" data-error-for="ubicacion"></p>
+              </div>
+
+              <div class="field field-full">
+                <label for="new-description">Descripción *</label>
+                <textarea id="new-description" name="descripcion" rows="5"
+                          placeholder="Describe el problema o requerimiento con el mayor detalle posible." required></textarea>
+                <p class="error" data-error-for="descripcion"></p>
+              </div>
+
+              <div class="field field-full">
+                <label for="new-evidence">Evidencia (opcional)</label>
+                <input id="new-evidence" name="evidencia" type="file" accept=".jpg,.jpeg,.png,.pdf">
+                <p class="hint">En el prototipo solo se muestra el nombre del archivo; no se sube a un servidor.</p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Registrar solicitud</button>
+              <button class="btn btn-secondary" type="button" data-go="list">Cancelar</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- DETAIL -->
+        <section id="view-detail" class="view" hidden>
+          <div class="view-head">
+            <div>
+              <button class="btn btn-ghost btn-small" type="button" data-go="list">← Volver</button>
+              <h3 id="detail-title">Detalle de la solicitud</h3>
+            </div>
+          </div>
+          <div id="detail-content"></div>
+        </section>
+
+        <!-- MANAGEMENT -->
+        <section id="view-management" class="view" hidden>
+          <div class="view-head">
+            <div>
+              <h3>Gestión de área</h3>
+              <p class="muted">Vista del técnico, supervisor o administrador según el rol seleccionado.</p>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="field field-inline">
+              <label for="management-status">Estado</label>
+              <select id="management-status">
+                <option>Todos</option>
+                <option>Nuevo</option>
+                <option>Asignado</option>
+                <option>En proceso</option>
+                <option>Resuelto</option>
+                <option>Cerrado</option>
+                <option>Rechazado</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="management-table" class="table-wrap"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
