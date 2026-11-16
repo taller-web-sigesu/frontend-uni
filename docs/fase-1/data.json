@@ -1,0 +1,172 @@
+{
+  "areas": [
+    { "id": 1, "nombre": "Soporte informático" },
+    { "id": 2, "nombre": "Mantenimiento" },
+    { "id": 3, "nombre": "Infraestructura" },
+    { "id": 4, "nombre": "Administración" }
+  ],
+  "categorias": [
+    { "id": 1, "nombre": "Soporte informático", "areaId": 1, "prioridadPredeterminadaId": 2 },
+    { "id": 2, "nombre": "Mantenimiento", "areaId": 2, "prioridadPredeterminadaId": 3 },
+    { "id": 3, "nombre": "Infraestructura", "areaId": 3, "prioridadPredeterminadaId": 3 },
+    { "id": 4, "nombre": "Trámite administrativo", "areaId": 4, "prioridadPredeterminadaId": 1 }
+  ],
+  "prioridades": [
+    { "id": 1, "nombre": "Baja", "nivel": 1 },
+    { "id": 2, "nombre": "Media", "nivel": 2 },
+    { "id": 3, "nombre": "Alta", "nivel": 3 },
+    { "id": 4, "nombre": "Crítica", "nivel": 4 }
+  ],
+  "tecnicos": [
+    { "id": 1, "nombre": "Luis Técnico", "areaId": 1 },
+    { "id": 2, "nombre": "María Técnica", "areaId": 1 },
+    { "id": 3, "nombre": "Carlos Mantenimiento", "areaId": 2 }
+  ],
+  "solicitudes": [
+    {
+      "id": 1,
+      "codigo": "SOL-2026-000101",
+      "solicitante": "Ana Estudiante",
+      "correo": "ana@universidad.example",
+      "categoriaId": 1,
+      "ubicacion": "Laboratorio 204 - Pabellón nuevo",
+      "descripcion": "La computadora del laboratorio no enciende y hay una clase a las 10:00. Ya se probó con otro cargador y el problema continúa.",
+      "prioridadId": 3,
+      "estado": "Nuevo",
+      "areaId": 1,
+      "responsableId": null,
+      "fecha": "2026-11-10T09:15:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-10T09:15:00", "autor": "Ana Estudiante" }
+      ],
+      "comentarios": []
+    },
+    {
+      "id": 2,
+      "codigo": "SOL-2026-000102",
+      "solicitante": "Ana Estudiante",
+      "correo": "ana@universidad.example",
+      "categoriaId": 2,
+      "ubicacion": "Pabellón antiguo - Aula 105",
+      "descripcion": "La puerta del aula no cierra correctamente y el ruido interrumpe las clases de la tarde.",
+      "prioridadId": 2,
+      "estado": "Asignado",
+      "areaId": 2,
+      "responsableId": 3,
+      "fecha": "2026-11-09T14:30:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-09T14:30:00", "autor": "Ana Estudiante" },
+        { "estado": "Asignado", "fecha": "2026-11-09T15:00:00", "autor": "Sofía Supervisora" }
+      ],
+      "comentarios": [
+        {
+          "autor": "Sofía Supervisora",
+          "rol": "Supervisor",
+          "fecha": "2026-11-09T15:05:00",
+          "texto": "Se asignó al técnico de mantenimiento para revisar la cerradura."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "codigo": "SOL-2026-000103",
+      "solicitante": "Pedro Docente",
+      "correo": "docente@universidad.example",
+      "categoriaId": 1,
+      "ubicacion": "Laboratorio 301",
+      "descripcion": "El proyector no muestra imagen. El cable HDMI parece estar dañado.",
+      "prioridadId": 3,
+      "estado": "En proceso",
+      "areaId": 1,
+      "responsableId": 1,
+      "fecha": "2026-11-08T08:20:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-08T08:20:00", "autor": "Pedro Docente" },
+        { "estado": "Asignado", "fecha": "2026-11-08T09:00:00", "autor": "Sofía Supervisora" },
+        { "estado": "En proceso", "fecha": "2026-11-08T10:15:00", "autor": "Luis Técnico" }
+      ],
+      "comentarios": [
+        {
+          "autor": "Luis Técnico",
+          "rol": "Técnico",
+          "fecha": "2026-11-08T10:20:00",
+          "texto": "Se está revisando el cable y la configuración del proyector."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "codigo": "SOL-2026-000104",
+      "solicitante": "Ana Estudiante",
+      "correo": "ana@universidad.example",
+      "categoriaId": 3,
+      "ubicacion": "Pabellón B - Pasillo principal",
+      "descripcion": "Una luminaria del pasillo está suelta y genera un riesgo para los estudiantes.",
+      "prioridadId": 4,
+      "estado": "Resuelto",
+      "areaId": 3,
+      "responsableId": 1,
+      "fecha": "2026-11-07T16:40:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-07T16:40:00", "autor": "Ana Estudiante" },
+        { "estado": "Asignado", "fecha": "2026-11-07T17:00:00", "autor": "Sofía Supervisora" },
+        { "estado": "En proceso", "fecha": "2026-11-07T17:30:00", "autor": "Luis Técnico" },
+        { "estado": "Resuelto", "fecha": "2026-11-08T09:10:00", "autor": "Luis Técnico" }
+      ],
+      "comentarios": [
+        {
+          "autor": "Luis Técnico",
+          "rol": "Técnico",
+          "fecha": "2026-11-08T09:12:00",
+          "texto": "Se aseguró la luminaria y se verificó el punto de anclaje."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "codigo": "SOL-2026-000105",
+      "solicitante": "Pedro Docente",
+      "correo": "docente@universidad.example",
+      "categoriaId": 4,
+      "ubicacion": "Oficina de trámite documentario",
+      "descripcion": "Se solicita constancia de matrícula para un trámite externo.",
+      "prioridadId": 1,
+      "estado": "Cerrado",
+      "areaId": 4,
+      "responsableId": null,
+      "fecha": "2026-11-05T11:05:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-05T11:05:00", "autor": "Pedro Docente" },
+        { "estado": "Resuelto", "fecha": "2026-11-05T15:20:00", "autor": "Admin General" },
+        { "estado": "Cerrado", "fecha": "2026-11-06T08:30:00", "autor": "Admin General" }
+      ],
+      "comentarios": []
+    },
+    {
+      "id": 6,
+      "codigo": "SOL-2026-000106",
+      "solicitante": "Ana Estudiante",
+      "correo": "ana@universidad.example",
+      "categoriaId": 2,
+      "ubicacion": "Pabellón C - Aula 210",
+      "descripcion": "Solicitud duplicada de mantenimiento de la puerta.",
+      "prioridadId": 2,
+      "estado": "Rechazado",
+      "areaId": 2,
+      "responsableId": null,
+      "fecha": "2026-11-04T10:00:00",
+      "historial": [
+        { "estado": "Nuevo", "fecha": "2026-11-04T10:00:00", "autor": "Ana Estudiante" },
+        { "estado": "Rechazado", "fecha": "2026-11-04T11:00:00", "autor": "Sofía Supervisora" }
+      ],
+      "comentarios": [
+        {
+          "autor": "Sofía Supervisora",
+          "rol": "Supervisor",
+          "fecha": "2026-11-04T11:00:00",
+          "texto": "Rechazada por duplicado: ya existe la solicitud SOL-2026-000102."
+        }
+      ]
+    }
+  ]
+}
