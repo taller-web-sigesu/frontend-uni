@@ -1,6 +1,6 @@
-// Único lugar donde el frontend cubre lo que el contrato de la API todavía no
-// expone (ver «Huecos del contrato conocidos» en el plan de la fase 01).
-// En modo real no se inventan endpoints: se devuelve `null` o un texto de respaldo.
+// Respaldos para datos simulados o respuestas antiguas que aún no traen el
+// nombre de prioridad/área o la marca de encuesta respondida. Los catálogos
+// reales se leen de `catalogs.js`; aquí no se inventan endpoints.
 // Los datos simulados se registran desde fuera (main.jsx en modo simulado y la
 // configuración de pruebas): importarlos aquí los metería en el bundle de producción.
 let db = null;
@@ -12,15 +12,6 @@ export function registerMockData(data) {
 
 export function isMockMode() {
   return import.meta.env.VITE_API_MODE === 'mock' || import.meta.env.MODE === 'test';
-}
-
-/** Opciones de prioridad para el supervisor. `null` = el contrato no las expone. */
-export async function listPriorityOptions() {
-  if (!isMockMode() || !db) return null;
-  return db.priorities
-    .filter((priority) => priority.activo)
-    .sort((a, b) => a.nivel - b.nivel)
-    .map(({ id, nombre }) => ({ id, nombre }));
 }
 
 /** Respaldo para datos simulados o listados antiguos sin nombre de prioridad. */

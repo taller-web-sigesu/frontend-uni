@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Dialog, SelectField, Skeleton } from '../../../components/ui/index.js';
-import { listPriorityOptions } from '../../../services/pendingContract.js';
+import { listActivePriorities } from '../../../services/catalogs.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { assign, listEligibleTechnicians } from '../../requests/requestsApi.js';
@@ -9,7 +9,7 @@ import { CONFLICT_MESSAGE, isConflict, needsReload } from './conflict.js';
 async function loadOptions(requestId, signal) {
   const [technicians, priorities] = await Promise.all([
     listEligibleTechnicians(requestId, signal),
-    listPriorityOptions(),
+    listActivePriorities(signal),
   ]);
   return { technicians: technicians.items, priorities };
 }
@@ -59,7 +59,7 @@ function AssignForm({ solicitud, onDone, onConflict, onCancel }) {
           error={localError || fieldErrors.tecnicoId}
         />
       )}
-      {data.priorities && (
+      {data.priorities.length > 0 && (
         <SelectField
           label="Prioridad (opcional)"
           name="prioridadId"

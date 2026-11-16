@@ -1,6 +1,6 @@
 # Tareas pendientes del frontend
 
-Estado al **14/11/2026**, con las fases 01 a 06 integradas y desplegadas.
+Estado al **16/11/2026**, con las fases 01 a 06 integradas y desplegadas.
 Las fases 01 a 06 están implementadas; esta lista recoge lo que falta para entregar y lo que se dejó fuera a propósito.
 
 **Fuera de alcance (decidido):** el modo oscuro. La aplicación es solo de tema claro; `DESIGN.md`, `AGENTS.md` y `ARCHITECTURE.md` ya lo reflejan.
@@ -19,13 +19,9 @@ Estado al **14/11/2026**: las fases 05 y 06 están integradas en `main`, el CI e
 
 ## 2. Huecos del contrato (dependen del backend)
 
-Actualizado el **14/11/2026** tras la ronda de QA: el detalle ya publica `prioridad`, `area` y `encuestaRespondida`; el listado publica `categoria` y `prioridad`; la bandeja de reservas publica `solicitante`; y la sesión publica `areaNombre`. Queda un solo hueco:
+Actualizado el **16/11/2026**: el detalle publica `prioridad`, `area` y `encuestaRespondida`; el listado publica `categoria` y `prioridad`; la bandeja de reservas publica `solicitante`; la sesión publica `areaNombre`; y **HU-07/HU-08 ya leen el catálogo de prioridades activas** desde `GET /api/v1/admin/catalogs/priorities` (solo lectura para todos los roles autenticados). No quedan huecos del contrato para los flujos entregados.
 
-| # | Flujo | Falta en el contrato | Efecto hoy |
-| --- | --- | --- | --- |
-| 2.1 | Supervisión (HU-07, HU-08) | Lectura de prioridades para el selector del supervisor | Se oculta el ajuste de prioridad al asignar y en el detalle. |
-
-`priorityName`, `areaName` y `surveyAnswered` siguen en `pendingContract.js` como respaldo para datos simulados o respuestas antiguas. Cuando el backend publique las prioridades del supervisor, quitar la última entrada, ajustar la pantalla y su prueba, y actualizar la matriz.
+`priorityName`, `areaName` y `surveyAnswered` siguen en `pendingContract.js` como respaldo para datos simulados o respuestas antiguas, no como sustituto del contrato real.
 
 ## 3. Riesgos sin probar
 
@@ -37,8 +33,8 @@ Actualizado el **14/11/2026** tras la ronda de QA: el detalle ya publica `priori
 
 | # | Tarea | Detalle |
 | --- | --- | --- |
-| 4.1 | Recorrido E2E de HU-16 (categorías y áreas) | Hoy solo tiene pruebas unitarias. |
-| 4.2 | Recorrido E2E de HU-19 (auditoría) | Hoy solo tiene pruebas unitarias. |
+| 4.1 | Recorrido E2E de HU-16 (categorías y áreas) | Completado: `administracion.spec.js` crea área y categoría, verifica que el estudiante las ve y que la baja lógica las oculta. |
+| 4.2 | Recorrido E2E de HU-19 (auditoría) | Completado: `solicitudes.spec.js` asigna técnico y prioridad, verifica la auditoría y que el técnico no la ve. |
 | 4.3 | Reintento de CI | CI reintenta una vez cada prueba fallida, lo que puede ocultar inestabilidad. Revisar los informes aunque el job salga en verde. |
 | 4.4 | Recorrido manual con teclado | No se recorrió cada pantalla con Tab y Shift+Tab. |
 

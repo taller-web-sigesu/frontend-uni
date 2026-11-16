@@ -249,7 +249,8 @@ const duplicate = () => problem(409, 'DUPLICADO', 'Ya existe un registro con ese
 
 const catalogHandlers = Object.keys(CATALOGS).flatMap((kind) => [
   http.get(`/api/v1/admin/catalogs/${kind}`, ({ request }) => {
-    const user = admin(request);
+    // El catálogo de prioridades es de solo lectura para todos los roles autenticados.
+    const user = kind === 'priorities' ? requireUser(request) : admin(request);
     if (user instanceof Response) return user;
     return HttpResponse.json(paginate(db[kind], request.url));
   }),

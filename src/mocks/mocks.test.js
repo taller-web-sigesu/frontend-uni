@@ -5,9 +5,9 @@ import { takeUnhandledRequests } from '../test/msw.js';
 import { db, resetDb, problem, paginate } from './db.js';
 import { request } from '../services/http.js';
 import { ApiError } from '../services/apiError.js';
-import { listEnabledCategories, useCatalogLabels } from '../services/catalogs.js';
+import { listActivePriorities, listEnabledCategories, useCatalogLabels } from '../services/catalogs.js';
 import { signInAs } from '../test/session.js';
-import { listPriorityOptions, priorityName, surveyAnswered, isMockMode } from '../services/pendingContract.js';
+import { priorityName, surveyAnswered } from '../services/pendingContract.js';
 
 test('GET /api/v1/status responde UP desde el mock', async () => {
   expect(await request('/status', { auth: false })).toEqual({ status: 'UP' });
@@ -65,18 +65,25 @@ test('listEnabledCategories devuelve solo categorías activas', async () => {
   expect(categories.find((c) => c.id === inactive.id)).toBeUndefined();
 });
 
-test('useCatalogLabels resuelve categoría y usa respaldo para desconocidas', async () => {
+test('useCatalogLabels resuelve categoría, prioridad y usa respaldo para desconocidas', async () => {
   signInAs();
   const { result } = renderHook(() => useCatalogLabels());
   await waitFor(() => expect(result.current.ready).toBe(true));
   expect(result.current.categoryName('3')).toBe('Conectividad');
   expect(result.current.categoryName('999')).toBe('Categoría 999');
+  expect(result.current.priorityName('4')).toBe('Media');
+  expect(result.current.priorityName('999')).toBe('Prioridad 999');
+  expect(result.current.priorityLabel('ALTA')).toBe('Alta');
 });
 
-test('pendingContract en pruebas usa los datos simulados', async () => {
-  expect(isMockMode()).toBe(true);
-  const options = await listPriorityOptions();
-  expect(options.map((o) => o.nombre)).toEqual(['Baja', 'Media', 'Alta']);
+test('listActivePriorities devuelve solo prioridades activas y ordenadas por nivel', async () => {
+  signInAs();
+  const priorities = await listActivePriorities();
+  expect(priorities.map((p) => p.nombre)).toEqual(['Baja', 'Media', 'Alta']);
+  expect(priorities.every((p) => p.activo === undefined || p.activo === true)).toBe(true);
+});
+
+test('priorityName sigue disponible como respaldo para datos antiguos', () => {
   expect(priorityName('4')).toBe('Media');
   expect(priorityName('999')).toBe('Prioridad 999');
 });

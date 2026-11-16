@@ -39,13 +39,14 @@ const fieldLabel = (row) => {
   if (row.campo) return FIELD_LABELS[row.campo] || row.campo;
   return isComment(row) ? 'Comentario' : '—';
 };
-const valueLabel = (value) => {
+const valueLabel = (value, priorityLabel) => {
   if (value === null || value === undefined || value === '') return '—';
-  return REQUEST_STATUS_LABELS[value] || value;
+  if (REQUEST_STATUS_LABELS[value]) return REQUEST_STATUS_LABELS[value];
+  return priorityLabel ? priorityLabel(value) : value;
 };
 
 /** Modificaciones auditadas (solo supervisor del área). `reloadKey` la refresca tras un cambio. */
-export function AuditPanel({ requestId, personName = () => null, reloadKey = 0 }) {
+export function AuditPanel({ requestId, personName = () => null, priorityLabel = (value) => value, reloadKey = 0 }) {
   const [page, setPage] = useState(0);
   const { data, error, status, reload } = useResource(
     (signal) => listAuditEvents(requestId, { page, size: PAGE_SIZE }, signal),
@@ -63,8 +64,8 @@ export function AuditPanel({ requestId, personName = () => null, reloadKey = 0 }
           columns={[
             { key: 'accion', header: 'Acción', render: (row) => actionLabel(row) },
             { key: 'campo', header: 'Campo', render: (row) => fieldLabel(row) },
-            { key: 'valorAnterior', header: 'Valor anterior', render: (row) => valueLabel(row.valorAnterior) },
-            { key: 'valorNuevo', header: 'Valor nuevo', render: (row) => valueLabel(row.valorNuevo) },
+            { key: 'valorAnterior', header: 'Valor anterior', render: (row) => valueLabel(row.valorAnterior, priorityLabel) },
+            { key: 'valorNuevo', header: 'Valor nuevo', render: (row) => valueLabel(row.valorNuevo, priorityLabel) },
             { key: 'actor', header: 'Actor', render: (row) => row.actorNombre || personName(row.actorId) || `Usuario ${row.actorId}` },
             { key: 'fecha', header: 'Fecha', render: (row) => formatDateTime(row.fecha) },
           ]}

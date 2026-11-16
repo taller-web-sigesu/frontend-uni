@@ -42,6 +42,7 @@ test('gestión envía los filtros y vuelve a la página 0', async () => {
   await screen.findByText('SOL-2026-000001');
   expect(codes().every((code) => ['SOL-2026-000001', 'SOL-2026-000009'].includes(code))).toBe(true);
 
+  await screen.findByLabelText('Prioridad');
   await user.selectOptions(screen.getByLabelText('Categoría'), 'Equipos de cómputo');
   await user.selectOptions(screen.getByLabelText('Prioridad'), 'Baja');
   await waitFor(() => expect(calls.at(-1).url.searchParams.get('prioridadId')).toBe('3'));

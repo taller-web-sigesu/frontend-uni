@@ -4,7 +4,7 @@ import { Button, ErrorState, SelectField, Skeleton } from '../../components/ui/i
 import { useCatalogLabels } from '../../services/catalogs.js';
 import { downloadBlob } from '../../services/download.js';
 import { currentMonthInLima, limaDaysToUtcRange } from '../../services/format.js';
-import { areaName, priorityName } from '../../services/pendingContract.js';
+import { areaName } from '../../services/pendingContract.js';
 import { useResource } from '../../services/useResource.js';
 import { useSubmit } from '../../services/useSubmit.js';
 import { listAll } from '../administration/catalogsAdminApi.js';
@@ -30,7 +30,7 @@ async function loadAdminNames(signal) {
 
 /** Nombres para los ids del resumen: catálogos del admin, o los del supervisor con respaldo. */
 function useNames(isAdmin) {
-  const { categoryName } = useCatalogLabels();
+  const { categoryName, priorityName } = useCatalogLabels();
   const { data: admin } = useResource((signal) => (isAdmin ? loadAdminNames(signal) : null), [isAdmin]);
   return {
     areas: admin?.areas.filter((a) => a.activo) || [],
@@ -39,7 +39,7 @@ function useNames(isAdmin) {
       (id) => (isAdmin ? nameIn(admin?.categories, id) ?? `Categoría ${id}` : categoryName(id)),
       [admin, isAdmin, categoryName],
     ),
-    priority: useCallback((id) => nameIn(admin?.priorities, id) ?? priorityName(id), [admin]),
+    priority: useCallback((id) => nameIn(admin?.priorities, id) ?? priorityName(id), [admin, priorityName]),
     person: useCallback((id) => {
       if (id === null || id === undefined) return 'Sin asignar';
       return admin?.users.find((u) => u.id === id)?.nombreCompleto ?? `Responsable ${id}`;
