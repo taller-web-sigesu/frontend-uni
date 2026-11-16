@@ -5,7 +5,6 @@ import {
 } from '../../components/ui/index.js';
 import { useCatalogLabels } from '../../services/catalogs.js';
 import { countLabel, REQUEST_STATUS_LABELS } from '../../services/format.js';
-import { listPriorityOptions } from '../../services/pendingContract.js';
 import { useResource } from '../../services/useResource.js';
 import { requestColumns } from '../requests/requestColumns.jsx';
 import { listRequests } from '../requests/requestsApi.js';
@@ -23,7 +22,6 @@ export default function AreaManagementPage() {
   const labels = useCatalogLabels();
   const [filters, setFilters] = useState(NO_FILTERS);
   const [page, setPage] = useState(0);
-  const { data: priorities } = useResource(() => listPriorityOptions(), []);
   const { data, error, status, reload } = useResource(
     (signal) => listRequests({ page, size: PAGE_SIZE, ...filters }, signal),
     [page, filters.estado, filters.categoriaId, filters.prioridadId],
@@ -75,12 +73,12 @@ export default function AreaManagementPage() {
           value={filters.categoriaId}
           onChange={setFilter('categoriaId')}
         />
-        {priorities && (
+        {labels.priorities.length > 0 && (
           <SelectField
             label="Prioridad"
             name="prioridadId"
             placeholder="Todas"
-            options={priorities.map((p) => ({ value: p.id, label: p.nombre }))}
+            options={labels.priorities.map((p) => ({ value: p.id, label: p.nombre }))}
             value={filters.prioridadId}
             onChange={setFilter('prioridadId')}
           />
