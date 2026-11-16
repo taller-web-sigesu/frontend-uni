@@ -4,7 +4,6 @@ import { server } from '../../../mocks/server.js';
 import { db } from '../../../mocks/db.js';
 import { renderWithRouter } from '../../../test/render.jsx';
 import { captureRequests, SUPERVISORA_TI, TECNICO_TI, userById } from '../../../test/users.js';
-import * as pendingContract from '../../../services/pendingContract.js';
 
 const CONFLICT = 'La solicitud cambió mientras la revisabas. Se cargó su estado actual.';
 // Todos los cuerpos enviados a PATCH /status en este archivo (ver la última prueba).
@@ -105,12 +104,11 @@ test('asigna un técnico elegible', async () => {
   expect(screen.getByRole('button', { name: 'Reasignar' })).toBeInTheDocument();
 });
 
-test('el control de prioridad se oculta sin opciones', async () => {
-  vi.spyOn(pendingContract, 'listPriorityOptions').mockResolvedValue(null);
+test('el control de prioridad usa el catálogo activo del backend', async () => {
   await openDetail('1', SUPERVISORA_TI);
-  await screen.findByRole('button', { name: 'Asignar responsable' });
-  await waitFor(() => expect(pendingContract.listPriorityOptions).toHaveBeenCalled());
-  expect(screen.queryByRole('button', { name: 'Guardar prioridad' })).not.toBeInTheDocument();
+  const control = await screen.findByRole('region', { name: 'Prioridad' });
+  expect(within(control).getByLabelText('Nueva prioridad')).toBeInTheDocument();
+  expect(within(control).getByRole('option', { name: 'Alta' })).toBeInTheDocument();
 });
 
 test('el supervisor cambia la prioridad', async () => {
@@ -121,6 +119,20 @@ test('el supervisor cambia la prioridad', async () => {
   await user.click(within(control).getByRole('button', { name: 'Guardar prioridad' }));
   await waitFor(() => expect(db.requests.find((r) => r.id === '1').prioridadId).toBe('5'));
   expect(calls.map((c) => c.body)).toEqual([{ prioridadId: '5' }]);
+});
+
+test('asigna técnico y prioridad en la misma operación', async () => {
+  const calls = captureRequests('POST', '/api/v1/requests/1/assignments');
+  const user = await openDetail('1', SUPERVISORA_TI);
+  await user.click(screen.getByRole('button', { name: 'Asignar responsable' }));
+  const dialog = screen.getByRole('dialog', { name: 'Asignar responsable' });
+  await within(dialog).findByRole('option', { name: 'Técnica TI Demo' });
+  await user.selectOptions(within(dialog).getByLabelText('Técnico'), 'Técnica TI Demo');
+  await user.selectOptions(within(dialog).getByLabelText('Prioridad (opcional)'), 'Alta');
+  await user.click(within(dialog).getByRole('button', { name: 'Asignar' }));
+  await waitFor(() => expect(db.requests.find((r) => r.id === '1').estado).toBe('ASIGNADO'));
+  expect(calls.map((c) => c.body)).toEqual([{ tecnicoId: '6', prioridadId: '5' }]);
+  expect(db.requests.find((r) => r.id === '1').prioridadId).toBe('5');
 });
 
 test('la auditoría lista los cambios', async () => {

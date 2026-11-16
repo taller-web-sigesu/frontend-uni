@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { Button, SelectField } from '../../../components/ui/index.js';
-import { listPriorityOptions } from '../../../services/pendingContract.js';
+import { listActivePriorities } from '../../../services/catalogs.js';
 import { useResource } from '../../../services/useResource.js';
 import { useSubmit } from '../../../services/useSubmit.js';
 import { changePriority } from '../../requests/requestsApi.js';
 import { CONFLICT_MESSAGE, isConflict, needsReload } from './conflict.js';
 
 /**
- * Ajuste de prioridad del supervisor (PATCH /requests/{id}). El contrato no
- * expone las opciones de prioridad: sin ellas el control no se muestra.
+ * Ajuste de prioridad del supervisor (PATCH /requests/{id}) con el catálogo
+ * activo de `/admin/catalogs/priorities` (HU-08).
  */
 export function PriorityControl({ solicitud, onChanged, onConflict }) {
-  const { data: options } = useResource(() => listPriorityOptions(), []);
+  const { data: options } = useResource((signal) => listActivePriorities(signal), []);
   const [prioridadId, setPrioridadId] = useState('');
   const { submit, pending, error } = useSubmit((id) => changePriority(solicitud.id, id));
 
-  if (!options) return null;
+  if (!options || options.length === 0) return null;
 
   async function handleSubmit(event) {
     event.preventDefault();

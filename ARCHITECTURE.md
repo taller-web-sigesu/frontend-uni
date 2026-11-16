@@ -1,7 +1,7 @@
 # Arquitectura del frontend — frontend-uni
 
-> **Estado:** fases 01 a 06 implementadas; HU-01 a HU-29 verificadas (ver `docs/verificacion/matriz-hu.md`).
-> **Última actualización:** 2026-11-13.
+> **Estado:** fases 01 a 06 implementadas; HU-01 a HU-29 verificadas (ver `docs/verificacion/matriz-hu.md`); desplegado en staging y producción (Release Candidate `v1.0.0-rc.1`).
+> **Última actualización:** 2026-11-14.
 > **Alcance:** interfaz web y consumo de la API.
 
 ## Referencias y propiedad
@@ -42,10 +42,10 @@ Ejecución comprobada el 2026-11-13 (detalle en `docs/verificacion/`):
 - **Tecnologías propuestas:** React + Vite + JavaScript, React Router, Fetch (o un cliente HTTP consensuado), CSS y biblioteca UI definida a partir de `DESIGN.md`.
 - **Diseño:** `frontend-uni/DESIGN.md` es la referencia visual: tokens, tipografía, colores, espaciado, accesibilidad y componentes. Puede partir de Refero Styles, pero debe adaptarse y validarse para el producto.
 - **Estado:** manejo local de UI y sesión; no duplicar reglas de negocio ni usar el estado del navegador como fuente de verdad de datos persistentes.
-- **Despliegue propuesto:** Vercel; sujeto a validación del equipo.
+- **Despliegue:** Vercel. Staging desde `main` y producción desde `production`; el `vercel.json` de cada rama apunta a su backend.
 - **Límite de confianza:** validación visual/UX no sustituye validación ni autorización del backend.
 
-React Router y la biblioteca UI son propuestas pendientes de incorporación. Las versiones instalables se mantienen en `package.json`; las plataformas cloud siguen siendo candidatas.
+React Router y la biblioteca UI están incorporados. Las versiones instalables se mantienen en `package.json`. Vercel es la plataforma activa de despliegue.
 
 ## Organización objetivo
 
@@ -72,10 +72,10 @@ tests/                        # Pruebas de UI y end-to-end previstas
 ## Integración, estado y seguridad
 
 - Consumir HTTP/JSON con prefijo `/api/v1`; no acceder directamente a MySQL ni copiar entidades Java.
-- El contrato objetivo pertenece a `backend-uni/docs/api/openapi.yaml`, todavía pendiente. Los endpoints del documento backend son propuestas salvo los identificados como existentes; no inventar rutas para implementar una pantalla.
+- El contrato vigente está en `backend-uni/docs/api/openapi.yaml`; no inventar rutas para implementar una pantalla.
 - Mantener estado local de UI y sesión; los datos persistentes y las decisiones de autorización pertenecen al backend.
 - Contemplar carga, error, estados vacíos, validaciones y accesibilidad. Ocultar botones según rol no sustituye la autorización del servidor.
-- La estrategia propuesta mantiene un JWT de acceso de corta duración en memoria y un refresh token en cookie `HttpOnly`, sin `localStorage` (ver [ADR-0002](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0002-autenticacion-sesion.md), estado Propuesto). No hay autenticación implementada todavía.
+- La sesión usa un JWT de acceso de corta duración en memoria y un refresh token en cookie `HttpOnly`, sin `localStorage`. La restauración inicial tiene un límite de 8 segundos para no bloquear el login si el backend está despertando.
 - Si se incorpora renovación con cookies, coordinar `HttpOnly`, `Secure`, SameSite, CSRF y CORS con backend.
 
 ## Plan de implementación
@@ -90,10 +90,22 @@ El plan aprobado está en [`infra-uni/docs/superpowers/plans/2026-11-04-ingenier
 
 **Decisiones relacionadas:** [ADR-0002](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0002-autenticacion-sesion.md) (sesión) y [ADR-0005](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/adr/ADR-0005-ci-cd-calidad.md) (CI/CD).
 
+## Despliegue
+
+| Entorno | URL | Rama | Backend |
+| --- | --- | --- | --- |
+| Staging | https://frontend-uni-tdk7.vercel.app | `main` | https://uniservice-backend-staging.onrender.com |
+| Producción | https://frontend-uni-wx9m.vercel.app | `production` | https://uniservice-backend-prod.onrender.com |
+
+- **Staging:** Vercel despliega el proyecto `frontend-uni-tdk7` al integrar en `main`.
+- **Producción:** Vercel despliega el proyecto `frontend-uni-wx9m` al actualizar `production`; esa rama conserva el `vercel.json` que apunta al backend de producción.
+- **Usuarios de prueba (staging):** las cuentas demo usan la contraseña `Demo2026!` y están listadas en el [README](README.md#usuarios-de-prueba-staging).
+- **CI:** `.github/workflows/ci.yml` ejecuta lint, Vitest, build y Playwright antes de integrar.
+
 ## Desarrollo y verificación
 
 El procedimiento local está en [README de infraestructura](https://github.com/taller-web-sigesu/infra-uni/blob/main/README.md) y [DOCKER.md](https://github.com/taller-web-sigesu/infra-uni/blob/main/docs/DOCKER.md): Docker Desktop y los tres repositorios hermanos. Vite aplica HMR sobre el código montado.
 
-Para verificar cambios, ejecutar `npm run build` en el entorno disponible. Vitest + Testing Library para UI, ESLint para calidad y Playwright para recorridos completos son herramientas propuestas, todavía sin configurar. El CI objetivo ejecutará dependencias, lint/pruebas disponibles, build y preview/staging con smoke/E2E cuando aplique.
+Para verificar cambios, ejecutar `npm run lint`, `npm test`, `npm run build` y `npm run test:e2e`. Vitest + Testing Library, ESLint y Playwright están configurados y corren en CI. El workflow ejecuta dependencias, lint, pruebas, build y E2E simulado.
 
 No afirmar que las pruebas pasan sin ejecutar los comandos y revisar sus salidas. Actualizar este documento cuando se implemente una parte de la estructura objetivo.

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { TI_CATEGORY, login, rowWith, unique } from './fixtures.js';
+import { TI_CATEGORY, login, rowWith, switchTo, unique } from './fixtures.js';
 
 test.describe('administracion', () => {
   test('indicadores con rango y exportación CSV', async ({ page }) => {
@@ -88,5 +88,65 @@ test.describe('administracion', () => {
     await dialog.getByRole('button', { name: 'Guardar' }).click();
     await expect(dialog.getByRole('alert')).toBeVisible();
     await expect(dialog).toBeVisible();
+  });
+
+  test('HU-16: área y categoría nuevas se usan y la baja lógica las oculta', async ({ page }) => {
+    test.setTimeout(120_000);
+    const suffix = unique().toUpperCase();
+    const areaCode = `AREA_${suffix}`;
+    const areaName = `Área E2E ${suffix}`;
+    const categoryCode = `CAT_${suffix}`;
+    const categoryName = `Categoría E2E ${suffix}`;
+
+    await login(page, 'ADMINISTRADOR');
+    await page.goto('/admin/catalogos');
+    await page.getByRole('button', { name: 'Crear área' }).click();
+    const areaDialog = page.getByRole('dialog', { name: 'Crear área' });
+    await areaDialog.getByLabel('Código').fill(areaCode);
+    await areaDialog.getByLabel('Nombre').fill(areaName);
+    await areaDialog.getByRole('button', { name: 'Guardar' }).click();
+    await expect(areaDialog).toBeHidden();
+
+    await page.getByRole('tab', { name: 'Categorías' }).click();
+    await page.getByRole('button', { name: 'Crear categoría' }).click();
+    const categoryDialog = page.getByRole('dialog', { name: 'Crear categoría' });
+    await categoryDialog.getByLabel('Código').fill(categoryCode);
+    await categoryDialog.getByLabel('Nombre').fill(categoryName);
+    await categoryDialog.getByLabel('Área').selectOption({ label: areaName });
+    await categoryDialog.getByLabel('Prioridad predeterminada').selectOption({ label: 'Media' });
+    await categoryDialog.getByRole('button', { name: 'Guardar' }).click();
+    await expect(categoryDialog).toBeHidden();
+
+    // La categoría queda asociada al área nueva.
+    const createdCategory = await rowWith(page, categoryName);
+    await expect(createdCategory).toContainText(areaName);
+
+    // La categoría nueva debe estar disponible para el solicitante.
+    await switchTo(page, 'ESTUDIANTE');
+    await page.goto('/solicitudes/nueva');
+    await expect(page.getByLabel('Categoría').getByRole('option', { name: categoryName })).toHaveCount(1);
+
+    // La baja lógica de la categoría la retira del formulario sin borrar historial.
+    await switchTo(page, 'ADMINISTRADOR');
+    await page.goto('/admin/catalogos');
+    await page.getByRole('tab', { name: 'Categorías' }).click();
+    const categoryRow = await rowWith(page, categoryName);
+    await categoryRow.getByRole('button', { name: 'Desactivar' }).click();
+    const categoryConfirm = page.getByRole('dialog', { name: 'Desactivar categoría' });
+    await categoryConfirm.getByRole('button', { name: 'Desactivar' }).click();
+    await expect(categoryConfirm).toBeHidden();
+
+    await switchTo(page, 'ESTUDIANTE');
+    await page.goto('/solicitudes/nueva');
+    await expect(page.getByLabel('Categoría').getByRole('option', { name: categoryName })).toHaveCount(0);
+
+    // Limpieza: sin categorías activas, el área de prueba también puede desactivarse.
+    await switchTo(page, 'ADMINISTRADOR');
+    await page.goto('/admin/catalogos');
+    const areaRow = await rowWith(page, areaName);
+    await areaRow.getByRole('button', { name: 'Desactivar' }).click();
+    const areaConfirm = page.getByRole('dialog', { name: 'Desactivar área' });
+    await areaConfirm.getByRole('button', { name: 'Desactivar' }).click();
+    await expect(areaConfirm).toBeHidden();
   });
 });

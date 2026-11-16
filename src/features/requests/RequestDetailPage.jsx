@@ -65,7 +65,7 @@ export default function RequestDetailPage() {
 function RequestDetail({ id }) {
   const location = useLocation();
   const user = useCurrentUser();
-  const { categoryName, priorityName } = useCatalogLabels();
+  const { categoryName, priorityName, priorityLabel } = useCatalogLabels();
   const { data, error, status, reload, setData } = useResource((signal) => loadDetail(id, signal), [id]);
   const back = backLinkFor(user?.rol);
   const [conflict, setConflict] = useState(null);
@@ -148,7 +148,12 @@ function RequestDetail({ id }) {
             <PriorityControl solicitud={solicitud} onChanged={handleChanged} onConflict={setConflict} />
           )}
           {actions.has('VER_AUDITORIA') && (
-            <AuditPanel requestId={solicitud.id} personName={personName} reloadKey={changes} />
+            <AuditPanel
+              requestId={solicitud.id}
+              personName={personName}
+              priorityLabel={priorityLabel}
+              reloadKey={changes}
+            />
           )}
         </div>
         <aside className="card detail-grid__side">

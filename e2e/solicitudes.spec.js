@@ -79,4 +79,31 @@ test.describe('solicitudes', () => {
     await page.goto(`/solicitudes/${id}`);
     await expect(page.getByText('No encontramos esta solicitud o no tienes acceso a ella')).toBeVisible();
   });
+
+  test('HU-19: la auditoría registra asignación y prioridad, y el técnico no la ve', async ({ page }) => {
+    await login(page, 'ESTUDIANTE');
+    const { id, codigo } = await createRequest(page);
+
+    await switchTo(page, 'SUPERVISOR');
+    await page.goto(`/solicitudes/${id}`);
+    await page.getByRole('button', { name: 'Asignar responsable' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Asignar responsable' });
+    await dialog.getByLabel('Técnico').selectOption({ label: NAMES.TECNICO });
+    await dialog.getByLabel('Prioridad (opcional)').selectOption({ label: 'Alta' });
+    await dialog.getByRole('button', { name: 'Asignar' }).click();
+
+    await expect(header(page)).toContainText('Asignado');
+    await expect(header(page)).toContainText('Alta');
+    const audit = page.getByRole('region', { name: 'Auditoría' });
+    await expect(audit).toBeVisible();
+    await expect(audit.getByText('Responsable', { exact: true })).toBeVisible();
+    await expect(audit.getByText('Prioridad', { exact: true })).toBeVisible();
+    await expect(audit.getByText('Alta', { exact: true })).toBeVisible();
+    await expect(audit.getByText(NAMES.SUPERVISOR).first()).toBeVisible();
+
+    await switchTo(page, 'TECNICO');
+    await page.goto(`/solicitudes/${id}`);
+    await expect(page.getByRole('heading', { name: codigo })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Auditoría' })).toHaveCount(0);
+  });
 });

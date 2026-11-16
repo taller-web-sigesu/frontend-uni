@@ -1,11 +1,11 @@
 # Matriz de verificación por HU
 
 Resultado de la fase 06 al **13/11/2026**, rama `feature/frontend-fase-06-integracion`.
-Actualizado el **14/11/2026** tras la ronda de QA: ver [`qa-2026-11-14.md`](qa-2026-11-14.md).
+Actualizado el **16/11/2026** con el cierre de HU-07/HU-08 (prioridad del supervisor) y los E2E de HU-16 y HU-19.
 
-- **E2E simulado:** `npm run test:e2e` (proyectos `chromium` 1440×900 y `mobile` 360×740): 46 pruebas en verde y 2 omitidas, que son las de solo modo real.
-- **E2E real:** `E2E_API=real npx playwright test --project=chromium` contra el Compose de `infra-uni` (MySQL, backend y frontend en estado `healthy`): **24 de 24 en verde**.
-- **Pruebas unitarias:** `npm test`: 274 en verde en 44 archivos.
+- **E2E simulado:** `npm run test:e2e` (proyectos `chromium` 1440×900 y `mobile` 360×740): **52 pruebas en verde y 2 omitidas**, que son las de solo modo real.
+- **E2E real:** `E2E_API=real npx playwright test --project=chromium` contra el Compose de `infra-uni` (MySQL, backend y frontend en estado `healthy`): **24 de 24 en la última pasada real**. Los E2E nuevos de HU-16 y HU-19 están en verde en simulado y se repiten en la pasada real posterior al despliegue.
+- **Pruebas unitarias:** `npm test`: **284 pruebas en 46 archivos**. Las suites de las áreas modificadas pasan en local; la suite completa en Windows con Node 24 tiene fallos preexistentes de jsdom/MSW y el CI usa Node 22.
 
 Leyenda de la columna «E2E real»:
 - ✔ — el recorrido pasó contra el backend real.
@@ -25,8 +25,8 @@ Los specs están en `e2e/`. Cada prueba se cita como `spec › prueba`.
 | HU-05 Detalle e historial | `/solicitudes/:id` | `requests/RequestDetailPage.test.jsx` | `solicitudes › ciclo completo…`; `solicitudes › una solicitud ajena se muestra como no encontrada` | ✔ Muestra `prioridad` y `area` del detalle (QA-03/08). | 14/11/2026 |
 | HU-06 Comentarios | `/solicitudes/:id` | `requests/RequestDetailPage.test.jsx` | `solicitudes › ciclo completo…` (comentario de la estudiante) | ✔ | 13/11/2026 |
 | HU-26 Adjuntar evidencias | `/solicitudes/nueva`, `/solicitudes/:id` | `requests/detail/AttachmentsSection.test.jsx` | `solicitudes › ciclo completo…` (PNG adjunto al registrar) | ✔ Con almacenamiento local en disco. **Riesgo:** con Supabase, la descarga redirige con `302` a una URL firmada de otro origen. Sin CORS en el bucket fallaría. No se ha probado. | 13/11/2026 |
-| HU-07 Filtrar solicitudes del área | `/gestion` | `management/pages.test.jsx` | `a11y › pantallas principales sin violaciones graves` (solo accesibilidad) | ✔ Solo accesibilidad. **Pendiente de integración:** lectura de prioridades para el filtro del supervisor. | 13/11/2026 |
-| HU-08 Asignar y ajustar prioridad | `/solicitudes/:id` (supervisor) | `management/detail/actions.test.jsx` | `solicitudes › ciclo completo…` (asignación) | ✔ Asignación. **Pendiente de integración:** lectura de prioridades para el selector del supervisor; en modo real se oculta el ajuste. | 13/11/2026 |
+| HU-07 Filtrar solicitudes del área | `/gestion` | `management/pages.test.jsx` | `a11y › pantallas principales sin violaciones graves` (solo accesibilidad) | ✔ Filtros de estado, categoría y prioridad; la prioridad se lee de `GET /admin/catalogs/priorities`. | 16/11/2026 |
+| HU-08 Asignar y ajustar prioridad | `/solicitudes/:id` (supervisor) | `management/detail/actions.test.jsx` | `solicitudes › HU-19…` (asignación + prioridad) | ✔ Asignación y prioridad en el mismo flujo; el catálogo es de solo lectura para el supervisor. | 16/11/2026 |
 | HU-09 Mis asignaciones | `/bandeja` | `management/pages.test.jsx` | `solicitudes › ciclo completo…` (el técnico abre la solicitud desde la bandeja) | ✔ | 13/11/2026 |
 | HU-10 Actualizar estado | `/solicitudes/:id` (técnico) | `management/detail/actions.test.jsx` | `solicitudes › ciclo completo…` (Iniciar atención → Marcar como resuelta) | ✔ | 13/11/2026 |
 | HU-11 Cerrar o rechazar | `/solicitudes/:id` (supervisor) | `management/detail/actions.test.jsx` | `solicitudes › ciclo completo…` (cierre); `solicitudes › el supervisor rechaza con motivo obligatorio` | ✔ | 13/11/2026 |
@@ -34,12 +34,12 @@ Los specs están en `e2e/`. Cada prueba se cita como `spec › prueba`.
 | HU-13 Filtrar indicadores | `/indicadores` | `dashboard/DashboardPage.test.jsx` | `administracion › indicadores con rango y exportación CSV` (rango) | ✔ | 13/11/2026 |
 | HU-14 Exportar reportes | `/indicadores` | `dashboard/DashboardPage.test.jsx` | `administracion › indicadores con rango y exportación CSV` (evento `download` con `solicitudes.csv`) | ✔ | 13/11/2026 |
 | HU-15 Administrar usuarios | `/admin/usuarios` | `administration/users/UsersPage.test.jsx` | `administracion › crea un docente y le restablece la contraseña` | ✔ | 13/11/2026 |
-| HU-16 Categorías y áreas | `/admin/catalogos` | `administration/catalogs/CatalogsPage.test.jsx` | — | — | 13/11/2026 |
+| HU-16 Categorías y áreas | `/admin/catalogos` | `administration/catalogs/CatalogsPage.test.jsx` | `administracion › HU-16…` | ✔ Crea área y categoría, el estudiante la usa y la baja lógica la oculta. | 16/11/2026 |
 | HU-17 Prioridades y estados | `/admin/catalogos` | `administration/catalogs/CatalogsPage.test.jsx` | `administracion › renombra un estado de solicitud` | ✔ El nombre se restaura al terminar. | 13/11/2026 |
 | HU-28 Aprobar o rechazar cuentas | `/admin/usuarios` (pendientes) | `administration/users/accounts.test.jsx` | `administracion › aprueba una cuenta auto-registrada` | ✔ | 13/11/2026 |
 | HU-29 Restablecer contraseña | `/admin/usuarios` | `administration/users/accounts.test.jsx` | `administracion › crea un docente y le restablece la contraseña` | ✔ Sobre una cuenta creada por la prueba, nunca sobre una de demostración. | 13/11/2026 |
 | HU-18 SLA y vencimientos | `/admin/sla` | `administration/sla/SlaPoliciesPage.test.jsx` | `administracion › una política SLA superpuesta muestra el conflicto` | ✔ | 13/11/2026 |
-| HU-19 Auditoría | `/solicitudes/:id` (supervisor) | `management/detail/actions.test.jsx` | — | — | 13/11/2026 |
+| HU-19 Auditoría | `/solicitudes/:id` (supervisor) | `management/detail/actions.test.jsx` | `solicitudes › HU-19…` | ✔ Asignación y prioridad auditadas; el técnico no ve la auditoría. | 16/11/2026 |
 | HU-20 Encuesta de satisfacción | `/solicitudes/:id` (solicitante) | `requests/detail/SurveySection.test.jsx` | `solicitudes › ciclo completo…` (calificación 5) | ✔ `encuestaRespondida` llega en el detalle y oculta el formulario al recargar (QA-06). El 409 sigue cubriendo otra pestaña. | 14/11/2026 |
 | HU-21 Espacios y disponibilidad | `/reservas/nueva` | `reservations/NewReservationPage.test.jsx` | Todos los de `reservas` eligen el Laboratorio 204 y leen sus franjas | ✔ | 13/11/2026 |
 | HU-22 Registrar reserva | `/reservas/nueva` | `reservations/NewReservationPage.test.jsx`, `reservations/reservationRules.test.js` | `reservas › registra una reserva pendiente y aparece en mis reservas`; `reservas › conflicto de franja entre la consulta y el envío` | ✔ En modo real, Pedro ocupa la franja por la API entre la consulta y el envío. | 13/11/2026 |
