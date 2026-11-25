@@ -55,7 +55,7 @@ function toRouteObject(route, { guard, sessionGuard, publicGuard }) {
  * - `guard({ roles })` envuelve cada página con rol (RequireRole).
  * - `sessionGuard` envuelve la raíz, el layout autenticado y las rutas `requiresSession`.
  * - `publicGuard` envuelve las rutas públicas (/login, /registro).
- * - `useLogout()` devuelve la acción de «Cerrar sesión» del topbar.
+ * - `useLogout()` devuelve la acción de «Cerrar sesión» del menú lateral.
  */
 export function buildRouteObjects({
   routes = ROUTES, guard, sessionGuard, publicGuard, useLogout = () => noLogout,

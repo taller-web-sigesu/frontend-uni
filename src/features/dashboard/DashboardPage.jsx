@@ -11,7 +11,7 @@ import { listAll } from '../administration/catalogsAdminApi.js';
 import { listUsers } from '../administration/usersApi.js';
 import { BarList } from './BarList.jsx';
 import { DateRangeFilter } from './DateRangeFilter.jsx';
-import { KpiCard } from './KpiCard.jsx';
+import { KpiCard, SummaryKpis } from './KpiCard.jsx';
 import { downloadReport, getSummary } from './dashboardApi.js';
 
 const dayLabel = (day) => day.split('-').reverse().join('/');
@@ -85,11 +85,7 @@ export default function DashboardPage() {
     content = (
       <>
         {status === 'error' && <ErrorState error={error} onRetry={reload} />}
-        <div className="kpi-strip">
-          <KpiCard label="Registradas" value={data.registradas} />
-          <KpiCard label="Pendientes" value={data.pendientes} />
-          <KpiCard label="Atendidas" value={data.atendidas} />
-        </div>
+        <SummaryKpis summary={data} />
         <div className="kpi-grid">
           <KpiCard
             variant="card"

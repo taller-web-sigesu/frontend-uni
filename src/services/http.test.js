@@ -125,7 +125,7 @@ test('blob decodifica filename* en UTF-8', async () => {
 test('formData no fija Content-Type', async () => {
   fetchSpy.mockResolvedValue(jsonResponse(201, { id: '7' }));
   const formData = new FormData();
-  formData.append('archivo', new Blob(['x']), 'a.png');
+  formData.append('archivo', new File(['x'], 'a.png'));
   await request('/requests/1/attachments', { method: 'POST', formData });
   const { init, headers } = lastCall();
   expect(init.body).toBe(formData);

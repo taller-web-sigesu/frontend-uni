@@ -5,6 +5,7 @@ const SHORTCUTS = [
   { to: '/admin/usuarios', label: 'Usuarios', description: 'Cuentas, aprobaciones y contraseñas' },
   { to: '/admin/catalogos', label: 'Catálogos', description: 'Áreas, categorías, prioridades y estados' },
   { to: '/admin/sla', label: 'Políticas SLA', description: 'Plazos de atención por categoría o prioridad' },
+  { to: '/admin/ambientes', label: 'Ambientes', description: 'Espacios, horarios y políticas de reserva' },
   { to: '/reservas/aprobacion', label: 'Aprobación de reservas', description: 'Solicitudes de ambientes por revisar' },
 ];
 

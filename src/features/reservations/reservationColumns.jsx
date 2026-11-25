@@ -12,9 +12,9 @@ export function ReservationStatusBadge({ estado }) {
 export const spaceOf = (row, spaceName) => row.espacio || spaceName(row.espacioId);
 
 /** Columnas comunes de las listas de reservas (P10, P11 e inicio). */
-export function reservationColumns(spaceName, extra = []) {
+export function reservationColumns(spaceName, extra = [], renderCode = (row) => <strong className="mono">{row.codigo}</strong>) {
   return [
-    { key: 'codigo', header: 'Código', render: (row) => <strong className="mono">{row.codigo}</strong> },
+    { key: 'codigo', header: 'Código', render: renderCode },
     { key: 'espacio', header: 'Espacio', render: (row) => spaceOf(row, spaceName) },
     { key: 'fecha', header: 'Fecha', render: (row) => dayLabel(row.fecha) },
     { key: 'franja', header: 'Horario', render: (row) => slotLabel(row) },

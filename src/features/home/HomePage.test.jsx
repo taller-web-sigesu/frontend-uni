@@ -3,16 +3,17 @@ import { HomePage } from './HomePage.jsx';
 
 vi.mock('./RequestsPreview.jsx', () => ({ RequestsPreview: () => <p>sección solicitudes</p> }));
 vi.mock('./AdminShortcuts.jsx', () => ({ AdminShortcuts: () => <p>sección administración</p> }));
+vi.mock('./AdminSummary.jsx', () => ({ AdminSummary: () => <p>sección indicadores</p> }));
 vi.mock('./ReservationsPreview.jsx', () => ({ ReservationsPreview: () => <p>sección reservas</p> }));
 
 function sections() {
-  return ['sección solicitudes', 'sección administración', 'sección reservas']
+  return ['sección solicitudes', 'sección administración', 'sección indicadores', 'sección reservas']
     .filter((text) => screen.queryByText(text));
 }
 
 test('HomePage elige las secciones por rol', () => {
   const { rerender } = render(<HomePage user={{ id: '1', nombreCompleto: 'Admin Demo', rol: 'ADMINISTRADOR' }} />);
-  expect(sections()).toEqual(['sección administración']);
+  expect(sections()).toEqual(['sección administración', 'sección indicadores']);
 
   rerender(<HomePage user={{ id: '5', nombreCompleto: 'Técnico TI Demo', rol: 'TECNICO' }} />);
   expect(sections()).toEqual(['sección solicitudes', 'sección reservas']);
