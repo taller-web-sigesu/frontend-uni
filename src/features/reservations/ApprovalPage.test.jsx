@@ -35,7 +35,18 @@ test('lista pendientes de la vista de gestión', async () => {
   const params = calls[0].url.searchParams;
   expect(params.get('vista')).toBe('gestion');
   expect(params.get('estado')).toBe('PENDIENTE');
-  expect(screen.getByText('No puedes aprobar tus propias reservas.')).toBeInTheDocument();
+  expect(screen.getByText('No puedes decidir sobre tus propias reservas.')).toBeInTheDocument();
+});
+
+test('el código abre la misma revisión y recupera el foco al cerrarla', async () => {
+  const user = await openPage();
+  const code = await screen.findByRole('button', { name: 'RES-2026-000001' });
+  await user.click(code);
+  const dialog = await screen.findByRole('dialog', { name: 'Revisar RES-2026-000001' });
+  expect(await within(dialog).findByRole('list', { name: /^Franjas del/ })).toBeVisible();
+  await user.keyboard('{Escape}');
+  expect(screen.queryByRole('dialog')).toBeNull();
+  expect(code).toHaveFocus();
 });
 
 test('aprobar envía CONFIRMADA y retira la fila', async () => {

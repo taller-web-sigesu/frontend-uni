@@ -1,6 +1,7 @@
 /* Tokens de DESIGN.md (tema claro). Ningún componente usa colores fijos. */
 :root {
   --color-primary: #FACC15;
+  --color-primary-soft: #FEF9C3;
   --color-accent: #EAB308;
   --color-on-primary: #18181B;
   --color-secondary: #64748B;
@@ -33,6 +34,7 @@
   --line-height-body: 1.5;
 
   --sidebar-width: 224px;
+  --sidebar-collapsed-width: 60px;
   --topbar-height: 60px;
   --content-max: 1440px;
 }

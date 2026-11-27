@@ -61,7 +61,7 @@ export default function LoginPage() {
           <span className="login-brand__mark" aria-hidden="true">U</span>
           <span className="login-brand__copy">
             <span className="login-brand__name">UniService</span>
-            <span className="login-brand__institution">Universidad Actúa</span>
+            <span className="login-brand__institution">UNMSM</span>
           </span>
         </header>
 

@@ -18,7 +18,7 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
       # Modo simulado: la API real necesita el Compose de infra-uni y no corre en CI.
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4

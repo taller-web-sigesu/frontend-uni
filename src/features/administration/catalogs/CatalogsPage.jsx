@@ -1,3 +1,4 @@
+import { Breadcrumb } from '../../../components/layout/Breadcrumb.jsx';
 import { ErrorState, Skeleton, Tabs } from '../../../components/ui/index.js';
 import { useResource } from '../../../services/useResource.js';
 import { listAll } from '../catalogsAdminApi.js';
@@ -94,6 +95,7 @@ export default function CatalogsPage() {
   return (
     <section className="page">
       <header className="page__header">
+        <Breadcrumb current="Catálogos" />
         <h1>Catálogos</h1>
         <p className="page__lead">Áreas, categorías, prioridades y estados</p>
       </header>

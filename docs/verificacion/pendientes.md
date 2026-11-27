@@ -40,10 +40,12 @@ Actualizado el **16/11/2026**: el detalle publica `prioridad`, `area` y `encuest
 
 ## 5. Detalles visuales (no afectan a ninguna HU)
 
+Los puntos 5.1 y 5.2 se actualizaron el 24/11/2026 durante el trabajo de Fase IV.
+
 | # | Tarea | Detalle |
 | --- | --- | --- |
-| 5.1 | Usuarios a 1440 px | Los correos se cortan a mitad de palabra y las acciones de fila ocupan dos líneas. |
-| 5.2 | Filtros de Usuarios | El frame de Figma tiene filtros por rol, área y estado; HU-15 no los exige. |
+| 5.1 | Usuarios a 1440 px | En Fase IV se habilitó el salto de línea después de @ y se dispusieron las acciones en una fila cuando hay ancho suficiente. |
+| 5.2 | Filtros de Usuarios | Quedan como evolución. El frame de Figma tiene filtros por rol, área y estado. HU-15 no los exige. |
 | 5.3 | Comparación con Figma | Se compararon 3 pantallas (P07, P09, P12) de 34. Completar si el equipo lo pide. |
 
 ## 6. Comportamientos menores conocidos

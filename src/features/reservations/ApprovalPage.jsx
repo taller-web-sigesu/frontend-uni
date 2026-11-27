@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCurrentUser } from '../../app/userContext.js';
+import { Icon } from '../../components/ui/Icon.jsx';
 import {
   Button, DataTable, Dialog, EmptyState, ErrorState, Pagination, Skeleton, TextArea,
 } from '../../components/ui/index.js';
@@ -145,10 +146,17 @@ export default function ApprovalPage() {
       key: 'acciones',
       header: 'Acciones',
       render: (row) => (
-        <Button variant="secondary" aria-label={`Revisar ${row.codigo}`} onClick={() => setReviewing(row)}>Revisar</Button>
+        <Button variant="info" className="reservation-review-icon" aria-label={`Revisar ${row.codigo}`}
+          title={`Revisar ${row.codigo}`} aria-haspopup="dialog" onClick={() => setReviewing(row)}>
+          <Icon name="eye" />
+        </Button>
       ),
     },
-  ]);
+  ], (row) => (
+    <Button variant="info" className="reservation-review-code" aria-haspopup="dialog" onClick={() => setReviewing(row)}>
+      <span className="mono">{row.codigo}</span>
+    </Button>
+  ));
 
   let content;
   if (status === 'error' && !data) content = <ErrorState error={error} onRetry={reload} />;
@@ -170,7 +178,7 @@ export default function ApprovalPage() {
         <h1>Aprobación de reservas</h1>
         {data && <p className="page__lead">{countLabel(data.totalElements, 'pendiente')}</p>}
       </header>
-      <p className="notice notice--info">No puedes aprobar tus propias reservas.</p>
+      <p className="notice notice--info">No puedes decidir sobre tus propias reservas.</p>
       {notice && <p className="notice notice--success" role="status">{notice}</p>}
       {content}
       <Dialog open={reviewing !== null} title={reviewing ? `Revisar ${reviewing.codigo}` : ''} onClose={() => setReviewing(null)}>

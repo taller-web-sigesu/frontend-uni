@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCurrentUser } from '../../../app/userContext.js';
+import { Breadcrumb } from '../../../components/layout/Breadcrumb.jsx';
 import {
   Badge, Button, ConfirmDialog, DataTable, EmptyState, ErrorState, Pagination, Skeleton, Tabs,
 } from '../../../components/ui/index.js';
@@ -35,6 +36,11 @@ export function canResetPassword(user, currentUser) {
   return user.activo && (user.estadoCuenta === undefined || user.estadoCuenta === 'ACTIVA') && user.id !== currentUser?.id;
 }
 
+function UserEmail({ value }) {
+  const separator = value.lastIndexOf('@') + 1;
+  return <span className="mono-soft">{value.slice(0, separator)}<wbr />{value.slice(separator)}</span>;
+}
+
 /** Lista de cuentas con alta, edición, desactivación y restablecimiento de contraseña. */
 function UsersList({ options }) {
   const currentUser = useCurrentUser();
@@ -58,7 +64,7 @@ function UsersList({ options }) {
 
   const columns = [
     { key: 'nombreCompleto', header: 'Nombre completo' },
-    { key: 'correo', header: 'Correo', render: (u) => <span className="mono-soft">{u.correo}</span> },
+    { key: 'correo', header: 'Correo', render: (u) => <UserEmail value={u.correo} /> },
     { key: 'rol', header: 'Rol', render: (u) => roleLabel(u.rol) },
     { key: 'areaId', header: 'Área', render: (u) => areaLabel(u.areaId) },
     { key: 'activo', header: 'Estado', render: (u) => <AccountBadge user={u} /> },
@@ -66,8 +72,8 @@ function UsersList({ options }) {
       key: 'acciones',
       header: 'Acciones',
       render: (u) => (
-        <div className="row-actions">
-          <Button variant="ghost" onClick={() => setEditing(u)}>Editar</Button>
+        <div className="row-actions users-row-actions">
+          <Button variant="info" onClick={() => setEditing(u)}>Editar</Button>
           {u.id !== currentUser?.id && u.activo && (
             <Button variant="ghost" onClick={() => setDeactivating(u)}>Desactivar</Button>
           )}
@@ -145,6 +151,7 @@ export default function UsersPage() {
   return (
     <section className="page">
       <header className="page__header">
+        <Breadcrumb current="Usuarios" />
         <h1>Administración de usuarios</h1>
       </header>
       <Tabs

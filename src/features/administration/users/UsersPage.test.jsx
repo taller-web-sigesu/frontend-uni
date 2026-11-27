@@ -29,7 +29,11 @@ async function fillBasics(user, dialog, { nombre = 'Laura Docente', correo = 'la
 test('lista usuarios con rol y estado legibles', async () => {
   renderPage();
   expect(await screen.findByRole('heading', { name: 'Administración de usuarios' })).toBeInTheDocument();
+  const breadcrumb = within(screen.getByRole('navigation', { name: 'Ruta de navegación' }));
+  expect(breadcrumb.getByRole('link', { name: 'Inicio' })).toHaveAttribute('href', '/inicio');
+  expect(breadcrumb.getByText('Usuarios')).toHaveAttribute('aria-current', 'page');
   const tech = within(await rowOf('Técnico TI Demo'));
+  expect(tech.getByRole('button', { name: 'Editar' })).toHaveClass('btn--info');
   expect(tech.getByText('Técnico')).toBeInTheDocument();
   expect(tech.getByText('Tecnologías de la Información')).toBeInTheDocument();
   expect(tech.getByText('Activo')).toBeInTheDocument();

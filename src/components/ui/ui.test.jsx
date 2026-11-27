@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button, TextField, Dialog, ErrorState, DataTable, Pagination } from './index.js';
+import { Button, TextField, Dialog, ErrorState, DataTable, Pagination, Tabs } from './index.js';
 
 test('TextField enlaza etiqueta y error', () => {
   render(<TextField label="Correo" name="correo" error="Obligatorio" />);
@@ -78,10 +78,30 @@ test('Pagination calcula páginas y deshabilita extremos', async () => {
   const user = userEvent.setup();
   const onChange = vi.fn();
   render(<Pagination page={0} size={20} totalElements={41} onChange={onChange} />);
-  expect(screen.getByText('Página 1 de 3')).toBeInTheDocument();
+  expect(screen.getByText('Página 1 de 3')).toHaveAttribute('aria-live', 'polite');
   expect(screen.getByRole('button', { name: 'Anterior' })).toBeDisabled();
   await user.click(screen.getByRole('button', { name: 'Siguiente' }));
   expect(onChange).toHaveBeenCalledWith(1);
+});
+
+test('Tabs conserva los destinos aria-controls y permite saltar al primer y último tab', async () => {
+  const user = userEvent.setup();
+  render(<Tabs label="Ambientes" tabs={[
+    { id: 'espacios', label: 'Espacios', render: () => <p>Contenido de espacios</p> },
+    { id: 'politicas', label: 'Políticas', render: () => <p>Contenido de políticas</p> },
+  ]} />);
+  const first = screen.getByRole('tab', { name: 'Espacios' });
+  const last = screen.getByRole('tab', { name: 'Políticas' });
+  expect(document.getElementById(last.getAttribute('aria-controls'))).toHaveAttribute('hidden');
+  await user.tab();
+  expect(first).toHaveFocus();
+  await user.keyboard('{End}');
+  expect(last).toHaveFocus();
+  expect(screen.getByRole('tabpanel', { name: 'Políticas' })).toHaveTextContent('Contenido de políticas');
+  expect(screen.queryByText('Contenido de espacios')).toBeNull();
+  await user.keyboard('{Home}');
+  expect(first).toHaveFocus();
+  expect(screen.getByRole('tabpanel', { name: 'Espacios' })).toBeVisible();
 });
 
 test('DataTable con onRowClick abre la fila con el teclado', async () => {

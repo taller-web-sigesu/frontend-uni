@@ -8,3 +8,13 @@ export function KpiCard({ label, value, note, variant = 'plain' }) {
     </div>
   );
 }
+
+export function SummaryKpis({ summary, variant = 'plain' }) {
+  return (
+    <div className={variant === 'card' ? 'kpi-grid' : 'kpi-strip'}>
+      <KpiCard variant={variant} label="Registradas" value={summary.registradas} />
+      <KpiCard variant={variant} label="Pendientes" value={summary.pendientes} />
+      <KpiCard variant={variant} label="Atendidas" value={summary.atendidas} />
+    </div>
+  );
+}

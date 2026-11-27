@@ -1,10 +1,12 @@
-const PERFIL = { to: '/perfil', label: 'Perfil' };
-const RESERVAS = { to: '/reservas', label: 'Mis reservas' };
-const APROBACION = { to: '/reservas/aprobacion', label: 'Aprobación de reservas' };
+const INICIO = { to: '/inicio', label: 'Inicio', icon: 'home' };
+const INDICADORES = { to: '/indicadores', label: 'Indicadores', icon: 'chart' };
+const PERFIL = { to: '/perfil', label: 'Perfil', icon: 'profile' };
+const RESERVAS = { to: '/reservas', label: 'Mis reservas', icon: 'calendar' };
+const APROBACION = { to: '/reservas/aprobacion', label: 'Aprobación de reservas', icon: 'calendar' };
 
 const SOLICITANTE = [
-  { to: '/inicio', label: 'Inicio' },
-  { to: '/solicitudes', label: 'Mis solicitudes' },
+  INICIO,
+  { to: '/solicitudes', label: 'Mis solicitudes', icon: 'list' },
   RESERVAS,
   PERFIL,
 ];
@@ -13,25 +15,25 @@ const MENUS = {
   ESTUDIANTE: SOLICITANTE,
   DOCENTE: SOLICITANTE,
   TECNICO: [
-    { to: '/inicio', label: 'Inicio' },
-    { to: '/bandeja', label: 'Mis asignaciones' },
+    INICIO,
+    { to: '/bandeja', label: 'Mis asignaciones', icon: 'list' },
     RESERVAS,
     PERFIL,
   ],
   SUPERVISOR: [
-    { to: '/indicadores', label: 'Indicadores' },
-    { to: '/gestion', label: 'Gestión de área' },
+    INDICADORES,
+    { to: '/gestion', label: 'Gestión de área', icon: 'list' },
     APROBACION,
     RESERVAS,
     PERFIL,
   ],
   ADMINISTRADOR: [
-    { to: '/inicio', label: 'Inicio' },
-    { to: '/indicadores', label: 'Indicadores' },
-    { to: '/admin/usuarios', label: 'Usuarios' },
-    { to: '/admin/catalogos', label: 'Catálogos' },
-    { to: '/admin/sla', label: 'SLA' },
-    { to: '/admin/ambientes', label: 'Ambientes' },
+    INICIO,
+    INDICADORES,
+    { to: '/admin/usuarios', label: 'Usuarios', icon: 'users' },
+    { to: '/admin/catalogos', label: 'Catálogos', icon: 'catalog' },
+    { to: '/admin/sla', label: 'SLA', icon: 'clock' },
+    { to: '/admin/ambientes', label: 'Ambientes', icon: 'building' },
     APROBACION,
     PERFIL,
   ],

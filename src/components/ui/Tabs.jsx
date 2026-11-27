@@ -1,8 +1,7 @@
 import { useId, useRef, useState } from 'react';
 
 /**
- * Pestañas accesibles (flechas izquierda/derecha entre pestañas). `tabs`:
- * `[{ id, label, render }]`; solo se monta el panel activo.
+ * Pestañas accesibles. `tabs`: `[{ id, label, render }]`; solo se monta el contenido activo.
  */
 export function Tabs({ label, tabs, initial }) {
   const [active, setActive] = useState(initial || tabs[0].id);
@@ -11,10 +10,16 @@ export function Tabs({ label, tabs, initial }) {
   const current = tabs.find((tab) => tab.id === active) || tabs[0];
 
   function handleKeyDown(event, index) {
-    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    let nextIndex;
+    switch (event.key) {
+      case 'ArrowRight': nextIndex = (index + 1) % tabs.length; break;
+      case 'ArrowLeft': nextIndex = (index - 1 + tabs.length) % tabs.length; break;
+      case 'Home': nextIndex = 0; break;
+      case 'End': nextIndex = tabs.length - 1; break;
+      default: return;
+    }
     event.preventDefault();
-    const step = event.key === 'ArrowRight' ? 1 : -1;
-    const next = tabs[(index + step + tabs.length) % tabs.length];
+    const next = tabs[nextIndex];
     setActive(next.id);
     refs.current[next.id]?.focus();
   }
@@ -43,14 +48,12 @@ export function Tabs({ label, tabs, initial }) {
           );
         })}
       </div>
-      <div
-        role="tabpanel"
-        id={`${baseId}-${current.id}-panel`}
-        aria-labelledby={`${baseId}-${current.id}-tab`}
-        className="tabs__panel"
-      >
-        {current.render()}
-      </div>
+      {tabs.map((tab) => (
+        <div key={tab.id} role="tabpanel" id={`${baseId}-${tab.id}-panel`}
+          aria-labelledby={`${baseId}-${tab.id}-tab`} className="tabs__panel" hidden={tab.id !== current.id}>
+          {tab.id === current.id && tab.render()}
+        </div>
+      ))}
     </div>
   );
 }

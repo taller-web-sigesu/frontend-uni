@@ -140,7 +140,7 @@ export function CatalogTable({ kind, api: customApi, singular, gender = 'f', col
       header: 'Acciones',
       render: (r) => (
         <div className="row-actions">
-          <Button variant="ghost" onClick={() => setEditing(r)}>Editar</Button>
+          <Button variant={kind ? 'info' : 'ghost'} onClick={() => setEditing(r)}>Editar</Button>
           {rowActions?.(r)}
           {r.activo ? (
             <Button variant="ghost" onClick={() => setDeactivating(r)}>Desactivar</Button>

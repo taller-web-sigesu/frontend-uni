@@ -56,8 +56,39 @@ test('Cerrar sesión llama a onLogout', async () => {
   const user = userEvent.setup();
   const onLogout = vi.fn();
   renderWithRouter(<AppShell user={ana} onLogout={onLogout}><p>Contenido</p></AppShell>, { route: '/inicio' });
-  await user.click(screen.getByRole('button', { name: 'Cerrar sesión' }));
+  expect(within(screen.getByRole('banner')).queryByRole('button', { name: 'Cerrar sesión' })).toBeNull();
+  await user.click(within(screen.getByRole('complementary')).getByRole('button', { name: 'Cerrar sesión' }));
   expect(onLogout).toHaveBeenCalledTimes(1);
+});
+
+test('contraer el menú mantiene los nombres accesibles, el foco y la opción activa', async () => {
+  mockViewport(false);
+  const user = userEvent.setup();
+  renderWithRouter(<AppShell user={ana} onLogout={vi.fn()}><p>Contenido</p></AppShell>, { route: '/solicitudes' });
+  const sidebar = screen.getByRole('complementary');
+  const menu = within(sidebar).getByRole('navigation', { name: 'Menú principal' });
+  const toggle = within(sidebar).getByRole('button', { name: 'Contraer menú' });
+  expect(toggle).toHaveAttribute('aria-controls', menu.id);
+  await user.click(toggle);
+  expect(sidebar).toHaveClass('sidebar--collapsed');
+  expect(toggle).toHaveAccessibleName('Expandir menú');
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(toggle).toHaveFocus();
+  expect(within(menu).getByRole('link', { name: 'Mis solicitudes' })).toHaveAttribute('aria-current', 'page');
+  expect(within(sidebar).getByRole('button', { name: 'Cerrar sesión' })).toBeInTheDocument();
+  await user.keyboard('{Enter}');
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(sidebar).not.toHaveClass('sidebar--collapsed');
+});
+
+test('el enlace para saltar la navegación enfoca el contenido', async () => {
+  mockViewport(false);
+  const user = userEvent.setup();
+  renderWithRouter(<AppShell user={ana}><p>Contenido</p></AppShell>, { route: '/inicio' });
+  await user.tab();
+  expect(screen.getByRole('link', { name: 'Saltar al contenido' })).toHaveFocus();
+  await user.keyboard('{Enter}');
+  expect(screen.getByRole('main')).toHaveFocus();
 });
 
 test('ruta desconocida muestra NotFoundPage', async () => {
@@ -83,7 +114,7 @@ test('la raíz lleva a la primera pantalla permitida del rol', async () => {
 test('el logo navega dentro de la aplicación sin recargar', () => {
   mockViewport(false);
   renderWithRouter(<AppShell user={ana}><p>Contenido</p></AppShell>, { route: '/solicitudes' });
-  const logo = screen.getByRole('link', { name: 'Universidad Actúa, inicio' });
+  const logo = within(screen.getByRole('complementary')).getByRole('link', { name: 'UNMSM, inicio' });
   expect(logo).toHaveAttribute('href', '/');
   expect(logo).toHaveAttribute('data-discover', 'true');
 });
@@ -91,7 +122,6 @@ test('el logo navega dentro de la aplicación sin recargar', () => {
 test('el nombre accesible del logo contiene su texto visible (WCAG 2.5.3)', () => {
   mockViewport(false);
   renderWithRouter(<AppShell user={ana}><p>Contenido</p></AppShell>, { route: '/inicio' });
-  const brand = screen.getByRole('link', { name: 'Universidad Actúa, inicio' });
-  // Sin aria-label: el nombre sale del texto, así coincide con lo que se ve.
-  expect(brand).not.toHaveAttribute('aria-label');
+  const brand = screen.getByRole('link', { name: 'UNMSM, inicio' });
+  expect(brand).toHaveTextContent('UNMSM');
 });

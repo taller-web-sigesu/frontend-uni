@@ -1,6 +1,7 @@
 import { useCurrentUser } from '../../app/userContext.js';
 import { RequestsPreview } from './RequestsPreview.jsx';
 import { AdminShortcuts } from './AdminShortcuts.jsx';
+import { AdminSummary } from './AdminSummary.jsx';
 import { ReservationsPreview } from './ReservationsPreview.jsx';
 
 const WITH_REQUESTS = ['ESTUDIANTE', 'DOCENTE', 'TECNICO'];
@@ -16,7 +17,12 @@ export function HomePage({ user: userProp }) {
     <section className="page">
       <h1>Hola, {user.nombreCompleto}</h1>
       {withRequests && <RequestsPreview user={user} />}
-      {isAdmin && <AdminShortcuts user={user} />}
+      {isAdmin && (
+        <>
+          <AdminSummary />
+          <AdminShortcuts />
+        </>
+      )}
       {withRequests && <ReservationsPreview user={user} />}
     </section>
   );

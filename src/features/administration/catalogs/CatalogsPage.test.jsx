@@ -19,8 +19,12 @@ const rowOf = async (name) => (await screen.findByRole('cell', { name })).closes
 
 test('lista áreas activas e inactivas con su badge', async () => {
   await renderTab(userEvent.setup());
+  const breadcrumb = within(screen.getByRole('navigation', { name: 'Ruta de navegación' }));
+  expect(breadcrumb.getByRole('link', { name: 'Inicio' })).toHaveAttribute('href', '/inicio');
+  expect(breadcrumb.getByText('Catálogos')).toHaveAttribute('aria-current', 'page');
   expect(within(await rowOf('Servicios Generales')).getByText('Inactivo')).toBeInTheDocument();
   expect(within(await rowOf('Tecnologías de la Información')).getByText('Activo')).toBeInTheDocument();
+  expect(within(await rowOf('Tecnologías de la Información')).getByRole('button', { name: 'Editar' })).toHaveClass('btn--info');
   expect(within(await rowOf('Tecnologías de la Información')).getByText('TI')).toBeInTheDocument();
 });
 

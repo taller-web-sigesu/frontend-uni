@@ -35,10 +35,63 @@ test.describe('a11y', () => {
     await switchTo(page, 'SUPERVISOR');
     await check('/gestion');
     await check('/indicadores');
+    await check('/reservas/aprobacion');
 
     await switchTo(page, 'ADMINISTRADOR');
+    await check('/inicio');
     await check('/admin/usuarios');
+    await check('/admin/catalogos');
 
     expect(Object.fromEntries(Object.entries(found).filter(([, list]) => list.length))).toEqual({});
+  });
+
+  test('el teclado recorre el menú, las migas y el contenido administrativo', async ({ page }) => {
+    await login(page, 'ADMINISTRADOR');
+    await expect(page.getByRole('region', { name: 'Indicadores del mes' }).getByText('Registradas')).toBeVisible();
+    const skip = page.getByRole('link', { name: 'Saltar al contenido' });
+    await page.keyboard.press('Tab');
+    await expect(skip).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('main')).toBeFocused();
+    await expect(page.getByRole('region', { name: 'Accesos rápidos' }).getByRole('link', { name: 'Ambientes' })).toBeVisible();
+
+    const drawerToggle = page.getByRole('button', { name: 'Abrir menú' });
+    if (await drawerToggle.isVisible()) {
+      await drawerToggle.focus();
+      await page.keyboard.press('Enter');
+      const drawer = page.getByRole('dialog', { name: 'Menú' });
+      const close = drawer.getByRole('button', { name: 'Cerrar', exact: true });
+      const brand = drawer.getByRole('link', { name: 'UNMSM, inicio' });
+      await expect(close).toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(brand).toBeFocused();
+      await page.keyboard.press('Shift+Tab');
+      await expect(close).toBeFocused();
+      await expect(drawer.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible();
+      expect(await seriousViolations(page)).toEqual([]);
+      await page.keyboard.press('Escape');
+      await expect(drawerToggle).toBeFocused();
+    } else {
+      const toggle = page.getByRole('button', { name: 'Contraer menú' });
+      await toggle.focus();
+      await page.keyboard.press('Enter');
+      const expand = page.getByRole('button', { name: 'Expandir menú' });
+      await expect(expand).toBeFocused();
+      await expect(expand).toHaveAttribute('aria-expanded', 'false');
+      await page.keyboard.press('Enter');
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    }
+
+    for (const [path, label] of [['/admin/usuarios', 'Usuarios'], ['/admin/catalogos', 'Catálogos']]) {
+      await page.goto(path);
+      const breadcrumb = page.getByRole('navigation', { name: 'Ruta de navegación' });
+      await expect(breadcrumb.getByText(label)).toHaveAttribute('aria-current', 'page');
+      await expect(page.getByRole('table')).toBeVisible();
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      const home = breadcrumb.getByRole('link', { name: 'Inicio' });
+      await home.focus();
+      await page.keyboard.press('Enter');
+      await expect(page).toHaveURL(/\/inicio$/);
+    }
   });
 });

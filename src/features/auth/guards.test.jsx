@@ -57,7 +57,7 @@ test('con sesión, /login redirige al inicio del rol', async () => {
   await waitFor(() => expect(router.state.location.pathname).toBe('/indicadores'));
 });
 
-test('Cerrar sesión desde el topbar vuelve a /login', async () => {
+test('Cerrar sesión desde el menú lateral vuelve a /login', async () => {
   const user = userEvent.setup();
   const { router } = renderWithRouter(null, { route: '/inicio', session: { user: userById('8') } });
   await user.click(await screen.findByRole('button', { name: 'Cerrar sesión' }));

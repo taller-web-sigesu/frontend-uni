@@ -54,10 +54,14 @@ export async function login(page, rol) {
  * la petición y la cookie de renovación seguiría viva.
  */
 export async function logout(page) {
+  const menu = page.getByRole('button', { name: 'Abrir menú' });
+  const closeSession = page.getByRole('button', { name: 'Cerrar sesión' });
+  await menu.or(closeSession).first().waitFor();
+  if (await menu.isVisible() && (await menu.getAttribute('aria-expanded')) === 'false') await menu.click();
   const revoked = IS_REAL
     ? page.waitForResponse((r) => r.url().endsWith('/api/v1/auth/logout'))
     : null;
-  await page.getByRole('button', { name: 'Cerrar sesión' }).click();
+  await closeSession.click();
   await page.waitForURL('**/login');
   if (revoked) {
     await revoked;
@@ -204,14 +208,19 @@ export async function occupySlot(page, request, slot) {
 
 /** Fila de la tabla que contiene `text`, avanzando de página si hace falta. */
 export async function rowWith(page, text) {
+  const row = page.getByRole('row').filter({ hasText: text }).first();
+  const next = page.getByRole('button', { name: 'Siguiente' });
+  const position = page.getByRole('navigation', { name: 'Paginación' }).getByText(/^Página \d+ de \d+$/);
   for (let i = 0; i < 20; i += 1) {
     await page.getByRole('table').first().waitFor();
-    const row = page.getByRole('row').filter({ hasText: text });
-    if (await row.count()) return row.first();
-    const next = page.getByRole('button', { name: 'Siguiente' });
-    if (!(await next.isVisible()) || await next.isDisabled()) break;
+    if (await row.count()) return row;
+    if (!(await next.isVisible()) || await next.isDisabled()) {
+      await expect(row, `No se encontró la fila con «${text}»`).toBeVisible();
+      return row;
+    }
+    const current = await position.textContent();
     await next.click();
-    await page.waitForTimeout(300);
+    await expect(position).not.toHaveText(current);
   }
   throw new Error(`No se encontró la fila con «${text}»`);
 }

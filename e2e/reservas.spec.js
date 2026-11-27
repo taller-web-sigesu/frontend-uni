@@ -46,8 +46,14 @@ test.describe('reservas', () => {
     await switchTo(page, 'SUPERVISOR');
     await page.goto('/reservas/aprobacion');
     const row = await rowWith(page, reserva.codigo);
-    await row.getByRole('button', { name: `Revisar ${reserva.codigo}` }).click();
+    const code = row.getByRole('button', { name: reserva.codigo, exact: true });
+    await code.focus();
+    await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog', { name: `Revisar ${reserva.codigo}` });
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(code).toBeFocused();
+    await row.getByRole('button', { name: `Revisar ${reserva.codigo}` }).click();
     await dialog.getByRole('button', { name: 'Aprobar' }).click();
     await expect(page.getByText(`Reserva ${reserva.codigo} aprobada`)).toBeVisible();
   });
